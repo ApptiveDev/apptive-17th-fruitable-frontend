@@ -34,10 +34,7 @@ import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.HashTag
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
-import com.fruitable.Fruitable.ui.theme.MainGray1
-import com.fruitable.Fruitable.ui.theme.MainGray2
-import com.fruitable.Fruitable.ui.theme.MainGreen1
-import com.fruitable.Fruitable.ui.theme.TextStyles
+import com.fruitable.Fruitable.ui.theme.*
 
 @Composable
 fun SalesScreen(
@@ -165,7 +162,7 @@ fun SalesContents(
         ){
            for(i in 1..10) {
                 SaleItem()
-               Divider(modifier=Modifier.height(1.dp), color = MainGray1)
+               Divider(modifier=Modifier.height(1.dp), color = MainGray3)
             }
         }
     }
