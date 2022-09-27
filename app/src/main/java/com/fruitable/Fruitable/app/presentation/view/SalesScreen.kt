@@ -4,16 +4,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterStart
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.Modifier
@@ -38,25 +42,32 @@ import com.fruitable.Fruitable.ui.theme.TextStyles
 fun SalesScreen(
     navController: NavController
 ){
-    val verticalScroll = rememberScrollState()
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(MainGreen1)
     ){
-        SellerProfile(
-            modifier = Modifier
-                .align(End)
-                .padding(0.dp, 47.dp, 30.dp, 19.dp)
-        )
-        SalesContents(
-            modifier = Modifier
-                .clip(RoundedCornerShape(30.dp, 30.dp, 0.dp, 0.dp))
-                .background(White)
-                .fillMaxSize()
-        )
-      //  HashTagButton(isSelected = false)
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                SellerProfile(
+                    modifier = Modifier
+                        .align(End)
+                        .padding(0.dp, 47.dp, 30.dp, 19.dp)
+                )
+            }
+        }
+        item {
+            SalesContents(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(30.dp, 30.dp, 0.dp, 0.dp))
+                    .background(White)
+                    .fillMaxSize()
+            )
+        }
     }
 }
 
@@ -64,28 +75,22 @@ fun SalesScreen(
 fun SellerProfile(
     modifier: Modifier = Modifier,
     nickname: String = "푸릇농장",
-    text: String = "인증됨ㆍ게시글 10개",
     imageUrl: String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg"
 ){
-    Box(
-      modifier = modifier
-          .width(113.dp)
-          .height(46.dp)
+    Row(
+      modifier = modifier.height(46.dp),
+      verticalAlignment = CenterVertically
     ){
         Text(
             text = nickname,
             style = TextStyles.TextProfile1,
             color = White,
-            modifier = Modifier
-                .align(CenterStart)
-                .padding(bottom = 3.dp)
+            modifier = Modifier.padding(end = 7.dp)
         )
         ProfileImage(
             imageUrl = imageUrl,
             contentDescription = "profile image",
-            modifier = Modifier
-                .align(CenterEnd)
-                .size(46.dp)
+            modifier = Modifier.size(46.dp)
         )
     }
 }
@@ -93,7 +98,7 @@ fun SellerProfile(
 fun SalesContents(
     modifier: Modifier = Modifier
 ){
-    var selectedItem by remember { mutableStateOf("") }
+    var selectedItem by remember { mutableStateOf("all") }
     Column(
         modifier = modifier
     ){
@@ -130,6 +135,15 @@ fun SalesContents(
                         Spacer(modifier = Modifier.width(8.dp))
                     }
                 }
+            }
+        }
+        Column(
+            verticalArrangement = Arrangement.spacedBy(17.dp),
+            modifier = Modifier.padding(23.dp, 37.dp, 37.dp, 21.dp)
+        ){
+           for(i in 1..10) {
+                SaleItem()
+               Divider(modifier=Modifier.height(1.dp), color = MainGray1)
             }
         }
     }
