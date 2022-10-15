@@ -34,6 +34,7 @@ import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.HashTag
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
+import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.ui.theme.*
 
 @Composable
@@ -82,7 +83,8 @@ fun SalesScreen(
                     modifier = Modifier
                         .clip(RoundedCornerShape(30.dp, 30.dp, 0.dp, 0.dp))
                         .background(White)
-                        .fillMaxSize()
+                        .fillMaxSize(),
+                    navController = navController
                 )
             }
         }
@@ -115,6 +117,7 @@ fun SellerProfile(
 }
 @Composable
 fun SalesContents(
+    navController: NavController,
     modifier: Modifier = Modifier
 ){
     var selectedItem by remember { mutableStateOf("all") }
@@ -161,7 +164,9 @@ fun SalesContents(
             modifier = Modifier.padding(23.dp, 37.dp, 37.dp, 21.dp)
         ){
            for(i in 1..10) {
-                SaleItem()
+                SaleItem(onClick = {
+                    navController.navigate(Screen.DetailSalesScreen.route+"/itemId")
+                })
                Divider(modifier=Modifier.height(1.dp), color = MainGray3)
             }
         }
