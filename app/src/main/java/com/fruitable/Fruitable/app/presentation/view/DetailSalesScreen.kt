@@ -71,6 +71,9 @@ fun DetailSalesScreen(
             }
             Divider(modifier=Modifier.height(1.dp), color = MainGray3)
         }
+        item{
+            DetailBuyBtn(navController = navController,deadline = deadline)
+        }
     }
 }
 
@@ -190,4 +193,27 @@ fun DetailExplain(
             )
         }
     }
+}
+
+
+@Composable
+fun DetailBuyBtn(
+    navController: NavController,
+    deadline : Int
+){
+    var boolDeadline : Boolean = true
+    if (deadline <= 0) {
+        boolDeadline = false
+    }
+    //나중에 onclick으로 navigator 넣어야지,,,
+    HashTagButton(
+        text = "주문하기",
+        isSelected = boolDeadline,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(88.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .padding(30.dp,24.dp),
+        isRipple = boolDeadline,
+    )
 }
