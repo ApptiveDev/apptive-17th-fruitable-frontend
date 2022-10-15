@@ -2,6 +2,7 @@ package com.fruitable.Fruitable.app.presentation.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
@@ -12,10 +13,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.fruitable.Fruitable.app._enums.HashTag
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
 import com.fruitable.Fruitable.ui.theme.MainGray3
 import com.fruitable.Fruitable.ui.theme.TextStyles
+import java.text.DecimalFormat
 
 @Composable
 fun DetailSalesScreen(
@@ -39,6 +42,34 @@ fun DetailSalesScreen(
         }
         item{
             DetailFarmProfile(nickName = nickName, phoneNum = phoneNum, imageUrl = imageUrl)
+        }
+        item{
+            DetailTitle(title,price)
+        }
+        item{
+            DetailExplain(itemId = itemId)
+        }
+        item{
+            LazyRow(
+                modifier = Modifier
+                    .padding(start = 22.dp , top = 20.dp , bottom = 19.dp)
+            ){
+                item {
+                    //itemId별로 태그가 다를테니까 이거 서버 받으면 바꾸기
+                    HashTag::class.sealedSubclasses.mapNotNull { it.objectInstance }.forEach {
+                        Row {
+                            HashTagButton(
+                                text = it.name,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(20.dp)),
+                                isRipple = false,
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
+                    }
+                }
+            }
+            Divider(modifier=Modifier.height(1.dp), color = MainGray3)
         }
     }
 }
@@ -113,5 +144,50 @@ fun DetailFarmProfile(
             }
         }
         Divider(modifier=Modifier.height(1.dp), color = MainGray3)
+    }
+}
+
+
+@Composable
+fun DetailTitle(
+    title : String,
+    price : Int,
+){
+    val pattern = DecimalFormat("#,###")
+    Column(
+        modifier = Modifier
+            .padding(start = 22.dp, top = 22.dp, bottom=5.dp)
+            .fillMaxWidth()
+    ){
+        Text(
+            text = pattern.format(price) +"원",
+            style = TextStyles.TextDetailTitle1,
+            color = Color.Black,
+        )
+        Text(
+            text = title,
+            style = TextStyles.TextDetailTitle2,
+            color = Color.Black,
+        )
+    }
+}
+
+//여기는 나중에 데이터 받으면 받아와지는 형식에 따라 다르게 바꾸기,,
+@Composable
+fun DetailExplain(
+    itemId : String
+){
+    Column(
+        modifier = Modifier
+            .padding(start = 20.dp,top= 18.dp)
+    ){
+        for (i in 1..7){
+            Text(
+                text = "맛있는 사과 아침에 먹어야 더 맛있는 사과",
+                color = Color.Black,
+                modifier = Modifier
+                    .padding(bottom=5.dp)
+            )
+        }
     }
 }
