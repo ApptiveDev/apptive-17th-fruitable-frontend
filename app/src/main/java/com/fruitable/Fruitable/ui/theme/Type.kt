@@ -42,7 +42,24 @@ object TextStyles{
         fontSize = 16.sp,
         lineHeight = 18.75.sp
     )
-
+    val TextDetailProfile1 = TextStyle(
+        fontFamily = Roboto,
+        fontWeight = FontWeight.W400,
+        fontSize = 14.sp,
+        lineHeight = 16.sp
+    )
+    val TextDetailTitle1 = TextStyle(
+        fontFamily = Roboto,
+        fontWeight = FontWeight.W700,
+        fontSize = 22.sp,
+        lineHeight = 26.sp
+    )
+    val TextDetailTitle2 = TextStyle(
+        fontFamily = Roboto,
+        fontWeight = FontWeight.W600,
+        fontSize = 17.sp,
+        lineHeight = 19.sp
+    )
 }
 val Typography = Typography(
     body1 = TextStyle(
