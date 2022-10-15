@@ -3,14 +3,19 @@ package com.fruitable.Fruitable.app.presentation.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
+import com.fruitable.Fruitable.ui.theme.MainGray3
+import com.fruitable.Fruitable.ui.theme.TextStyles
 
 @Composable
 fun DetailSalesScreen(
@@ -31,6 +36,9 @@ fun DetailSalesScreen(
     ){
         item{
             DetailTop(deadline = deadline, itemImageUrl = itemImageUrl)
+        }
+        item{
+            DetailFarmProfile(nickName = nickName, phoneNum = phoneNum, imageUrl = imageUrl)
         }
     }
 }
@@ -65,5 +73,45 @@ fun DetailTop(
                 .padding(top = 20.dp, end = 20.dp),
             isRipple = false,
         )
+    }
+}
+
+
+//여기에 들어가는 image가 진짜 seller이미지고 메인에 있는 sellerProfile은 우리 로고가 아닌지 물어보깅
+@Composable
+fun DetailFarmProfile(
+    nickName : String,
+    phoneNum : String,
+    imageUrl : String,
+){
+    Column(
+
+    ) {
+        Row (
+            modifier = Modifier
+                .padding(start = 20.dp,top = 18.dp , bottom=18.dp)
+        ){
+            ProfileImage(
+                imageUrl = imageUrl,
+                modifier = Modifier
+                    .size(56.dp)
+            )
+            Column(
+                modifier = Modifier.padding(start = 9.dp,top=7.dp),
+            ) {
+                Text(
+                    text = nickName,
+                    style = TextStyles.TextBasic1,
+                    color = Color.Black,
+                    modifier = Modifier.padding(end = 6.dp)
+                )
+                Text(
+                    text = phoneNum,
+                    style = TextStyles.TextDetailProfile1,
+                    color = Color.Black,
+                )
+            }
+        }
+        Divider(modifier=Modifier.height(1.dp), color = MainGray3)
     }
 }
