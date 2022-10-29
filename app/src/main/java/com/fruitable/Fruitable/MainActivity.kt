@@ -14,7 +14,9 @@ import androidx.navigation.compose.rememberNavController
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.navigation.fruitableGraph
 import com.fruitable.Fruitable.ui.theme.FRUITABLETheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
