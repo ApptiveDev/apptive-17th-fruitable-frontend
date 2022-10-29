@@ -6,12 +6,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
+import com.fruitable.Fruitable.app.presentation.component.formatAmountOrMessage
 import com.fruitable.Fruitable.ui.theme.MainGray1
 import com.fruitable.Fruitable.ui.theme.TextStyles
 import java.text.DecimalFormat
@@ -26,7 +26,6 @@ fun SaleItem(
     deadline: Int = 30,
     price: Int = 14500
 ){
-    val pattern = DecimalFormat("#,###")
     Row(
         modifier = modifier.clickable(onClick = onClick)
     ){
@@ -55,7 +54,7 @@ fun SaleItem(
                 maxLines = 1
             )
             Text(
-                text = pattern.format(price) + "원",
+                text = formatAmountOrMessage(price.toString()) + "원",
                 color = Color.Black,
                 style = TextStyles.TextProfile1
             )

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,9 +13,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.app._enums.HashTag
+import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
-import com.fruitable.Fruitable.ui.theme.MainGray3
+import com.fruitable.Fruitable.app.presentation.component.formatAmountOrMessage
 import com.fruitable.Fruitable.ui.theme.TextStyles
 import java.text.DecimalFormat
 
@@ -156,14 +156,13 @@ fun DetailTitle(
     title : String,
     price : Int,
 ){
-    val pattern = DecimalFormat("#,###")
     Column(
         modifier = Modifier
             .padding(start = 22.dp, top = 22.dp, bottom=5.dp)
             .fillMaxWidth()
     ){
         Text(
-            text = pattern.format(price) +"원",
+            text = formatAmountOrMessage(price.toString()) +"원",
             style = TextStyles.TextDetailTitle1,
             color = Color.Black,
         )
