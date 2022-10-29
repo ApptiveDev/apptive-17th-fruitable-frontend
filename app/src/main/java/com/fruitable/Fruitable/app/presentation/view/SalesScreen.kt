@@ -44,7 +44,7 @@ fun SalesScreen(
     Scaffold(
         floatingActionButton = {
             Button(
-                onClick = {},
+                onClick = {navController.navigate(Screen.AddSaleScreen.route)},
                 modifier = Modifier
                     .padding(9.dp)
                     .size(56.dp)
@@ -167,7 +167,7 @@ fun SalesContents(
                 SaleItem(onClick = {
                     navController.navigate(Screen.DetailSalesScreen.route+"/itemId")
                 })
-               Divider(modifier=Modifier.height(1.dp), color = MainGray3)
+               FruitableDivider()
             }
         }
     }
