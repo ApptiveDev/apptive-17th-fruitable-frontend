@@ -69,7 +69,7 @@ fun DetailSalesScreen(
                     }
                 }
             }
-            Divider(modifier=Modifier.height(1.dp), color = MainGray3)
+            FruitableDivider()
         }
         item{
             DetailBuyBtn(navController = navController,deadline = deadline)
@@ -146,7 +146,7 @@ fun DetailFarmProfile(
                 )
             }
         }
-        Divider(modifier=Modifier.height(1.dp), color = MainGray3)
+        FruitableDivider()
     }
 }
 

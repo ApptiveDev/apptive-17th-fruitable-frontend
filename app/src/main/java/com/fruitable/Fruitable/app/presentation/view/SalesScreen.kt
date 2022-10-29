@@ -32,7 +32,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.HashTag
+import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
+import com.fruitable.Fruitable.app.presentation.component.IsFruitButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.ui.theme.*
@@ -170,51 +172,6 @@ fun SalesContents(
                FruitableDivider()
             }
         }
-    }
-}
-
-@Composable
-fun IsFruitButton(
-    modifier: Modifier = Modifier,
-){
-    var isSelected = remember { mutableStateOf(true)}
-
-    val buttonAlign     = if (isSelected.value) CenterStart else CenterEnd
-    val textAlign       = if (isSelected.value) CenterEnd else CenterStart
-    val selectedText    = if (isSelected.value) "과일" else "채소"
-    val nonSelectedText = if (isSelected.value) "채소" else "과일"
-
-    Box(
-        modifier = modifier,
-        contentAlignment = Center,
-    ){
-        HashTagButton(
-            text = "",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp),
-            isSelected = false,
-            isRipple = false,
-            onClick = { isSelected.value = !isSelected.value }
-        )
-        HashTagButton(
-            text = selectedText,
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .height(40.dp)
-                .align(buttonAlign),
-            isSelected = true,
-            style = TextStyles.TextBasic1
-        )
-        Text(
-            text = nonSelectedText,
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .align(textAlign),
-            textAlign = TextAlign.Center,
-            style = TextStyles.TextBasic1,
-            color = MainGray2
-        )
     }
 }
 
