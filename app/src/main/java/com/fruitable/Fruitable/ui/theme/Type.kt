@@ -40,7 +40,14 @@ object TextStyles{
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 18.75.sp
+        lineHeight = 19.sp
+    )
+    val TextPostContent = TextStyle(
+        fontFamily = Roboto,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 22.sp,
+        color = MainGray5
     )
     val TextDetailProfile1 = TextStyle(
         fontFamily = Roboto,
