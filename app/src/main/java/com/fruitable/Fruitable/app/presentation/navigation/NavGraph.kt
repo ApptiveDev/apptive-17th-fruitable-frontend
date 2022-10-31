@@ -20,6 +20,6 @@ fun NavGraphBuilder.fruitableGraph(
     }
     composable(
         route = Screen.DetailSalesScreen.route+"/{itemId}"){ backStackEntry ->
-        DetailSalesScreen(navController = navController, itemId = backStackEntry.arguments?.getString("itemId") ?: "")
+        DetailSalesScreen(navController = navController, itemId = (backStackEntry.arguments?.getInt("itemId") ?: "") as Int)
     }
 }

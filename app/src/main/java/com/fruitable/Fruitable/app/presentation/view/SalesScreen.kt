@@ -165,9 +165,9 @@ fun SalesContents(
             verticalArrangement = Arrangement.spacedBy(17.dp),
             modifier = Modifier.padding(23.dp, 37.dp, 37.dp, 21.dp)
         ){
-           for(i in 1..10) {
+           for(id in 1..10) {
                 SaleItem(onClick = {
-                    navController.navigate(Screen.DetailSalesScreen.route+"/itemId")
+                    navController.navigate("${Screen.DetailSalesScreen.route}/$id")
                 })
                FruitableDivider()
             }

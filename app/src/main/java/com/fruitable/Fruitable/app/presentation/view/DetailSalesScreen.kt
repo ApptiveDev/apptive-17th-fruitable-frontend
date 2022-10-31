@@ -1,5 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -10,20 +11,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.fruitable.Fruitable.app._enums.HashTag
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
 import com.fruitable.Fruitable.app.presentation.component.formatAmountOrMessage
+import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.ui.theme.TextStyles
 import java.text.DecimalFormat
 
 @Composable
 fun DetailSalesScreen(
     navController: NavController,
-    itemId : String,
+    itemId : Int = 1,
     //harcoding
     itemImageUrl: String = "https://images-prod.healthline.com/hlcmsresource/images/AN_images/health-benefits-of-apples-1296x728-feature.jpg",
     title: String = "프레샤인 충주 GAP 인증 당도선별 사과",
@@ -34,8 +38,7 @@ fun DetailSalesScreen(
     imageUrl : String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg",
 ){
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ){
         item{
             DetailTop(deadline = deadline, itemImageUrl = itemImageUrl)
@@ -77,6 +80,12 @@ fun DetailSalesScreen(
     }
 }
 
+
+@Preview
+@Composable
+fun DetailPreview(){
+    DetailSalesScreen(rememberNavController())
+}
 
 @Composable
 fun DetailTop(
@@ -158,7 +167,7 @@ fun DetailTitle(
 ){
     Column(
         modifier = Modifier
-            .padding(start = 22.dp, top = 22.dp, bottom=5.dp)
+            .padding(start = 22.dp, top = 22.dp, bottom = 5.dp)
             .fillMaxWidth()
     ){
         Text(
@@ -177,7 +186,7 @@ fun DetailTitle(
 //여기는 나중에 데이터 받으면 받아와지는 형식에 따라 다르게 바꾸기,,
 @Composable
 fun DetailExplain(
-    itemId : String
+    itemId : Int = 1
 ){
     Column(
         modifier = Modifier
@@ -212,7 +221,7 @@ fun DetailBuyBtn(
             .fillMaxWidth()
             .height(88.dp)
             .clip(RoundedCornerShape(10.dp))
-            .padding(30.dp,24.dp),
+            .padding(30.dp, 24.dp),
         isRipple = boolDeadline,
     )
 }
