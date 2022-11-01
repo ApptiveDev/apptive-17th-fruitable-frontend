@@ -1,5 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.event
 
+import android.net.Uri
 import androidx.compose.ui.focus.FocusState
 
 sealed class AddSaleEvent{
@@ -19,5 +20,6 @@ sealed class AddSaleEvent{
     data class EnteredContent(val value: String): AddSaleEvent()
     data class ChangeContentFocus(val focusState: FocusState): AddSaleEvent()
 
+    data class EnteredImage(val value: List<Uri>): AddSaleEvent()
     object SaveSale: AddSaleEvent()
 }

@@ -1,13 +1,21 @@
 package com.fruitable.Fruitable.app.presentation.viewmodel
 
+import android.net.Uri
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.event.AddSaleEvent
+import com.fruitable.Fruitable.app.presentation.state.ImageState
 import com.fruitable.Fruitable.app.presentation.state.SaleTextFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
+import java.lang.Integer.min
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,6 +47,8 @@ class AddSaleViewModel @Inject constructor()
     ))
     val saleContent: State<SaleTextFieldState> = _saleContent
 
+    val saleImage = mutableStateOf(ImageState())
+
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -46,6 +56,7 @@ class AddSaleViewModel @Inject constructor()
         return saleTitle.value.text.isNotBlank() && salePrice.value.text.isNotBlank()
                 && saleContact.value.text.isNotBlank() && saleContent.value.text.isNotBlank()
     }
+
     fun onEvent(event: AddSaleEvent){
         when(event){
             is AddSaleEvent.EnteredTitle -> {
@@ -103,6 +114,25 @@ class AddSaleViewModel @Inject constructor()
                             saleContent.value.text.isBlank()
                 )
             }
+            is AddSaleEvent.EnteredImage -> {
+                val imageSize = event.value.size
+                var updatedImageList = event.value
+
+                if (imageSize > 5) {
+                    viewModelScope.launch {
+                        _eventFlow.emit(
+                            UiEvent.ShowSnackbar("이미지는 최대 5개까지 선택 가능합니다.")
+                        )
+                    }
+                }
+
+                if (event.value.isNotEmpty()){
+                    updatedImageList = event.value.slice(0..min(4, imageSize-1))
+                }
+                saleImage.value = saleImage.value.copy(
+                    listOfSelectedImages = updatedImageList
+                )
+            }
             is AddSaleEvent.SaveSale -> {
                 // TODO: 게시글 작성 내용 저장
             }
@@ -111,6 +141,6 @@ class AddSaleViewModel @Inject constructor()
 
     sealed class UiEvent {
         data class ShowSnackbar(val message: String): UiEvent()
-        object SaveNote: UiEvent()
+        object SaveInformation: UiEvent()
     }
 }
