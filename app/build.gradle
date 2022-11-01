@@ -107,4 +107,7 @@ dependencies {
     // coil
     implementation("io.coil-kt:coil-compose:2.1.0")
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.0"
+
+    //permission
+    implementation "com.google.accompanist:accompanist-permissions:0.25.0"
 }
