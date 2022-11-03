@@ -11,13 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.ui.theme.MainGray2
 import com.fruitable.Fruitable.ui.theme.TextStyles
 
 @Composable
 fun IsFruitButton(
     modifier: Modifier = Modifier,
-){
+): Boolean {
     var isSelected = remember { mutableStateOf(true) }
 
     val buttonAlign     = if (isSelected.value) Alignment.CenterStart else Alignment.CenterEnd
@@ -57,4 +58,5 @@ fun IsFruitButton(
             color = MainGray2
         )
     }
+    return isSelected.value
 }

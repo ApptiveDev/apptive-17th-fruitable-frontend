@@ -11,18 +11,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.fruitable.Fruitable.app._enums.HashTag
+import com.fruitable.Fruitable.app._enums.fruitableSpace
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
 import com.fruitable.Fruitable.app.presentation.component.formatAmountOrMessage
-import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.ui.theme.TextStyles
-import java.text.DecimalFormat
 
 @Composable
 fun DetailSalesScreen(
@@ -55,7 +52,7 @@ fun DetailSalesScreen(
         item{
             LazyRow(
                 modifier = Modifier
-                    .padding(start = 22.dp , top = 20.dp , bottom = 19.dp)
+                    .padding(start = fruitableSpace , top = 20.dp , bottom = 19.dp)
             ){
                 item {
                     //itemId별로 태그가 다를테니까 이거 서버 받으면 바꾸기
@@ -63,8 +60,6 @@ fun DetailSalesScreen(
                         Row {
                             HashTagButton(
                                 text = it.name,
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(20.dp)),
                                 isRipple = false,
                             )
                             Spacer(modifier = Modifier.width(8.dp))
@@ -80,12 +75,6 @@ fun DetailSalesScreen(
     }
 }
 
-
-@Preview
-@Composable
-fun DetailPreview(){
-    DetailSalesScreen(rememberNavController())
-}
 
 @Composable
 fun DetailTop(
@@ -112,7 +101,6 @@ fun DetailTop(
         HashTagButton(
             text = deadlineText,
             modifier = Modifier
-                .clip(RoundedCornerShape(20.dp))
                 .padding(top = 20.dp, end = 20.dp),
             isRipple = false,
         )
@@ -167,7 +155,7 @@ fun DetailTitle(
 ){
     Column(
         modifier = Modifier
-            .padding(start = 22.dp, top = 22.dp, bottom = 5.dp)
+            .padding(start = fruitableSpace, top = fruitableSpace, bottom = 5.dp)
             .fillMaxWidth()
     ){
         Text(

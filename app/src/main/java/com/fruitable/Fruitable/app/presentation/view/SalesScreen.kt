@@ -1,8 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.view
 
-import android.widget.ImageButton
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -11,25 +9,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterEnd
-import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.End
-import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.HashTag
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
@@ -149,7 +138,6 @@ fun SalesContents(
                             text = it.name,
                             isSelected = selectedItem == it.tag,
                             modifier = Modifier
-                                .clip(RoundedCornerShape(20.dp))
                                 .selectable(
                                     selected = selectedItem == it.tag,
                                     onClick = { selectedItem = it.tag }
@@ -173,10 +161,4 @@ fun SalesContents(
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun SalesPreview(){
-    SalesScreen(rememberNavController())
 }

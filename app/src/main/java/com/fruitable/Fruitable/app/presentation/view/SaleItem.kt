@@ -8,13 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
 import com.fruitable.Fruitable.app.presentation.component.formatAmountOrMessage
 import com.fruitable.Fruitable.ui.theme.MainGray1
 import com.fruitable.Fruitable.ui.theme.TextStyles
-import java.text.DecimalFormat
 
 @Composable
 fun SaleItem(
@@ -60,11 +58,4 @@ fun SaleItem(
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewSaleItem(
-){
-    SaleItem()
 }
