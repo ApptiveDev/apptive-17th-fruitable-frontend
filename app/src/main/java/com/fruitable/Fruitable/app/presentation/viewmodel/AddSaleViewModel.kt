@@ -1,14 +1,12 @@
 package com.fruitable.Fruitable.app.presentation.viewmodel
 
-import android.net.Uri
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.event.AddSaleEvent
+import com.fruitable.Fruitable.app.presentation.state.DeadlineState
+import com.fruitable.Fruitable.app.presentation.state.HashTagState
 import com.fruitable.Fruitable.app.presentation.state.ImageState
 import com.fruitable.Fruitable.app.presentation.state.SaleTextFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,12 +14,14 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.lang.Integer.min
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class AddSaleViewModel @Inject constructor()
 : ViewModel(){
-    // 제목, 가격, 연락처, 판매기한, 내용,// 사진, 해시태그
+    val saleCategory = mutableStateOf("")
+
     private val _saleTitle = mutableStateOf(SaleTextFieldState(
         hint = "제목"
     ))
@@ -37,11 +37,6 @@ class AddSaleViewModel @Inject constructor()
     ))
     val saleContact: State<SaleTextFieldState> = _saleContact
 
-    private val _saleDeadline = mutableStateOf(SaleTextFieldState(
-        hint = "제목"
-    ))
-    val saleDeadline: State<SaleTextFieldState> = _saleDeadline
-
     private val _saleContent = mutableStateOf(SaleTextFieldState(
         hint = "게시글 내용을 작성해주세요.(친환경, 무농약, 유기농, 오가닉, 무공해 등의 표현을 국가기관의 인증없이 사용하면 처벌 받을 수 있으니 주의하여 주세요.)"
     ))
@@ -49,16 +44,49 @@ class AddSaleViewModel @Inject constructor()
 
     val saleImage = mutableStateOf(ImageState())
 
+    private val _saleHashTag = mutableStateOf(HashTagState(
+        hint = "# 해시태그를 입력하세요."
+    ))
+    val saleHashTag: State<HashTagState> = _saleHashTag
+
+    private val _saleDeadLine = mutableStateOf(DeadlineState(
+        hint = LocalDate.now().toString()
+    ))
+    val saleDeadLine: State<DeadlineState> = _saleDeadLine
+
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     fun isSavable(): Boolean {
-        return saleTitle.value.text.isNotBlank() && salePrice.value.text.isNotBlank()
-                && saleContact.value.text.isNotBlank() && saleContent.value.text.isNotBlank()
+        val exceptionCollection = ExceptMap()
+        return exceptionCollection.all { it.value.second }
     }
 
+    fun ExceptMap(): MutableMap<String, Pair<String, Boolean>> {
+        return mutableMapOf(
+            "title" to Pair("제목을 입력해주세요.", saleTitle.value.text.isNotBlank()),
+            "price" to Pair("가격을 입력해주세요.", salePrice.value.text.isNotBlank()),
+            "contact" to Pair("연락처를 입력해주세요.", saleContact.value.text.isNotBlank()),
+            "image" to Pair("이미지를 선택해주세요.", saleImage.value.listOfSelectedImages.isNotEmpty()),
+            "hash" to Pair("해시태그를 입력해주세요.", saleHashTag.value.textList.isNotEmpty()),
+            "hashUncompleted" to Pair("해시태그 내용을 완성해주세요.", saleHashTag.value.text.isBlank()),
+            "deadline" to Pair(
+                "글 내용을 입력해주세요.",
+                !(saleDeadLine.value.isChecked && saleDeadLine.value.text.isBlank())
+            ),
+            "deadlineRange" to Pair(
+                "마감 기한 설정은 오늘 이후부터 가능합니다.",
+                !saleDeadLine.value.isChecked || saleDeadLine.value.text > LocalDate.now()
+                    .toString()
+            ),
+            "content" to Pair("글 내용을 입력해주세요.", saleContent.value.text.isNotBlank())
+        )
+    }
     fun onEvent(event: AddSaleEvent){
         when(event){
+            is AddSaleEvent.EnteredCategory -> {
+                saleCategory.value = event.value
+            }
             is AddSaleEvent.EnteredTitle -> {
                 _saleTitle.value = saleTitle.value.copy(
                     text = event.value
@@ -92,17 +120,6 @@ class AddSaleViewModel @Inject constructor()
                             saleContact.value.text.isBlank()
                 )
             }
-            is AddSaleEvent.EnteredDeadline -> {
-                _saleDeadline.value = saleDeadline.value.copy(
-                    text = event.value
-                )
-            }
-            is AddSaleEvent.ChangeDeadlineFocus -> {
-                _saleDeadline.value = saleDeadline.value.copy(
-                    isHintVisible = !event.focusState.isFocused &&
-                            saleDeadline.value.text.isBlank()
-                )
-            }
             is AddSaleEvent.EnteredContent -> {
                 _saleContent.value = saleContent.value.copy(
                     text = event.value
@@ -133,8 +150,63 @@ class AddSaleViewModel @Inject constructor()
                     listOfSelectedImages = updatedImageList
                 )
             }
+            is AddSaleEvent.EnteredHashTag -> {
+                _saleHashTag.value = saleHashTag.value.copy(
+                    text = event.value,
+                )
+            }
+            is AddSaleEvent.ChangeHashTagFocus -> {
+                val updatedHashTag = saleHashTag.value.textList.toMutableList()
+                val isFocused = event.focusState.isFocused
+                val isBlank = saleHashTag.value.text.isBlank()
+
+                _saleHashTag.value = saleHashTag.value.copy(
+                    textList = if(!isFocused && !isBlank) {
+                                    (updatedHashTag + saleHashTag.value.text).distinct()
+                                } else updatedHashTag,
+                    text = if(!isFocused && !isBlank) ""
+                           else saleHashTag.value.text,
+                    isHintVisible = !isFocused
+                )
+            }
+            is AddSaleEvent.RemoveHashTag -> {
+                val updatedHashTag = saleHashTag.value.textList.toMutableList()
+                updatedHashTag.remove(event.value)
+                _saleHashTag.value = saleHashTag.value.copy(
+                    textList = updatedHashTag,
+                )
+            }
+            is AddSaleEvent.EnterDeadLine -> {
+                _saleDeadLine.value = saleDeadLine.value.copy(
+                    text = event.value,
+                )
+            }
+            is AddSaleEvent.ChangeDeadLine -> {
+                _saleDeadLine.value = saleDeadLine.value.copy(
+                    text = "",
+                    isChecked = !saleDeadLine.value.isChecked
+                )
+            }
             is AddSaleEvent.SaveSale -> {
-                // TODO: 게시글 작성 내용 저장
+                val exceptCollection = ExceptMap()
+                val isSavable = exceptCollection.all { it.value.second }
+
+                if (!isSavable){
+                    exceptCollection.filter{!it.value.second}.firstNotNullOf { (key, value) ->
+                        viewModelScope.launch {
+                            _eventFlow.emit(
+                                UiEvent.ShowSnackbar(value.first)
+                            )
+                        }
+                    }
+                }
+                else{
+                    viewModelScope.launch {
+                        _eventFlow.emit(
+                            UiEvent.SaveInformation
+                        )
+                    }
+                }
             }
         }
     }

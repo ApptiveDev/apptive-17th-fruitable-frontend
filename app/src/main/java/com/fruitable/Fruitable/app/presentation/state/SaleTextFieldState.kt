@@ -12,7 +12,8 @@ data class ImageState(
 )
 
 data class HashTagState(
-    val text: List<String> = emptyList(),
+    val text: String = "",
+    val textList: List<String> = emptyList(),
     val hint: String = "",
     val isHintVisible: Boolean = true
 )
@@ -20,6 +21,5 @@ data class HashTagState(
 data class DeadlineState(
     val text: String = "",
     val hint: String = "",
-    val isHintVisible: Boolean = true,
     val isChecked: Boolean = false
 )
