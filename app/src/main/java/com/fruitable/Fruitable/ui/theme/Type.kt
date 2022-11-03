@@ -51,19 +51,19 @@ object TextStyles{
     )
     val TextDetailProfile1 = TextStyle(
         fontFamily = Roboto,
-        fontWeight = FontWeight.W400,
+        fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 16.sp
     )
     val TextDetailTitle1 = TextStyle(
         fontFamily = Roboto,
-        fontWeight = FontWeight.W700,
+        fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
         lineHeight = 26.sp
     )
     val TextDetailTitle2 = TextStyle(
         fontFamily = Roboto,
-        fontWeight = FontWeight.W600,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 17.sp,
         lineHeight = 19.sp
     )
