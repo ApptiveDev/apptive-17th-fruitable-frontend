@@ -1,8 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.view
 
-import android.widget.ImageButton
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -11,28 +9,21 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterEnd
-import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.End
-import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.HashTag
+import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
+import com.fruitable.Fruitable.app.presentation.component.IsFruitButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.ui.theme.*
@@ -44,7 +35,7 @@ fun SalesScreen(
     Scaffold(
         floatingActionButton = {
             Button(
-                onClick = {},
+                onClick = {navController.navigate(Screen.AddSaleScreen.route)},
                 modifier = Modifier
                     .padding(9.dp)
                     .size(56.dp)
@@ -147,7 +138,6 @@ fun SalesContents(
                             text = it.name,
                             isSelected = selectedItem == it.tag,
                             modifier = Modifier
-                                .clip(RoundedCornerShape(20.dp))
                                 .selectable(
                                     selected = selectedItem == it.tag,
                                     onClick = { selectedItem = it.tag }
@@ -163,63 +153,12 @@ fun SalesContents(
             verticalArrangement = Arrangement.spacedBy(17.dp),
             modifier = Modifier.padding(23.dp, 37.dp, 37.dp, 21.dp)
         ){
-           for(i in 1..10) {
+           for(id in 1..10) {
                 SaleItem(onClick = {
-                    navController.navigate(Screen.DetailSalesScreen.route+"/itemId")
+                    navController.navigate("${Screen.DetailSalesScreen.route}/$id")
                 })
-               Divider(modifier=Modifier.height(1.dp), color = MainGray3)
+               FruitableDivider()
             }
         }
     }
-}
-
-@Composable
-fun IsFruitButton(
-    modifier: Modifier = Modifier,
-){
-    var isSelected = remember { mutableStateOf(true)}
-
-    val buttonAlign     = if (isSelected.value) CenterStart else CenterEnd
-    val textAlign       = if (isSelected.value) CenterEnd else CenterStart
-    val selectedText    = if (isSelected.value) "과일" else "채소"
-    val nonSelectedText = if (isSelected.value) "채소" else "과일"
-
-    Box(
-        modifier = modifier,
-        contentAlignment = Center,
-    ){
-        HashTagButton(
-            text = "",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp),
-            isSelected = false,
-            isRipple = false,
-            onClick = { isSelected.value = !isSelected.value }
-        )
-        HashTagButton(
-            text = selectedText,
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .height(40.dp)
-                .align(buttonAlign),
-            isSelected = true,
-            style = TextStyles.TextBasic1
-        )
-        Text(
-            text = nonSelectedText,
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .align(textAlign),
-            textAlign = TextAlign.Center,
-            style = TextStyles.TextBasic1,
-            color = MainGray2
-        )
-    }
-}
-
-@Preview
-@Composable
-fun SalesPreview(){
-    SalesScreen(rememberNavController())
 }
