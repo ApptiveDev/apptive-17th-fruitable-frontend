@@ -302,7 +302,7 @@ fun HashTagField(
                     text = "# $hashTagText",
                     isCancellable = true,
                     isRipple = false,
-                    onCacelClick = { viewModel.onEvent(AddSaleEvent.RemoveHashTag(hashTagText))}
+                    onCancelClick = { viewModel.onEvent(AddSaleEvent.RemoveHashTag(hashTagText))}
                 )
             }
         }

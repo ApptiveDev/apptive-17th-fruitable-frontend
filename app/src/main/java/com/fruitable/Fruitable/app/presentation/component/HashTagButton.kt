@@ -31,7 +31,8 @@ fun HashTagButton(
     isRipple: Boolean = true,
     style: TextStyle = TextStyles.TextProfile2,
     isCancellable: Boolean = false,
-    onCacelClick: () -> Unit = {}
+    onCancelClick: () -> Unit = {},
+    cornerRadius : Int = 20,
 ){
     val buttonColor = if (isSelected) ButtonDefaults.buttonColors(MainGreen1)
                       else ButtonDefaults.buttonColors(MainGreen2)
@@ -41,7 +42,7 @@ fun HashTagButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(cornerRadius.dp))
             .border(BorderStroke(1.dp, borderColor), RoundedCornerShape(32.dp))
             .height(32.dp),
         contentPadding = if (isCancellable) PaddingValues(start = 9.dp, end = 12.dp)
@@ -55,7 +56,7 @@ fun HashTagButton(
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(16.dp)
-                    .clickable(onClick = onCacelClick)
+                    .clickable(onClick = onCancelClick)
                     .background(MainGreen3),
                 contentAlignment = Center
             ) {

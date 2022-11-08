@@ -208,8 +208,9 @@ fun DetailBuyBtn(
         modifier = Modifier
             .fillMaxWidth()
             .height(88.dp)
-            .clip(RoundedCornerShape(10.dp))
             .padding(30.dp, 24.dp),
         isRipple = boolDeadline,
+        cornerRadius = 10,
+
     )
 }
