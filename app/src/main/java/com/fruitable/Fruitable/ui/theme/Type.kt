@@ -53,7 +53,7 @@ object TextStyles{
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        lineHeight = 16.sp
+        lineHeight = 16.41.sp
     )
     val TextDetailTitle1 = TextStyle(
         fontFamily = Roboto,

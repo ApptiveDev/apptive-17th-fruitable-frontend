@@ -100,6 +100,7 @@ fun DetailTop(
         )
         HashTagButton(
             text = deadlineText,
+            style = TextStyles.TextBasic2,
             modifier = Modifier
                 .padding(top = 20.dp, end = 20.dp),
             isRipple = false,
@@ -132,7 +133,7 @@ fun DetailFarmProfile(
             ) {
                 Text(
                     text = nickName,
-                    style = TextStyles.TextBasic1,
+                    style = TextStyles.TextProfile1,
                     color = Color.Black,
                     modifier = Modifier.padding(end = 6.dp)
                 )
@@ -143,7 +144,7 @@ fun DetailFarmProfile(
                 )
             }
         }
-        FruitableDivider()
+        FruitableDivider(modifier = Modifier.padding(28.dp,0.dp))
     }
 }
 
@@ -208,8 +209,8 @@ fun DetailBuyBtn(
         modifier = Modifier
             .fillMaxWidth()
             .height(88.dp)
-            .clip(RoundedCornerShape(10.dp))
             .padding(30.dp, 24.dp),
         isRipple = boolDeadline,
+        cornerRadius = 10,
     )
 }
