@@ -23,7 +23,6 @@ import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.HashTag
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
-import com.fruitable.Fruitable.app.presentation.component.IsFruitButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.ui.theme.*
@@ -115,12 +114,7 @@ fun SalesContents(
     Column(
         modifier = modifier
     ){
-        IsFruitButton(
-            modifier = Modifier
-                .padding(30.dp, 33.dp)
-                .fillMaxWidth()
-                .height(40.dp),
-        )
+        // TODO: 과일, 채소를 구분하는 탭바 필요
         Text(
             text = "인기 해시태그",
             style = TextStyles.TextProfile1,

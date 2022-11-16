@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
@@ -36,6 +37,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -386,12 +388,52 @@ fun Title(
 fun CategoryChoice(
     modifier: Modifier = Modifier
 ): Boolean {
-    return IsFruitButton(
+    val isFruitClick = remember{ mutableStateOf(false) }
+    val color = if (isFruitClick.value) White else MainGreen1
+    val notColor = if (isFruitClick.value) MainGreen1 else White
+    Row(
         modifier = modifier
-            .padding(top = 27.dp, bottom = 23.dp)
+            .padding(top = 29.dp, bottom = 23.dp)
             .fillMaxWidth()
-            .height(40.dp),
-    )
+            .height(40.dp)
+            .border(
+                width = 1.5.dp,
+                color = MainGreen1,
+                shape = RoundedCornerShape(10.dp)
+            ),
+    ){
+        Box(
+            modifier = Modifier
+                .clickable { isFruitClick.value = true }
+                .weight(1f)
+                .fillMaxHeight()
+                .background(notColor, RoundedCornerShape(10.dp, 0.dp, 0.dp, 10.dp)),
+        ) {
+            Text(
+                text = "과일",
+                color = color,
+                style = TextStyles.TextBasic1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Center)
+            )
+        }
+        Box(
+            modifier = Modifier
+                .clickable { isFruitClick.value = false }
+                .weight(1f)
+                .fillMaxHeight()
+                .background(color, RoundedCornerShape(0.dp, 10.dp, 10.dp, 0.dp)),
+        ) {
+            Text(
+                text = "채소",
+                color = notColor,
+                style = TextStyles.TextBasic1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Center)
+            )
+        }
+    }
+    return true
 }
 
 @Composable
