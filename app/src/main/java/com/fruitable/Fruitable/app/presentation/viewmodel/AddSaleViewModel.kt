@@ -50,7 +50,7 @@ class AddSaleViewModel @Inject constructor()
     val saleHashTag: State<HashTagState> = _saleHashTag
 
     private val _saleDeadLine = mutableStateOf(DeadlineState(
-        hint = LocalDate.now().toString()
+        hint = LocalDate.now().plusDays(7).toString()
     ))
     val saleDeadLine: State<DeadlineState> = _saleDeadLine
 
