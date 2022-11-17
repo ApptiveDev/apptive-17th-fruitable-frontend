@@ -1,5 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.viewmodel
 
+import android.media.Image
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -42,7 +43,8 @@ class AddSaleViewModel @Inject constructor()
     ))
     val saleContent: State<SaleTextFieldState> = _saleContent
 
-    val saleImage = mutableStateOf(ImageState())
+    private val _saleImage = mutableStateOf(ImageState())
+    val saleImage: State<ImageState> = _saleImage
 
     private val _saleHashTag = mutableStateOf(HashTagState(
         hint = "# 해시태그를 입력하세요."
@@ -132,22 +134,18 @@ class AddSaleViewModel @Inject constructor()
                 )
             }
             is AddSaleEvent.EnteredImage -> {
-                val imageSize = event.value.size
-                var updatedImageList = event.value
-
-                if (imageSize > 5) {
-                    viewModelScope.launch {
-                        _eventFlow.emit(
-                            UiEvent.ShowSnackbar("이미지는 최대 5개까지 선택 가능합니다.")
-                        )
-                    }
-                }
-
-                if (event.value.isNotEmpty()){
-                    updatedImageList = event.value.slice(0..min(4, imageSize-1))
-                }
-                saleImage.value = saleImage.value.copy(
-                    listOfSelectedImages = updatedImageList
+                if (event.value == null) return
+                val currentList = saleImage.value.listOfSelectedImages
+                _saleImage.value = saleImage.value.copy(
+                    uri = event.value,
+                    listOfSelectedImages = (currentList + event.value).distinct()
+                )
+            }
+            is AddSaleEvent.RemoveImage -> {
+                val updatedImage = saleImage.value.listOfSelectedImages.toMutableList()
+                updatedImage.remove(event.value)
+                _saleImage.value = saleImage.value.copy(
+                    listOfSelectedImages = updatedImage,
                 )
             }
             is AddSaleEvent.EnteredHashTag -> {

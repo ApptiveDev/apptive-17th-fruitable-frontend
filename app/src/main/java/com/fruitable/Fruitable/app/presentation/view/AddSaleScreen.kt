@@ -20,8 +20,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.BottomEnd
+import androidx.compose.ui.Alignment.Companion.BottomStart
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.End
+import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -171,8 +175,9 @@ fun AddSaleScreen(
 }
 
 @Composable
-fun DeadLineField() {
-    val viewModel = hiltViewModel<AddSaleViewModel>()
+fun DeadLineField(
+    viewModel: AddSaleViewModel = hiltViewModel()
+) {
     val deadLine = viewModel.saleDeadLine.value
 
     val mCalendar = Calendar.getInstance()
@@ -259,9 +264,9 @@ fun DeadLineField() {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HashTagField(
-    focusRequester: FocusRequester = FocusRequester()
+    focusRequester: FocusRequester = FocusRequester(),
+    viewModel: AddSaleViewModel = hiltViewModel()
 ){
-    val viewModel = hiltViewModel<AddSaleViewModel>()
     val hashTag = viewModel.saleHashTag.value
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -299,35 +304,41 @@ fun HashTagField(
                 }
             }
         }
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(bottom = fruitableSpace)
-        ){
-            items(hashTag.textList){ hashTagText ->
-                HashTagButton(
-                    text = "# $hashTagText",
-                    isCancellable = true,
-                    isRipple = false,
-                    onCancelClick = { viewModel.onEvent(AddSaleEvent.RemoveHashTag(hashTagText))}
-                )
+        if (hashTag.textList.isNotEmpty()) {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(bottom = fruitableSpace)
+            ) {
+                items(hashTag.textList) { hashTagText ->
+                    HashTagButton(
+                        text = "# $hashTagText",
+                        isCancellable = true,
+                        isRipple = false,
+                        onCancelClick = { viewModel.onEvent(AddSaleEvent.RemoveHashTag(hashTagText)) }
+                    )
+                }
             }
         }
     }
 }
 @Composable
-fun PhotoPicker() {
-    val viewModel = hiltViewModel<AddSaleViewModel>()
+fun PhotoPicker(
+    viewModel: AddSaleViewModel = hiltViewModel()
+) {
     val saleImage = viewModel.saleImage
     val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetMultipleContents(),
-        onResult = { viewModel.onEvent(AddSaleEvent.EnteredImage(it))}
-    )
+        contract = ActivityResultContracts.GetContent()
+    ) {
+        viewModel.onEvent(AddSaleEvent.EnteredImage(it))
+    }
+
     LazyRow(
         modifier = Modifier
-            .padding(vertical = 16.dp)
-            .fillMaxWidth()
-            .height(66.dp),
-        horizontalArrangement = Arrangement.spacedBy(20.dp)
+            .padding(top = 13.dp, bottom = 22.dp)
+            .height(75.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.spacedBy(11.dp)
     ){
         item {
             PhotoImage(
@@ -335,9 +346,12 @@ fun PhotoPicker() {
                size =  saleImage.value.listOfSelectedImages.size
             )
         }
+        item {
+            Spacer(modifier = Modifier.width(5.dp))
+        }
         if (saleImage.value.listOfSelectedImages.isNotEmpty()){
             itemsIndexed(saleImage.value.listOfSelectedImages){ index: Int, item: Uri ->
-                ImagePreviewItem(uri = item)
+                ImagePreviewItem(uri = item, onDeleteClick = { viewModel.onEvent(AddSaleEvent.RemoveImage(item)) })
             }
         }
     }
@@ -347,18 +361,27 @@ fun PhotoPicker() {
 fun ImagePreviewItem(
     uri: Uri,
     size: Dp = 66.dp,
+    onDeleteClick: () -> Unit = {}
 ){
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
+        modifier = Modifier.size(75.dp)
     ){
         AsyncImage(
             model = uri,
             contentDescription = "",
             contentScale = ContentScale.Crop,
             modifier = Modifier
+                .align(BottomStart)
                 .size(size)
                 .clip(RoundedCornerShape(4.dp))
+        )
+        Image(
+            painter = painterResource(id = R.drawable.delete_picture),
+            contentDescription = "delete picture button",
+            modifier = Modifier
+                .align(TopEnd)
+                .clickable(onClick = onDeleteClick)
+                .size(18.dp)
         )
     }
 }
