@@ -9,8 +9,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.End
+import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -51,58 +53,62 @@ fun SalesScreen(
             }
         }
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MainGreen1)
-        ) {
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    SellerProfile(
+        Column(modifier = Modifier.fillMaxWidth()) {
+            SellerProfile(
+                modifier = Modifier
+                    .align(Start)
+                    .padding(30.dp, 48.dp, 0.dp, 49.dp)
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                item {
+                    SalesContents(
                         modifier = Modifier
-                            .align(End)
-                            .padding(0.dp, 47.dp, 30.dp, 19.dp)
+                            .clip(RoundedCornerShape(30.dp, 30.dp, 0.dp, 0.dp))
+                            .background(White)
+                            .fillMaxSize(),
+                        navController = navController
                     )
                 }
             }
-            item {
-                SalesContents(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(30.dp, 30.dp, 0.dp, 0.dp))
-                        .background(White)
-                        .fillMaxSize(),
-                    navController = navController
-                )
-            }
         }
-       it
     }
 }
 
 @Composable
 fun SellerProfile(
     modifier: Modifier = Modifier,
-    nickname: String = "푸릇농장",
+    farmName: String = "푸릇농장",
+    nickname: String = "홍길동",
     imageUrl: String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg"
 ){
     Row(
       modifier = modifier.height(46.dp),
       verticalAlignment = CenterVertically
     ){
-        Text(
-            text = nickname,
-            style = TextStyles.TextProfile1,
-            color = White,
-            modifier = Modifier.padding(end = 7.dp)
-        )
         ProfileImage(
             imageUrl = imageUrl,
             contentDescription = "profile image",
             modifier = Modifier.size(46.dp)
         )
+        Column(
+            modifier = Modifier.padding(start = 10.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = farmName,
+                style = TextStyles.TextProfile1,
+                color = Black,
+            )
+            Text(
+                text = nickname,
+                style = TextStyles.TextBasic1,
+                color = Black,
+            )
+        }
+
     }
 }
 @Composable
