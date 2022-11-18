@@ -20,7 +20,7 @@ fun FruitableApp(){
             val navController = rememberNavController()
             NavHost(
                 navController = navController,
-                startDestination = Screen.SalesScreen.route
+                startDestination = Screen.SignInScreen.route
             ) {
                 fruitableGraph(
                     navController = navController

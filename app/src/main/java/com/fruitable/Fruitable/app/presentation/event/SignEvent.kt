@@ -8,4 +8,6 @@ sealed class SignEvent {
     data class ChangeEmailFocus(val focus : FocusState) : SignEvent()
     data class ChangePasswordFocus(val focus : FocusState) : SignEvent()
 
+    object SignIn : SignEvent()
+
 }

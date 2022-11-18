@@ -67,6 +67,12 @@ object TextStyles{
         fontSize = 17.sp,
         lineHeight = 19.sp
     )
+    val SignTitle1 = TextStyle(
+        fontFamily = Roboto,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 24.sp,
+        lineHeight = 28.13.sp,
+    )
 }
 val Typography = Typography(
     body1 = TextStyle(
