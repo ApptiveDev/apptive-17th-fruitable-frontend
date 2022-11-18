@@ -20,8 +20,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.BottomEnd
+import androidx.compose.ui.Alignment.Companion.BottomStart
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.End
+import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +39,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,7 +50,6 @@ import coil.compose.AsyncImage
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.fruitableSpace
 import com.fruitable.Fruitable.app.domain.utils.addFocusCleaner
-import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.component.*
 import com.fruitable.Fruitable.app.presentation.event.AddSaleEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
@@ -68,6 +73,8 @@ fun AddSaleScreen(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
+    val isSavable = viewModel.isSavable()
+
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
@@ -85,88 +92,92 @@ fun AddSaleScreen(
     Scaffold(
         scaffoldState = scaffoldState
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .background(White)
-                .fillMaxSize()
-                .addFocusCleaner(focusManager),
-            contentPadding = PaddingValues(30.dp)
-        ) {
-            item {
-                Title(
-                    modifier = Modifier.padding(top = 18.dp, bottom = 14.dp),
-                    isSavable = viewModel.isSavable(),
-                    onClick = { viewModel.onEvent(AddSaleEvent.SaveSale) }
-                )
-            }
-            item { FruitableDivider() }
-            item {
-                val isFruit = CategoryChoice()
-                val isFruitValue = if (isFruit) "과일" else "채소"
-                viewModel.onEvent(AddSaleEvent.EnteredCategory(isFruitValue))
-            }
-            item {
-                FruitableTextField(
-                    modifier = Modifier.focusRequester(focusRequester),
-                    state = titleState,
-                    onValueChange = { viewModel.onEvent(AddSaleEvent.EnteredTitle(it)) },
-                    onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangeTitleFocus(it)) },
-                )
-            }
-            item {
-                FruitableTextField(
-                    modifier = Modifier.focusRequester(focusRequester),
-                    state = priceState,
-                    onValueChange = {
-                        if (it.length < 10) viewModel.onEvent(
-                            AddSaleEvent.EnteredPrice(
-                                it
-                            )
-                        )
-                    },
-                    onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangePriceFocus(it)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    visualTransformation = NumberFormatting(),
-                    isPrice = true
-                )
-            }
-            item {
-                FruitableTextField(
-                    modifier = Modifier.focusRequester(focusRequester),
-                    state = contactState,
-                    onValueChange = { viewModel.onEvent(AddSaleEvent.EnteredContact(it)) },
-                    onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangeContactFocus(it)) },
-                )
-            }
-            item {
-                Column {
-                    FruitableDivider()
-                    PhotoPicker()
+        Column {
+            Title(
+                modifier = Modifier.padding(top = 48.dp, bottom = 14.dp),
+                isSavable = isSavable,
+                onClick = { viewModel.onEvent(AddSaleEvent.SaveSale) }
+            )
+            FruitableDivider(
+                padding = if (isSavable) PaddingValues(horizontal = 30.dp) else PaddingValues(0.dp),
+                color = if (isSavable) MainGray3 else MainGray4
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .background(White)
+                    .fillMaxSize()
+                    .addFocusCleaner(focusManager),
+                contentPadding = PaddingValues(30.dp, 0.dp)
+            ) {
+                item {
+                    val isFruit = CategoryChoice()
+                    val isFruitValue = if (isFruit) "과일" else "채소"
+                    viewModel.onEvent(AddSaleEvent.EnteredCategory(isFruitValue))
                 }
-            }
-            item {
-                HashTagField(focusRequester = focusRequester)
-            }
-            item {
-                DeadLineField()
-            }
-            item {
-                FruitableTextField(
-                    modifier = Modifier.focusRequester(focusRequester),
-                    state = contentState,
-                    textStyle = TextPostContent,
-                    onValueChange = { viewModel.onEvent(AddSaleEvent.EnteredContent(it)) },
-                    onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangeContentFocus(it)) },
-                    singleLine = false
-                )
+                item {
+                    FruitableTextField(
+                        modifier = Modifier.focusRequester(focusRequester),
+                        state = titleState,
+                        onValueChange = { viewModel.onEvent(AddSaleEvent.EnteredTitle(it)) },
+                        onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangeTitleFocus(it)) },
+                    )
+                }
+                item {
+                    FruitableTextField(
+                        modifier = Modifier.focusRequester(focusRequester),
+                        state = priceState,
+                        onValueChange = {
+                            if (it.length < 10) viewModel.onEvent(
+                                AddSaleEvent.EnteredPrice(
+                                    it
+                                )
+                            )
+                        },
+                        onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangePriceFocus(it)) },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        visualTransformation = NumberFormatting(),
+                        isPrice = true
+                    )
+                }
+                item {
+                    FruitableTextField(
+                        modifier = Modifier.focusRequester(focusRequester),
+                        state = contactState,
+                        onValueChange = { viewModel.onEvent(AddSaleEvent.EnteredContact(it)) },
+                        onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangeContactFocus(it)) },
+                    )
+                }
+                item {
+                    Column {
+                        FruitableDivider()
+                        PhotoPicker()
+                    }
+                }
+                item {
+                    HashTagField(focusRequester = focusRequester)
+                }
+                item {
+                    DeadLineField()
+                }
+                item {
+                    FruitableTextField(
+                        modifier = Modifier.focusRequester(focusRequester),
+                        state = contentState,
+                        textStyle = TextPostContent,
+                        onValueChange = { viewModel.onEvent(AddSaleEvent.EnteredContent(it)) },
+                        onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangeContentFocus(it)) },
+                        singleLine = false
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun DeadLineField() {
-    val viewModel = hiltViewModel<AddSaleViewModel>()
+fun DeadLineField(
+    viewModel: AddSaleViewModel = hiltViewModel()
+) {
     val deadLine = viewModel.saleDeadLine.value
 
     val mCalendar = Calendar.getInstance()
@@ -253,9 +264,9 @@ fun DeadLineField() {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HashTagField(
-    focusRequester: FocusRequester = FocusRequester()
+    focusRequester: FocusRequester = FocusRequester(),
+    viewModel: AddSaleViewModel = hiltViewModel()
 ){
-    val viewModel = hiltViewModel<AddSaleViewModel>()
     val hashTag = viewModel.saleHashTag.value
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -293,35 +304,41 @@ fun HashTagField(
                 }
             }
         }
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(bottom = fruitableSpace)
-        ){
-            items(hashTag.textList){ hashTagText ->
-                HashTagButton(
-                    text = "# $hashTagText",
-                    isCancellable = true,
-                    isRipple = false,
-                    onCancelClick = { viewModel.onEvent(AddSaleEvent.RemoveHashTag(hashTagText))}
-                )
+        if (hashTag.textList.isNotEmpty()) {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(bottom = fruitableSpace)
+            ) {
+                items(hashTag.textList) { hashTagText ->
+                    HashTagButton(
+                        text = "# $hashTagText",
+                        isCancellable = true,
+                        isRipple = false,
+                        onCancelClick = { viewModel.onEvent(AddSaleEvent.RemoveHashTag(hashTagText)) }
+                    )
+                }
             }
         }
     }
 }
 @Composable
-fun PhotoPicker() {
-    val viewModel = hiltViewModel<AddSaleViewModel>()
+fun PhotoPicker(
+    viewModel: AddSaleViewModel = hiltViewModel()
+) {
     val saleImage = viewModel.saleImage
     val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetMultipleContents(),
-        onResult = { viewModel.onEvent(AddSaleEvent.EnteredImage(it))}
-    )
+        contract = ActivityResultContracts.GetContent()
+    ) {
+        viewModel.onEvent(AddSaleEvent.EnteredImage(it))
+    }
+
     LazyRow(
         modifier = Modifier
-            .padding(vertical = 16.dp)
-            .fillMaxWidth()
-            .height(66.dp),
-        horizontalArrangement = Arrangement.spacedBy(20.dp)
+            .padding(top = 13.dp, bottom = 22.dp)
+            .height(75.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.spacedBy(11.dp)
     ){
         item {
             PhotoImage(
@@ -329,9 +346,12 @@ fun PhotoPicker() {
                size =  saleImage.value.listOfSelectedImages.size
             )
         }
+        item {
+            Spacer(modifier = Modifier.width(5.dp))
+        }
         if (saleImage.value.listOfSelectedImages.isNotEmpty()){
             itemsIndexed(saleImage.value.listOfSelectedImages){ index: Int, item: Uri ->
-                ImagePreviewItem(uri = item)
+                ImagePreviewItem(uri = item, onDeleteClick = { viewModel.onEvent(AddSaleEvent.RemoveImage(item)) })
             }
         }
     }
@@ -341,18 +361,27 @@ fun PhotoPicker() {
 fun ImagePreviewItem(
     uri: Uri,
     size: Dp = 66.dp,
+    onDeleteClick: () -> Unit = {}
 ){
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
+        modifier = Modifier.size(75.dp)
     ){
         AsyncImage(
             model = uri,
             contentDescription = "",
             contentScale = ContentScale.Crop,
             modifier = Modifier
+                .align(BottomStart)
                 .size(size)
                 .clip(RoundedCornerShape(4.dp))
+        )
+        Image(
+            painter = painterResource(id = R.drawable.delete_picture),
+            contentDescription = "delete picture button",
+            modifier = Modifier
+                .align(TopEnd)
+                .clickable(onClick = onDeleteClick)
+                .size(18.dp)
         )
     }
 }
@@ -375,7 +404,9 @@ fun Title(
             text = "등록",
             color = if (isSavable) MainGreen1 else MainGray4,
             style = TextStyles.TextProfile1,
+            fontWeight = if (isSavable) FontWeight.Bold else FontWeight.Medium,
             modifier = Modifier
+                .padding(end = 30.dp)
                 .align(Alignment.CenterEnd)
                 .clickable(onClick = onClick)
         )
@@ -386,12 +417,52 @@ fun Title(
 fun CategoryChoice(
     modifier: Modifier = Modifier
 ): Boolean {
-    return IsFruitButton(
+    val isFruitClick = remember{ mutableStateOf(true) }
+    val color = if (isFruitClick.value) White else MainGreen1
+    val notColor = if (isFruitClick.value) MainGreen1 else White
+    Row(
         modifier = modifier
-            .padding(top = 27.dp, bottom = 23.dp)
+            .padding(top = 24.dp, bottom = 23.dp)
             .fillMaxWidth()
-            .height(40.dp),
-    )
+            .height(40.dp)
+            .border(
+                width = 1.5.dp,
+                color = MainGreen1,
+                shape = RoundedCornerShape(10.dp)
+            ),
+    ){
+        Box(
+            modifier = Modifier
+                .clickable { isFruitClick.value = true }
+                .weight(1f)
+                .fillMaxHeight()
+                .background(notColor, RoundedCornerShape(10.dp, 0.dp, 0.dp, 10.dp)),
+        ) {
+            Text(
+                text = "과일",
+                color = color,
+                style = TextStyles.TextBasic1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Center)
+            )
+        }
+        Box(
+            modifier = Modifier
+                .clickable { isFruitClick.value = false }
+                .weight(1f)
+                .fillMaxHeight()
+                .background(color, RoundedCornerShape(0.dp, 10.dp, 10.dp, 0.dp)),
+        ) {
+            Text(
+                text = "채소",
+                color = notColor,
+                style = TextStyles.TextBasic1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Center)
+            )
+        }
+    }
+    return true
 }
 
 @Composable

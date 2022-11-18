@@ -8,6 +8,7 @@ data class SaleTextFieldState(
     val isHintVisible: Boolean = true
 )
 data class ImageState(
+    val uri: Uri = Uri.EMPTY,
     var listOfSelectedImages:List<Uri> = emptyList()
 )
 
