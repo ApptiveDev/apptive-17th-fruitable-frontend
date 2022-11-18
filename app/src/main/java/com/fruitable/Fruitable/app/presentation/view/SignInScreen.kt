@@ -2,14 +2,17 @@ package com.fruitable.Fruitable.app.presentation.view
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -17,30 +20,30 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.SignTextField
-import com.fruitable.Fruitable.app.presentation.event.SignEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
-import com.fruitable.Fruitable.app.presentation.viewmodel.SignViewModel
+import com.fruitable.Fruitable.app.presentation.viewmodel.SignInViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app.presentation.component.SignButton
+import com.fruitable.Fruitable.app.presentation.event.SignInEvent
 import com.fruitable.Fruitable.ui.theme.*
 
 @Composable
 fun SignInScreen(
     navController: NavController,
-    viewModel : SignViewModel = hiltViewModel()
+    viewModel : SignInViewModel = hiltViewModel()
 ){
 
-    val errorTextState = remember{ mutableStateOf("")}
+    var errorTextState = remember{ mutableStateOf("")}
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest { event->
             when(event){
-                is SignViewModel.RedEvent.ShowText -> {
+                /*is SignInViewModel.LoginStart.LoginError -> {
                    errorTextState.value = event.message
-                }
-                is SignViewModel.RedEvent.login -> {
+                }*/
+                is SignInViewModel.LoginStart.login -> {
                     navController.navigate(Screen.SalesScreen.route)
                 }
             }
@@ -51,8 +54,8 @@ fun SignInScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         LoginImage()
-        LoginField(focusRequester = focusRequester, errorTextState = errorTextState)
-        LoginBtn(navController = navController, onClick = {viewModel.onEvent(SignEvent.SignIn)})
+        LoginField(focusRequester = focusRequester, viewModel = viewModel)
+        LoginBtn(navController = navController, onClick = {viewModel.onEvent(SignInEvent.SignIn)})
         Text(
             text="아이디/비밀번호 찾기",
             style = TextStyles.TextProfile2,
@@ -62,7 +65,13 @@ fun SignInScreen(
                 .padding(bottom = 3.dp, end = 35.dp),
             textAlign = TextAlign.Right,
         )
-        SignButton(onClick = {},modifier = Modifier.fillMaxWidth().padding(30.dp,42.dp,30.dp,0.dp).height(44.dp))
+        SignButton(
+            onClick = {navController.navigate(Screen.SingUpScreen.route)},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(30.dp, 42.dp, 30.dp, 0.dp)
+                .height(44.dp)
+        )
     }
 }
 
@@ -88,30 +97,53 @@ fun LoginImage(){
 
 @Composable
 fun LoginField(
-    viewModel: SignViewModel = hiltViewModel(),
+    viewModel: SignInViewModel = hiltViewModel(),
     focusRequester: FocusRequester,
-    errorTextState: MutableState<String>,
 ){
     val emailState = viewModel.signInEmail.value
     val passwordState = viewModel.signInPassword.value
 
+    val errorList = listOfNotNull(emailState.errorMessage,passwordState.errorMessage)
 
+    if(errorList.isNotEmpty()){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 33.dp,bottom = 10.dp)
+        ){
+            Image(
+                painterResource(id = R.drawable.warning),
+                contentDescription = "emailError",
+                modifier = Modifier
+                    .size(14.dp)
+            )
+            Text(
+                text = errorList.first(),
+                style = TextStyles.TextProfile2,
+                color = Color.Red,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        }
+    }
     SignTextField(
         modifier = Modifier
             .padding(30.dp, 7.dp)
             .focusRequester(focusRequester),
         state = emailState,
-        onFocusChange = { viewModel.onEvent(SignEvent.ChangeEmailFocus(it))},
-        onValueChange = { viewModel.onEvent(SignEvent.EnteredEmail(it))},
+        onFocusChange = { viewModel.onEvent(SignInEvent.ChangeEmailFocus(it))},
+        onValueChange = { viewModel.onEvent(SignInEvent.EnteredEmail(it))},
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        isError = emailState.errorMessage != null,
     )
     SignTextField(
         modifier = Modifier
             .padding(30.dp, 7.dp)
             .focusRequester(focusRequester),
         state = passwordState,
-        onFocusChange = { viewModel.onEvent(SignEvent.ChangePasswordFocus(it))},
-        onValueChange = { viewModel.onEvent(SignEvent.EnteredPassword(it))},
-        visualTransformation = PasswordVisualTransformation()
+        onFocusChange = { viewModel.onEvent(SignInEvent.ChangePasswordFocus(it))},
+        onValueChange = { viewModel.onEvent(SignInEvent.EnteredPassword(it))},
+        visualTransformation = PasswordVisualTransformation(),
+        isError = passwordState.errorMessage != null,
     )
 }
 
