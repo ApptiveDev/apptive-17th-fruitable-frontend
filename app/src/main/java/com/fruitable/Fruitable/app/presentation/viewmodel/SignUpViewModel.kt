@@ -110,6 +110,10 @@ class SignUpViewModel @Inject constructor() : ViewModel(){
         }
     }
 
+    fun isCertifiable():Boolean{
+        return validateEmail.execute(state.email).successful
+    }
+
     private fun prevSubmit(){
         val emailResult = validateEmail.execute(state.email)
 

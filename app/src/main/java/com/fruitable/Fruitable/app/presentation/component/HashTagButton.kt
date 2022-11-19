@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -33,11 +34,19 @@ fun HashTagButton(
     isCancellable: Boolean = false,
     onCancelClick: () -> Unit = {},
     cornerRadius : Int = 20,
+    enabled : Boolean = true,
 ){
-    val buttonColor = if (isSelected) ButtonDefaults.buttonColors(MainGreen1)
+    val buttonColor = if (isSelected) ButtonDefaults.buttonColors(
+                            backgroundColor = MainGreen1,
+                            contentColor = MainGreen1,
+                            disabledBackgroundColor = MainGray6,
+                            disabledContentColor = MainGray6,
+                        )
                       else ButtonDefaults.buttonColors(MainGreen2)
     val textColor   = if (isSelected) White else MainGray2
-    val borderColor = if (isSelected) MainGreen1 else MainGreen3
+    var borderColor = if (isSelected) MainGreen1 else MainGreen3
+
+    if(!enabled) borderColor = MainGray6
 
     Button(
         onClick = onClick,
@@ -49,7 +58,8 @@ fun HashTagButton(
                          else PaddingValues(horizontal = 15.dp),
         colors = buttonColor,
         interactionSource = if (isRipple) MutableInteractionSource()
-                            else NoRippleInteractionSource()
+                            else NoRippleInteractionSource(),
+        enabled = enabled,
     ) {
         if (isCancellable) {
             Box(

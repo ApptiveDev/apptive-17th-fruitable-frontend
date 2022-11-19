@@ -14,5 +14,3 @@ val MainGray4 = Color(0xFFC5C5C5)
 val MainGray5 = Color(0xFF383838)
 val MainGray6 = Color(0xFFA0A0A0)
 
-val SignRed   = rgb(238, 0, 0)
-val SignBackGray  = rgb(168, 176, 171)

@@ -43,7 +43,7 @@ fun SignButton(
                          else PaddingValues(horizontal = 15.dp),
         colors = buttonColor,
         interactionSource = if (isRipple) MutableInteractionSource()
-                            else NoRippleInteractionSource()
+                            else NoRippleInteractionSource(),
     ) {
         Text(
             text = text,

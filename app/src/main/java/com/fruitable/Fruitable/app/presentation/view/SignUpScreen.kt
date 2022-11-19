@@ -8,9 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -38,6 +36,7 @@ fun SignUpScreen(
     viewModel : SignUpViewModel = hiltViewModel()
 ){
     val focusRequester = remember{FocusRequester()}
+    var certifiable by remember{ mutableStateOf(false)}
 
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest { event ->
@@ -65,7 +64,8 @@ fun SignUpScreen(
         item{
             PrevCertificationBtn(
                 viewModel = viewModel,
-                onClick = {viewModel.onEvent((SignUpEvent.PrevCertification))}
+                onClick = {viewModel.onEvent((SignUpEvent.PrevCertification))},
+                isCertifiable = viewModel.isCertifiable(),
             )
         }
         item{
@@ -294,15 +294,21 @@ fun RepeatedPasswordField(
 @Composable
 fun PrevCertificationBtn(
     viewModel: SignUpViewModel,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isCertifiable : Boolean,
 ){
-    SignButton(
+    HashTagButton(
         text = "인증번호 발송",
+        style = TextStyles.TextBasic2,
+        isSelected = true,
+        isRipple = true,
         modifier = Modifier
             .fillMaxWidth()
             .padding(30.dp, 0.dp, 30.dp, 28.dp)
             .height(44.dp),
         onClick = onClick,
+        cornerRadius = 10,
+        enabled = isCertifiable
     )
 }
 
