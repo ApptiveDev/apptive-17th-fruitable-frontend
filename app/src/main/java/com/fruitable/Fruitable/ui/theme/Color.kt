@@ -2,7 +2,7 @@ package com.fruitable.Fruitable.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val MainGreen1 = Color(0xFF0DB159)
+val MainGreen1 = Color(0xFF0FC236)
 val MainGreen2 = Color(0xFFF2FAF5)
 val MainGreen3 = Color(0xFFD7DFDA)
 

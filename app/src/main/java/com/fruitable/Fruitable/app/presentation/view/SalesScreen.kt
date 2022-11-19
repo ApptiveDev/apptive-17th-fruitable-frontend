@@ -9,14 +9,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.End
+import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
@@ -51,58 +54,105 @@ fun SalesScreen(
             }
         }
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MainGreen1)
-        ) {
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    SellerProfile(
+        Column(modifier = Modifier.fillMaxWidth()) {
+            SellerProfile(
+                modifier = Modifier
+                    .align(Start)
+                    .padding(30.dp, 48.dp, 0.dp, 49.dp)
+            )
+            IsFruitTab()
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                item {
+                    SalesContents(
                         modifier = Modifier
-                            .align(End)
-                            .padding(0.dp, 47.dp, 30.dp, 19.dp)
+                            .padding(top = 33.dp)
+                            .fillMaxSize(),
+                        navController = navController
                     )
                 }
             }
-            item {
-                SalesContents(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(30.dp, 30.dp, 0.dp, 0.dp))
-                        .background(White)
-                        .fillMaxSize(),
-                    navController = navController
-                )
-            }
         }
-       it
     }
 }
 
 @Composable
 fun SellerProfile(
     modifier: Modifier = Modifier,
-    nickname: String = "푸릇농장",
+    farmName: String = "푸릇농장",
+    nickname: String = "홍길동",
     imageUrl: String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg"
 ){
     Row(
-      modifier = modifier.height(46.dp),
+      modifier = modifier.height(54.dp),
       verticalAlignment = CenterVertically
     ){
-        Text(
-            text = nickname,
-            style = TextStyles.TextProfile1,
-            color = White,
-            modifier = Modifier.padding(end = 7.dp)
-        )
         ProfileImage(
             imageUrl = imageUrl,
             contentDescription = "profile image",
-            modifier = Modifier.size(46.dp)
+            modifier = Modifier.size(54.dp)
         )
+        Column(
+            modifier = Modifier.padding(start = 10.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = farmName,
+                style = TextStyles.TextProfile1,
+                color = Black,
+            )
+            Text(
+                text = nickname,
+                style = TextStyles.TextBasic1,
+                color = Black,
+            )
+        }
+
+    }
+}
+@Composable
+fun IsFruitTab(){
+    var isFruitClick by remember { mutableStateOf(true) }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = CenterVertically
+    ){
+        Column(
+           modifier = Modifier.clickable{ isFruitClick = true }.weight(1f),
+           horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "과일",
+                style = TextStyles.TextBasic3,
+                color = if (isFruitClick) MainGreen1 else MainGray2,
+            )
+            Divider(
+                modifier = Modifier
+                    .padding(top = 14.dp)
+                    .fillMaxWidth(),
+                color = if (isFruitClick) MainGreen1 else MainGray4,
+                thickness = if (isFruitClick) 3.dp else 1.dp
+            )
+        }
+        Column(
+            modifier = Modifier.clickable{ isFruitClick = false }.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "채소",
+                style = TextStyles.TextBasic3,
+                color = if (isFruitClick) MainGray2 else MainGreen1,
+            )
+            Divider(
+                modifier = Modifier
+                    .padding(top = 14.dp)
+                    .fillMaxWidth(),
+                color = if (isFruitClick) MainGray4 else MainGreen1,
+                thickness = if (isFruitClick) 1.dp else 3.dp,
+            )
+        }
     }
 }
 @Composable

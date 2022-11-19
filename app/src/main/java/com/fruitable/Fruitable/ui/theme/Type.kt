@@ -42,6 +42,12 @@ object TextStyles{
         fontSize = 16.sp,
         lineHeight = 19.sp
     )
+    val TextBasic3 = TextStyle(
+        fontFamily = Roboto,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
+        lineHeight = 19.sp
+    )
     val TextPostContent = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
