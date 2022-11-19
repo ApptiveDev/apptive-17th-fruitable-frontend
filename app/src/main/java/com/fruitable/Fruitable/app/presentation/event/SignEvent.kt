@@ -15,13 +15,6 @@ sealed class SignInEvent {
 
 
 sealed class SignUpEvent{
-    /*
-    data class ChangeNameFocus(val focus: FocusState) : SignUpEvent()
-    data class ChangeNicknameFocus(val focus: FocusState) : SignUpEvent()
-    data class ChangeEmailFocus(val focus: FocusState) : SignUpEvent()
-    data class ChangePasswordFocus(val focus: FocusState) : SignUpEvent()
-    data class ChangeRepeatedPasswordFocus(val focus: FocusState) : SignUpEvent()
-*/
     data class EnteredName(val value : String) : SignUpEvent()
     data class EnteredNickname(val value : String) : SignUpEvent()
     data class EnteredEmail(val value : String) : SignUpEvent()
@@ -29,5 +22,7 @@ sealed class SignUpEvent{
     data class EnteredRepeatedPassword(val value : String) : SignUpEvent()
     data class AcceptTerms(val isAccepted: Boolean) : SignUpEvent()
 
+    object PrevCertification : SignUpEvent()
+    //object Certification : SignUpEvent()
     object SignUp : SignUpEvent()
 }

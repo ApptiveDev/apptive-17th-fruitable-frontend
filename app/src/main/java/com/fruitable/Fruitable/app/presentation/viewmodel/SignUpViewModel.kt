@@ -16,14 +16,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
-    private val validateName : ValidateName = ValidateName(),
-    private val validateNickname: ValidateNickname = ValidateNickname(),
-    private val validateEmail: ValidateEmail = ValidateEmail(),
-    private val validatePassword: ValidatePassword = ValidatePassword(),
-    private val validateRepeatedPassword: ValidateRepeatedPassword = ValidateRepeatedPassword(),
-    private val validateTerms: ValidateTerms = ValidateTerms(),
-) : ViewModel(){
+class SignUpViewModel @Inject constructor() : ViewModel(){
+
+    private val validateName : ValidateName = ValidateName()
+    private val validateNickname: ValidateNickname = ValidateNickname()
+    private val validateEmail: ValidateEmail = ValidateEmail()
+    private val validatePassword: ValidatePassword = ValidatePassword()
+    private val validateRepeatedPassword: ValidateRepeatedPassword = ValidateRepeatedPassword()
+    private val validateTerms: ValidateTerms = ValidateTerms()
 
     private val _eventFlow = MutableSharedFlow<RegisterStart>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -47,23 +47,6 @@ class SignUpViewModel @Inject constructor(
 
     fun onEvent(event : SignUpEvent){
         when(event){
-            /*is SignUpEvent.ChangeNameFocus -> {
-                _signUpName.value = signUpName.value.copy(
-
-                )
-            }
-            is SignUpEvent.ChangeNicknameFocus -> {
-
-            }
-            is SignUpEvent.ChangeEmailFocus -> {
-
-            }
-            is SignUpEvent.ChangePasswordFocus -> {
-
-            }
-            is SignUpEvent.ChangeRepeatedPasswordFocus -> {
-
-            }*/
             is SignUpEvent.EnteredName -> {
                 state = state.copy(name = event.value)
             }
@@ -82,10 +65,12 @@ class SignUpViewModel @Inject constructor(
             is SignUpEvent.AcceptTerms -> {
                 state = state.copy(acceptedTerms = event.isAccepted)
             }
-            SignUpEvent.SignUp -> {
+            SignUpEvent.SignUp -> { //signUp (버튼 눌렀을때..)
                 submit()
             }
-
+            SignUpEvent.PrevCertification -> {
+                prevSubmit()
+            }
         }
     }
 
@@ -123,12 +108,28 @@ class SignUpViewModel @Inject constructor(
                 )
             }
         }
-
     }
 
+    private fun prevSubmit(){
+        val emailResult = validateEmail.execute(state.email)
+
+        if(!emailResult.successful){
+            state = state.copy(
+                emailError = emailResult.errorMessage
+            )
+            return
+        }else{
+            viewModelScope.launch {
+                _eventFlow.emit(
+                    RegisterStart.PrevCertification
+                )
+            }
+        }
+    }
 
     sealed class RegisterStart{
         object Register : RegisterStart()
+        object PrevCertification : RegisterStart()
     }
 }
 

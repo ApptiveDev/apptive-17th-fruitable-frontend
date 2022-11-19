@@ -33,16 +33,11 @@ fun SignInScreen(
     navController: NavController,
     viewModel : SignInViewModel = hiltViewModel()
 ){
-
-    var errorTextState = remember{ mutableStateOf("")}
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest { event->
             when(event){
-                /*is SignInViewModel.LoginStart.LoginError -> {
-                   errorTextState.value = event.message
-                }*/
                 is SignInViewModel.LoginStart.login -> {
                     navController.navigate(Screen.SalesScreen.route)
                 }
@@ -97,7 +92,7 @@ fun LoginImage(){
 
 @Composable
 fun LoginField(
-    viewModel: SignInViewModel = hiltViewModel(),
+    viewModel: SignInViewModel,
     focusRequester: FocusRequester,
 ){
     val emailState = viewModel.signInEmail.value
@@ -160,8 +155,8 @@ fun LoginBtn(
         isRipple = true,
         modifier = Modifier
             .fillMaxWidth()
-            .height(88.dp)
-            .padding(30.dp, 25.dp, 30.dp, 10.dp),
+            .padding(30.dp, 25.dp, 30.dp, 10.dp)
+            .height(44.dp),
         cornerRadius = 10,
         //need verify
         onClick = onClick,

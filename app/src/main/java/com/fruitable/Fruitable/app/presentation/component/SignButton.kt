@@ -24,7 +24,7 @@ import com.fruitable.Fruitable.ui.theme.*
 @Composable
 fun SignButton(
     onClick: () -> Unit = {},
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     text: String = "회원가입",
     isRipple: Boolean = true,
     style: TextStyle = TextStyles.TextBasic2,

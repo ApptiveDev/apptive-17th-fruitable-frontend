@@ -1,5 +1,6 @@
 package com.fruitable.Fruitable.ui.theme
 
+import android.graphics.Color.rgb
 import androidx.compose.ui.graphics.Color
 
 val MainGreen1 = Color(0xFF0DB159)
@@ -13,4 +14,5 @@ val MainGray4 = Color(0xFFC5C5C5)
 val MainGray5 = Color(0xFF383838)
 val MainGray6 = Color(0xFFA0A0A0)
 
-val SignRed   = Color(0xEE0000)
+val SignRed   = rgb(238, 0, 0)
+val SignBackGray  = rgb(168, 176, 171)

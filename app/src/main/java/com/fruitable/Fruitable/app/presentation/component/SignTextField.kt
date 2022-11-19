@@ -37,6 +37,7 @@ import com.fruitable.Fruitable.ui.theme.*
 @Composable
 fun SignTextField(
     state : SignInState = SignInState(),
+    value : String = "",
     modifier: Modifier = Modifier,
     onValueChange : (String) -> Unit = {},
     onFocusChange : (FocusState) -> Unit = {},
@@ -48,12 +49,14 @@ fun SignTextField(
     val keyboardController = LocalSoftwareKeyboardController.current
     Box(
         modifier = modifier
-            .width(300.dp),
+            .width(300.dp)
+            .height(44.dp),
         contentAlignment = Alignment.CenterStart
     ){
         Row{
            OutlinedTextField(
-               value = state.text ,
+               value = if(value == "") state.text
+                       else value,
                visualTransformation = visualTransformation,
                onValueChange = onValueChange,
                textStyle = textStyle,
@@ -75,7 +78,7 @@ fun SignTextField(
                isError = isError
            )
         }
-        if(state.hintOn){
+        if(state.hintOn && value == ""){
             Text(text = state.hint,style = textStyle, color = MainGray6, textAlign = TextAlign.Center,modifier=Modifier.padding(start=15.dp))
         }
     }
