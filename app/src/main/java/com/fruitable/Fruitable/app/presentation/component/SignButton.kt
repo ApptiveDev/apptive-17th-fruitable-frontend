@@ -38,8 +38,9 @@ fun SignButton(
         onClick = onClick,
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
-            .border(BorderStroke(1.dp, borderColor), RoundedCornerShape(10.dp)),
-        contentPadding = if (isCancellable) PaddingValues(start = 9.dp, end = 12.dp)
+            .border(1.dp,borderColor,RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(10.dp)),
+        contentPadding = if (isCancellable) PaddingValues(start = 9.dp, end = 12.dp,top=0.dp,bottom=0.dp)
                          else PaddingValues(horizontal = 15.dp),
         colors = buttonColor,
         interactionSource = if (isRipple) MutableInteractionSource()

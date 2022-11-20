@@ -1,5 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.component
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -14,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.focusRequester
@@ -24,6 +26,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,45 +44,51 @@ fun SignTextField(
     modifier: Modifier = Modifier,
     onValueChange : (String) -> Unit = {},
     onFocusChange : (FocusState) -> Unit = {},
-    textStyle: TextStyle = TextStyles.TextBasic1,
+    textStyle: TextStyle = TextStyles.TextDetailProfile1,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     isError : Boolean = false,
+    enable : Boolean = true,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Box(
         modifier = modifier
-            .width(300.dp)
-            .height(44.dp),
-        contentAlignment = Alignment.CenterStart
+            .fillMaxWidth()
     ){
-        Row{
-           OutlinedTextField(
-               value = if(value == "") state.text
-                       else value,
-               visualTransformation = visualTransformation,
-               onValueChange = onValueChange,
-               textStyle = textStyle,
-               singleLine = true,
-               keyboardOptions = keyboardOptions,
-               keyboardActions = KeyboardActions(
-                   onDone = {keyboardController?.hide()}
-               ),
-               modifier = Modifier
-                   .fillMaxWidth()
-                   .onFocusChanged { onFocusChange(it) },
-               shape = RoundedCornerShape(10.dp),
-               colors = TextFieldDefaults.outlinedTextFieldColors(
-                   unfocusedBorderColor = MainGreen2,
-                   focusedBorderColor = MainGreen1,
-                   backgroundColor = Color.White,
-                   textColor = Color.Black
-               ),
-               isError = isError
+        OutlinedTextField(
+            value = if(value == "") state.text
+                    else value,
+            visualTransformation = visualTransformation,
+            onValueChange = onValueChange,
+            textStyle = textStyle,
+            singleLine = true,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = KeyboardActions(
+                onDone = {keyboardController?.hide()}
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged { onFocusChange(it) },
+            shape = RoundedCornerShape(10.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = MainGreen2,
+                focusedBorderColor = MainGreen1,
+                backgroundColor = Color.White,
+                textColor = Color.Black
+            ),
+            isError = isError,
+            enabled = enable,
            )
-        }
         if(state.hintOn && value == ""){
-            Text(text = state.hint,style = textStyle, color = MainGray6, textAlign = TextAlign.Center,modifier=Modifier.padding(start=15.dp))
+            Text(
+                text = state.hint,
+                style = textStyle,
+                color = MainGray6,
+                textAlign = TextAlign.Center,
+                modifier= Modifier
+                    .padding(start = 15.dp)
+                    .align(Alignment.CenterStart)
+            )
         }
     }
 }

@@ -24,26 +24,15 @@ class SignUpViewModel @Inject constructor() : ViewModel(){
     private val validatePassword: ValidatePassword = ValidatePassword()
     private val validateRepeatedPassword: ValidateRepeatedPassword = ValidateRepeatedPassword()
     private val validateTerms: ValidateTerms = ValidateTerms()
+    private val validateCertification : ValidateCertification = ValidateCertification()
 
     private val _eventFlow = MutableSharedFlow<RegisterStart>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    /*
-    private val _signUpName = mutableStateOf(SignUpState())
-    private val _signUpNickname = mutableStateOf(SignUpState())
-    private val _signUpEmail = mutableStateOf(SignUpState())
-    private val _signUpPassword = mutableStateOf(SignUpState())
-    private val _signUpRepeatedPassword = mutableStateOf(SignUpState())
-    private val _signUpAcceptTerm = mutableStateOf(SignUpState())
 
-    val signUpName : State<SignUpState> = _signUpName
-    val signUpNickname : State<SignUpState> = _signUpNickname
-    val signUpEmail : State<SignUpState> = _signUpEmail
-    val signUpPassword : State<SignUpState> = _signUpPassword
-    val signUpRepeatedPassword : State<SignUpState> = _signUpRepeatedPassword
-    val signUpAcceptTerm : State<SignUpState> = _signUpAcceptTerm
-    */
-    var state by mutableStateOf(SignUpState())
+    var state by mutableStateOf(SignUpState(
+        certificationHint = "인증번호 6자리"
+    ))
 
     fun onEvent(event : SignUpEvent){
         when(event){
@@ -65,11 +54,27 @@ class SignUpViewModel @Inject constructor() : ViewModel(){
             is SignUpEvent.AcceptTerms -> {
                 state = state.copy(acceptedTerms = event.isAccepted)
             }
+            is SignUpEvent.ChangeCertificationFocus -> {
+                state = state.copy(
+                    certificationHintOn = !event.focus.isFocused && state.certification.isBlank()
+                )
+            }
+            is SignUpEvent.EnteredCertification -> {
+                if(state.certification.length <= 6){
+                    state = state.copy(certification = event.value)
+                }
+                if(state.certification.length == 7){
+                    state = state.copy(certification = "")
+                }
+            }
             SignUpEvent.SignUp -> { //signUp (버튼 눌렀을때..)
                 submit()
             }
-            SignUpEvent.PrevCertification -> {
+            SignUpEvent.PrevCertification -> {  //인증번호 발송 눌렀을때
                 prevSubmit()
+            }
+            SignUpEvent.Certification -> {
+                CertificationSubmit()
             }
         }
     }
@@ -110,7 +115,7 @@ class SignUpViewModel @Inject constructor() : ViewModel(){
         }
     }
 
-    fun isCertifiable():Boolean{
+    fun isPrevCertifiable():Boolean{
         return validateEmail.execute(state.email).successful
     }
 
@@ -131,15 +136,45 @@ class SignUpViewModel @Inject constructor() : ViewModel(){
         }
     }
 
+    fun isCertifiable():Boolean{
+        return validateCertification.execute(state.email).successful
+    }
+
+    fun CertificationBtnOn():Boolean{
+        return state.certificationBtnOn
+    }
+
+    fun isCertificationCheck() : Boolean{
+        return state.certificationCheck
+    }
+
+    private fun CertificationSubmit(){
+        val certificationResult = validateCertification.execute(state.certification)
+
+        if(!certificationResult.successful){
+            state = state.copy(
+                certificationError = certificationResult.errorMessage
+            )
+            return
+        }else{
+            viewModelScope.launch {
+                _eventFlow.emit(
+                    RegisterStart.Certification
+                )
+            }
+        }
+    }
+
     sealed class RegisterStart{
         object Register : RegisterStart()
         object PrevCertification : RegisterStart()
+        object Certification : RegisterStart()
     }
 }
 
 class ValidateName {
-    fun execute(email: String): ValidationResult {
-        if(email.isBlank()) {
+    fun execute(name: String): ValidationResult {
+        if(name.isBlank()) {
             return ValidationResult(
                 successful = false,
                 errorMessage = "이름을 입력해주세요"
@@ -152,8 +187,8 @@ class ValidateName {
 }
 
 class ValidateNickname {
-    fun execute(email: String): ValidationResult {
-        if(email.isBlank()) {
+    fun execute(nickname: String): ValidationResult {
+        if(nickname.isBlank()) {
             return ValidationResult(
                 successful = false,
                 errorMessage = "닉네임을 입력해주세요"
@@ -219,6 +254,26 @@ class ValidateTerms {
             return ValidationResult(
                 successful = false,
                 errorMessage = "모두동의해라."
+            )
+        }
+        return ValidationResult(
+            successful = true
+        )
+    }
+}
+
+class ValidateCertification {
+    fun execute(certification : String): ValidationResult {
+        if(certification.isBlank()) {
+            return ValidationResult(
+                successful = false,
+                errorMessage = "인증번호를 입력해주세요"
+            )
+        }
+        if(certification.length != 6) {
+            return ValidationResult(
+                successful = false,
+                errorMessage = "정확한 인증번호를 6자리를 입력해주세요."
             )
         }
         return ValidationResult(

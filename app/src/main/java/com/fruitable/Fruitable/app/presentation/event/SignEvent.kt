@@ -21,8 +21,10 @@ sealed class SignUpEvent{
     data class EnteredPassword(val value : String) : SignUpEvent()
     data class EnteredRepeatedPassword(val value : String) : SignUpEvent()
     data class AcceptTerms(val isAccepted: Boolean) : SignUpEvent()
+    data class ChangeCertificationFocus(val focus : FocusState) : SignUpEvent()
+    data class EnteredCertification(val value : String) : SignUpEvent()
 
     object PrevCertification : SignUpEvent()
-    //object Certification : SignUpEvent()
+    object Certification : SignUpEvent()
     object SignUp : SignUpEvent()
 }

@@ -36,7 +36,6 @@ fun SignUpScreen(
     viewModel : SignUpViewModel = hiltViewModel()
 ){
     val focusRequester = remember{FocusRequester()}
-    var certifiable by remember{ mutableStateOf(false)}
 
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest { event ->
@@ -45,8 +44,16 @@ fun SignUpScreen(
                     navController.navigate(Screen.SignInScreen.route)
                 }
                 SignUpViewModel.RegisterStart.PrevCertification -> {
-                    //이거 아래꺼 지우고 이메일 전송하는걸로 바꾸기...
-                    navController.navigate(Screen.SignInScreen.route)
+                    //Todo 이메일에 인증번호 전송 및 밑의 상태로 변경
+                    viewModel.state = viewModel.state.copy(
+                        certificationBtnOn = true
+                    )
+                }
+                SignUpViewModel.RegisterStart.Certification -> {
+                    //Todo 홈페이지 인증번호와 비교 후 같으면.. 밑에 상태로 변경하기
+                    viewModel.state = viewModel.state.copy(
+                        certificationCheck = true
+                    )
                 }
             }
         }
@@ -59,14 +66,30 @@ fun SignUpScreen(
         item {
             NameField(viewModel,focusRequester)
             NicknameField(viewModel,focusRequester)
-            EmailField(viewModel,focusRequester)
+            EmailField(viewModel,focusRequester,viewModel.isCertificationCheck() == false)
         }
         item{
-            PrevCertificationBtn(
-                viewModel = viewModel,
-                onClick = {viewModel.onEvent((SignUpEvent.PrevCertification))},
-                isCertifiable = viewModel.isCertifiable(),
-            )
+            if(!viewModel.CertificationBtnOn()) {
+                PrevCertificationBtn(
+                    onClick = { viewModel.onEvent((SignUpEvent.PrevCertification)) },
+                    isPrevCertifiable = viewModel.isPrevCertifiable(),
+                )
+            }else{
+                if(!viewModel.isCertificationCheck()) {
+                    CertificationField(
+                        viewModel = viewModel,
+                        focusRequester = focusRequester,
+                        isCertifiable = viewModel.isCertifiable(),
+                        onClick = { viewModel.onEvent(SignUpEvent.Certification) }
+                    )
+                }else{
+                    PrevCertificationBtn(
+                        onClick = {},
+                        isPrevCertifiable = false,
+                        text = "인증완료"
+                    )
+                }
+            }
         }
         item{
             PasswordField(viewModel,focusRequester)
@@ -196,6 +219,7 @@ fun NicknameField(
 fun EmailField(
     viewModel: SignUpViewModel,
     focusRequester: FocusRequester,
+    enable : Boolean,
 ){
     val value = viewModel.state.email
     val isError = viewModel.state.emailError != null
@@ -203,7 +227,7 @@ fun EmailField(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(30.dp, 0.dp, 30.dp, 28.dp)
+            .padding(30.dp, 0.dp, 30.dp, 0.dp)
     ) {
         InputLabel(text = "이메일")
         SignTextField(
@@ -213,6 +237,7 @@ fun EmailField(
             onValueChange = {viewModel.onEvent(SignUpEvent.EnteredEmail(it))},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             isError = isError,
+            enable = enable
         )
         if(isError){
             Text(
@@ -236,7 +261,7 @@ fun PasswordField(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(30.dp, 0.dp, 30.dp, 28.dp)
+            .padding(30.dp, 28.dp, 30.dp, 28.dp)
     ){
         InputLabel(text = "비밀번호")
         SignTextField(
@@ -292,23 +317,87 @@ fun RepeatedPasswordField(
 }
 
 @Composable
-fun PrevCertificationBtn(
+fun CertificationField(
     viewModel: SignUpViewModel,
-    onClick: () -> Unit,
+    focusRequester: FocusRequester,
     isCertifiable : Boolean,
+    onClick: () -> Unit,
+){
+    val value = viewModel.state.certification
+    val isError = viewModel.state.certificationError != null
+
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 30.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+        ) {
+            SignTextField(
+                modifier = Modifier
+                    .focusRequester(focusRequester)
+                    .width(180.dp)
+                    .height(38.dp),
+                value = value,
+                onValueChange = { viewModel.onEvent(SignUpEvent.EnteredCertification(it)) },
+                isError = isError,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            )
+            SignButton(
+                modifier = Modifier
+                    .focusRequester(focusRequester)
+                    .padding(start = 8.dp)
+                    .height(38.dp),
+                text = "인증번호 재발송",
+                isCancellable = true,
+                style = TextStyles.signUpError
+
+            )
+        }
+        if (isError) {
+            Text(
+                text = viewModel.state.certificationError!!,
+                style = TextStyles.signUpError,
+                color = Color.Red,
+                modifier = Modifier.padding(top = 10.dp)
+            )
+        }
+
+        HashTagButton(
+            text = "확인",
+            style = TextStyles.TextBasic2,
+            isSelected = true,
+            isRipple = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 44.dp)
+                .height(44.dp),
+            onClick = onClick,
+            cornerRadius = 10,
+        )
+    }
+}
+
+@Composable
+fun PrevCertificationBtn(
+    onClick: () -> Unit,
+    isPrevCertifiable : Boolean,
+    text : String = "인증번호 발송"
 ){
     HashTagButton(
-        text = "인증번호 발송",
+        text = text,
         style = TextStyles.TextBasic2,
         isSelected = true,
         isRipple = true,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(30.dp, 0.dp, 30.dp, 28.dp)
+            .padding(30.dp, 28.dp, 30.dp, 0.dp)
             .height(44.dp),
         onClick = onClick,
         cornerRadius = 10,
-        enabled = isCertifiable
+        enabled = isPrevCertifiable
     )
 }
 
@@ -317,7 +406,7 @@ fun RegisterBtn(
     onClick : () -> Unit,
 ){
     HashTagButton(
-        text = "회원가입",
+        text = "가입완료하기",
         style = TextStyles.TextBasic2,
         isSelected = true,
         isRipple = true,

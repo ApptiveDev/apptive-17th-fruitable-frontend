@@ -39,6 +39,7 @@ fun SignInScreen(
         viewModel.eventFlow.collectLatest { event->
             when(event){
                 is SignInViewModel.LoginStart.login -> {
+                    //Todo 통신후 적합하면..
                     navController.navigate(Screen.SalesScreen.route)
                 }
             }
