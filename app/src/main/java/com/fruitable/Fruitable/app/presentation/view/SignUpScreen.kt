@@ -80,6 +80,7 @@ fun SignUpScreen(
                         viewModel = viewModel,
                         focusRequester = focusRequester,
                         isCertifiable = viewModel.isCertifiable(),
+                        reClick = { viewModel.onEvent(SignUpEvent.PrevCertification)},      //이메일 재전송
                         onClick = { viewModel.onEvent(SignUpEvent.Certification) }
                     )
                 }else{
@@ -322,6 +323,7 @@ fun CertificationField(
     focusRequester: FocusRequester,
     isCertifiable : Boolean,
     onClick: () -> Unit,
+    reClick: () -> Unit,
 ){
     val value = viewModel.state.certification
     val isError = viewModel.state.certificationError != null
@@ -352,8 +354,8 @@ fun CertificationField(
                     .height(38.dp),
                 text = "인증번호 재발송",
                 isCancellable = true,
-                style = TextStyles.signUpError
-
+                style = TextStyles.signUpError,
+                onClick = reClick
             )
         }
         if (isError) {
