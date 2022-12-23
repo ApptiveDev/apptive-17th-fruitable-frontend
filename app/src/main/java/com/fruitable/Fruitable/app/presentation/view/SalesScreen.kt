@@ -60,7 +60,8 @@ fun SalesScreen(
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             SellerProfile(
-                modifier = Modifier.padding(30.dp, 48.dp, 30.dp, 49.dp)
+                modifier = Modifier.padding(30.dp, 48.dp, 30.dp, 49.dp),
+                onClick = { navController.navigate(Screen.UserInfoUpdateScreen.route) }
             )
             IsFruitTab()
             LazyColumn(
@@ -82,6 +83,7 @@ fun SalesScreen(
 @Composable
 fun SellerProfile(
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
     farmName: String = "푸릇농장",
     nickname: String = "홍길동",
     imageUrl: String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg"
@@ -124,7 +126,8 @@ fun SellerProfile(
                 modifier = Modifier
                     .size(90.dp, 32.dp)
                     .clip(RoundedCornerShape(20.dp))
-                    .background(MainGreen2),
+                    .background(MainGreen2)
+                    .clickable(onClick = onClick),
                 contentAlignment = Center
             ) {
                 Text(
