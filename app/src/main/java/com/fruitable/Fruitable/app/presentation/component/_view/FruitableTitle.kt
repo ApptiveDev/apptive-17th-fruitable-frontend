@@ -6,7 +6,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import com.fruitable.Fruitable.app.domain.utils.addFocusCleaner
 import com.fruitable.Fruitable.ui.theme.TextStyles
 
 @Composable
@@ -15,8 +17,12 @@ fun FruitableTitle(
     subtitle: String = "",
     content: @Composable ColumnScope.() -> Unit
 ){
+    val focusManager = LocalFocusManager.current
     LazyColumn(
-        modifier = Modifier.padding(30.dp, 0.dp, 30.dp, 0.dp),
+        modifier = Modifier
+            .padding(30.dp, 0.dp, 30.dp, 0.dp)
+            .fillMaxSize()
+            .addFocusCleaner(focusManager),
     ){
         item { Spacer(modifier = Modifier.height(48.dp)) }
         item {
