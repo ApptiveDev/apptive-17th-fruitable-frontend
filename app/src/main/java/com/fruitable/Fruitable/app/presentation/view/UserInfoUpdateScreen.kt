@@ -78,7 +78,7 @@ fun UserInfoUpdateScreen(
             onValueChange = { viewModel.onEvent(UserInfoUpdateEvent.EnteredNickname(it)) },
             onFocusChange = { viewModel.onEvent(UserInfoUpdateEvent.ChangeNicknameFocus(it)) },
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         SignButton(
             text = "닉네임 수정",
             color = nicknameColor,
