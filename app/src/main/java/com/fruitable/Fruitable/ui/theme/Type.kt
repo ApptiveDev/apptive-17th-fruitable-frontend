@@ -91,6 +91,12 @@ object TextStyles{
         fontSize = 12.sp,
         lineHeight = 14.06.sp
     )
+    val popUpText = TextStyle(
+        fontFamily = Roboto,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 16.sp,
+    )
 }
 val Typography = Typography(
     body1 = TextStyle(
