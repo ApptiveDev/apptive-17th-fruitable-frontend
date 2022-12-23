@@ -29,4 +29,8 @@ fun NavGraphBuilder.fruitableGraph(
         route = Screen.SingUpScreen.route){
             SignUpScreen(navController)
     }
+    composable(
+        route = Screen.UserInfoUpdateScreen.route) {
+        UserInfoUpdateScreen(navController)
+    }
 }
