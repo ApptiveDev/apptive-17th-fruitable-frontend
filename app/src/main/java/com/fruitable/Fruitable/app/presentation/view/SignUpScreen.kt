@@ -20,10 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
-import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
-import com.fruitable.Fruitable.app.presentation.component.HashTagButton
-import com.fruitable.Fruitable.app.presentation.component.SignButton
-import com.fruitable.Fruitable.app.presentation.component.SignTextField
+import com.fruitable.Fruitable.app.presentation.component.*
 import com.fruitable.Fruitable.app.presentation.event.SignUpEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.SignUpViewModel
@@ -34,12 +31,12 @@ import kotlinx.coroutines.flow.collectLatest
 fun SignUpScreen(
     navController: NavController,
     viewModel : SignUpViewModel = hiltViewModel()
-){
-    val focusRequester = remember{FocusRequester()}
+) {
+    val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
-            when(event){
+            when (event) {
                 SignUpViewModel.RegisterStart.Register -> {
                     navController.navigate(Screen.SignInScreen.route)
                 }
@@ -58,73 +55,47 @@ fun SignUpScreen(
             }
         }
     }
+    FruitableTitle(
+        title = "회원가입",
+        subtitle = "푸릇에이블에 오신 것을 환영합니다!"
+    ) {
+        NameField(viewModel, focusRequester)
+        NicknameField(viewModel, focusRequester)
+        EmailField(viewModel, focusRequester, viewModel.isCertificationCheck() == false)
 
-    LazyColumn(){
-        item {
-            SignUpTop()
-        }
-        item {
-            NameField(viewModel,focusRequester)
-            NicknameField(viewModel,focusRequester)
-            EmailField(viewModel,focusRequester,viewModel.isCertificationCheck() == false)
-        }
-        item{
-            if(!viewModel.CertificationBtnOn()) {
-                PrevCertificationBtn(
-                    onClick = { viewModel.onEvent((SignUpEvent.PrevCertification)) },
-                    isPrevCertifiable = viewModel.isPrevCertifiable(),
+        if (!viewModel.CertificationBtnOn()) {
+            PrevCertificationBtn(
+                onClick = { viewModel.onEvent((SignUpEvent.PrevCertification)) },
+                isPrevCertifiable = viewModel.isPrevCertifiable(),
+            )
+        } else {
+            if (!viewModel.isCertificationCheck()) {
+                CertificationField(
+                    viewModel = viewModel,
+                    focusRequester = focusRequester,
+                    isCertifiable = viewModel.isCertifiable(),
+                    reClick = { viewModel.onEvent(SignUpEvent.PrevCertification) },      //이메일 재전송
+                    onClick = { viewModel.onEvent(SignUpEvent.Certification) }
                 )
-            }else{
-                if(!viewModel.isCertificationCheck()) {
-                    CertificationField(
-                        viewModel = viewModel,
-                        focusRequester = focusRequester,
-                        isCertifiable = viewModel.isCertifiable(),
-                        reClick = { viewModel.onEvent(SignUpEvent.PrevCertification)},      //이메일 재전송
-                        onClick = { viewModel.onEvent(SignUpEvent.Certification) }
-                    )
-                }else{
-                    PrevCertificationBtn(
-                        onClick = {},
-                        isPrevCertifiable = false,
-                        text = "인증완료"
-                    )
-                }
+            } else {
+                PrevCertificationBtn(
+                    onClick = {},
+                    isPrevCertifiable = false,
+                    text = "인증완료"
+                )
             }
         }
-        item{
-            PasswordField(viewModel,focusRequester)
-            RepeatedPasswordField(viewModel,focusRequester)
-        }
-        item{
-            RegisterBtn(onClick = {viewModel.onEvent(SignUpEvent.SignUp)})
-        }
+
+        PasswordField(viewModel, focusRequester)
+        RepeatedPasswordField(viewModel, focusRequester)
+
+        RegisterBtn(onClick = { viewModel.onEvent(SignUpEvent.SignUp) })
+
     }
 }
 
 
-@Composable
-fun SignUpTop(){
-    Column {
-        Text(
-            text = "기본정보",
-            style = TextStyles.SignTitle1,
-            color = Color.Black,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 30.dp, top = 48.dp)
-        )
-        Text(
-            text = "푸릇에이블에 오신 것을 환영합니다!",
-            style = TextStyles.TextBasic1,
-            color = Color.Black,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(30.dp, 7.dp, 0.dp, 0.dp)
-        )
-        FruitableDivider(Modifier.padding(30.dp,16.dp,28.dp,30.dp))
-    }
-}
+
 
 @Composable
 fun InputLabel(
@@ -163,7 +134,7 @@ fun NameField(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(30.dp, 0.dp, 30.dp, 28.dp)
+            .padding(bottom = 28.dp)
     ){
         InputLabel(text = "이름",true)
         SignTextField(
@@ -195,7 +166,7 @@ fun NicknameField(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(30.dp, 0.dp, 30.dp, 28.dp)
+            .padding(bottom = 28.dp)
     ){
         InputLabel(text = "닉네임")
         SignTextField(
@@ -228,7 +199,6 @@ fun EmailField(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(30.dp, 0.dp, 30.dp, 0.dp)
     ) {
         InputLabel(text = "이메일")
         SignTextField(
@@ -262,7 +232,7 @@ fun PasswordField(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(30.dp, 28.dp, 30.dp, 28.dp)
+            .padding(vertical = 28.dp)
     ){
         InputLabel(text = "비밀번호")
         SignTextField(
@@ -295,7 +265,7 @@ fun RepeatedPasswordField(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(30.dp, 0.dp, 30.dp, 28.dp)
+            .padding(bottom = 28.dp)
     ) {
         InputLabel(text = "비밀번호 확인")
         SignTextField(
@@ -395,7 +365,7 @@ fun PrevCertificationBtn(
         isRipple = true,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(30.dp, 28.dp, 30.dp, 0.dp)
+            .padding(top = 28.dp)
             .height(44.dp),
         onClick = onClick,
         cornerRadius = 10,
@@ -414,7 +384,7 @@ fun RegisterBtn(
         isRipple = true,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(30.dp, 22.dp, 30.dp, 30.dp)
+            .padding(0.dp, 22.dp, 0.dp, 30.dp)
             .height(44.dp),
         cornerRadius = 10,
         onClick = onClick,
