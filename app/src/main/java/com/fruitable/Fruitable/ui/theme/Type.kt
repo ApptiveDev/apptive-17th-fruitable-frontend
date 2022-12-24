@@ -38,7 +38,8 @@ object TextStyles{
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 19.sp
+        lineHeight = 19.sp,
+        color = Color.Black
     )
 
     /**
@@ -91,6 +92,13 @@ object TextStyles{
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         lineHeight = 28.13.sp,
+    )
+    val TextBold5 = TextStyle(
+        fontFamily = Roboto,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 20.sp,
+        lineHeight = 23.sp,
+        color = Color.Black
     )
     /**
      * Bold
