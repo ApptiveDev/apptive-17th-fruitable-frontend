@@ -39,14 +39,14 @@ fun SaleItem(
         ){
             Text(
                 text = title,
-                style = TextStyles.TextBasic2,
+                style = TextStyles.TextSmall3,
                 overflow = TextOverflow.Ellipsis,
                 color = Color.Black,
                 maxLines = 2,
             )
             Text(
                 text = nickname + "ㆍ마감 " + deadline.toString() + "일 전",
-                style = TextStyles.TextProfile2,
+                style = TextStyles.TextSmall1,
                 color = MainGray1,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
@@ -54,7 +54,7 @@ fun SaleItem(
             Text(
                 text = formatAmountOrMessage(price.toString()) + "원",
                 color = Color.Black,
-                style = TextStyles.TextProfile1
+                style = TextStyles.TextBold2
             )
         }
     }

@@ -55,7 +55,6 @@ import com.fruitable.Fruitable.app.presentation.event.AddSaleEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.AddSaleViewModel
 import com.fruitable.Fruitable.ui.theme.*
-import com.fruitable.Fruitable.ui.theme.TextStyles.TextPostContent
 import kotlinx.coroutines.flow.collectLatest
 import java.util.*
 
@@ -163,7 +162,7 @@ fun AddSaleScreen(
                     FruitableTextField(
                         modifier = Modifier.focusRequester(focusRequester),
                         state = contentState,
-                        textStyle = TextPostContent,
+                        textStyle = TextStyles.TextSmall3,
                         onValueChange = { viewModel.onEvent(AddSaleEvent.EnteredContent(it)) },
                         onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangeContentFocus(it)) },
                         singleLine = false
@@ -229,7 +228,7 @@ fun DeadLineField(
             Text(
                 text = "판매기한",
                 color = Black,
-                style = TextStyles.TextBasic2,
+                style = TextStyles.TextSmall3,
                 modifier = Modifier.align(CenterVertically)
             )
         }
@@ -250,7 +249,7 @@ fun DeadLineField(
             Text(
                 text = if (isChecked) deadLine.text
                        else deadLine.hint,
-                style = TextStyles.TextBasic2,
+                style = TextStyles.TextSmall3,
                 color = if (isChecked) MainGray2 else MainGray4,
                 modifier = Modifier
                     .padding(start = 12.dp)
@@ -275,9 +274,9 @@ fun HashTagField(
         Row(
             modifier = Modifier.padding(4.dp,18.dp,0.dp,0.dp)
         ) {
-            Text( text = "해시태그 (", color = Black, style = TextStyles.TextBasic2 )
-            Text( text = hashTag.textList.size.toString(), color = MainGreen1, style = TextStyles.TextBasic2 )
-            Text( text = "/4)", color = Black, style = TextStyles.TextBasic2 )
+            Text( text = "해시태그 (", color = Black, style = TextStyles.TextSmall3 )
+            Text( text = hashTag.textList.size.toString(), color = MainGreen1, style = TextStyles.TextSmall3 )
+            Text( text = "/4)", color = Black, style = TextStyles.TextSmall3 )
         }
         Spacer(modifier = Modifier.height(fruitableSpace))
         if (hashTag.textList.size < 4) {
@@ -288,7 +287,7 @@ fun HashTagField(
                     value = hashTag.text,
                     onValueChange = { viewModel.onEvent(AddSaleEvent.EnteredHashTag(it)) },
                     singleLine = true,
-                    textStyle = TextStyles.TextBasic2,
+                    textStyle = TextStyles.TextSmall3,
                     keyboardActions = KeyboardActions(
                         onDone = {
                             keyboardController?.hide()
@@ -300,7 +299,7 @@ fun HashTagField(
                         .onFocusChanged { viewModel.onEvent(AddSaleEvent.ChangeHashTagFocus(it)) }
                 )
                 if (hashTag.isHintVisible) {
-                    Text(text = hashTag.hint, style = TextStyles.TextBasic2, color = MainGray4)
+                    Text(text = hashTag.hint, style = TextStyles.TextSmall3, color = MainGray4)
                 }
             }
         }
@@ -396,14 +395,14 @@ fun Title(
     ){
         Text(
             text = "글쓰기",
-            style = TextStyles.TextProfile1,
+            style = TextStyles.TextBold2,
             color = Black,
             modifier = Modifier.align(Alignment.Center)
         )
         Text(
             text = "등록",
             color = if (isSavable) MainGreen1 else MainGray4,
-            style = TextStyles.TextProfile1,
+            style = TextStyles.TextBold2,
             fontWeight = if (isSavable) FontWeight.Bold else FontWeight.Medium,
             modifier = Modifier
                 .padding(end = 30.dp)
@@ -441,7 +440,7 @@ fun CategoryChoice(
             Text(
                 text = "과일",
                 color = color,
-                style = TextStyles.TextBasic1,
+                style = TextStyles.TextBasic2,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Center)
             )
@@ -456,7 +455,7 @@ fun CategoryChoice(
             Text(
                 text = "채소",
                 color = notColor,
-                style = TextStyles.TextBasic1,
+                style = TextStyles.TextBasic2,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Center)
             )
@@ -488,12 +487,12 @@ fun PhotoImage(
             Text(
                 text = size.toString(),
                 color = MainGreen1,
-                style = TextStyles.TextDetailProfile1
+                style = TextStyles.TextSmall2
             )
             Text(
                 text = "/5",
                 color = MainGray6,
-                style = TextStyles.TextDetailProfile1
+                style = TextStyles.TextSmall2
             )
         }
     }

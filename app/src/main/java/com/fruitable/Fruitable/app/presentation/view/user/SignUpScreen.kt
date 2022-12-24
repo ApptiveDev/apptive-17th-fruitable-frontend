@@ -109,7 +109,7 @@ fun InputLabel(
     ){
         Text(
             text = text,
-            style = TextStyles.signTitle2,
+            style = TextStyles.TextBasic3,
             color = Color.Black,
             modifier = Modifier
                 .padding(end = 3.dp)
@@ -147,7 +147,7 @@ fun NameField(
         if(isError){
             Text(
                 text = viewModel.state.nameError!!,
-                style = TextStyles.signUpError,
+                style = TextStyles.TextBasic1,
                 color = Color.Red,
                 modifier = Modifier.padding(top=10.dp)
             )
@@ -179,7 +179,7 @@ fun NicknameField(
         if(isError){
             Text(
                 text = viewModel.state.nicknameError!!,
-                style = TextStyles.signUpError,
+                style = TextStyles.TextBasic1,
                 color = Color.Red,
                 modifier = Modifier.padding(top=10.dp)
             )
@@ -213,7 +213,7 @@ fun EmailField(
         if(isError){
             Text(
                 text = viewModel.state.emailError!!,
-                style = TextStyles.signUpError,
+                style = TextStyles.TextBasic1,
                 color = Color.Red,
                 modifier = Modifier.padding(top=10.dp)
             )
@@ -246,7 +246,7 @@ fun PasswordField(
         if(isError){
             Text(
                 text = viewModel.state.passwordError!!,
-                style = TextStyles.signUpError,
+                style = TextStyles.TextBasic1,
                 color = Color.Red,
                 modifier = Modifier.padding(top=10.dp)
             )
@@ -279,7 +279,7 @@ fun RepeatedPasswordField(
         if(isError){
             Text(
                 text = viewModel.state.repeatedPasswordError!!,
-                style = TextStyles.signUpError,
+                style = TextStyles.TextBasic1,
                 color = Color.Red,
                 modifier = Modifier.padding(top=10.dp)
             )
@@ -324,14 +324,14 @@ fun CertificationField(
                     .height(38.dp),
                 text = "인증번호 재발송",
                 isCancellable = true,
-                style = TextStyles.signUpError,
+                style = TextStyles.TextBasic1,
                 onClick = reClick
             )
         }
         if (isError) {
             Text(
                 text = viewModel.state.certificationError!!,
-                style = TextStyles.signUpError,
+                style = TextStyles.TextBasic1,
                 color = Color.Red,
                 modifier = Modifier.padding(top = 10.dp)
             )
@@ -339,7 +339,7 @@ fun CertificationField(
 
         HashTagButton(
             text = "확인",
-            style = TextStyles.TextBasic2,
+            style = TextStyles.TextSmall3,
             isSelected = true,
             isRipple = true,
             modifier = Modifier
@@ -360,7 +360,7 @@ fun PrevCertificationBtn(
 ){
     HashTagButton(
         text = text,
-        style = TextStyles.TextBasic2,
+        style = TextStyles.TextSmall3,
         isSelected = true,
         isRipple = true,
         modifier = Modifier
@@ -379,7 +379,7 @@ fun RegisterBtn(
 ){
     HashTagButton(
         text = "가입완료하기",
-        style = TextStyles.TextBasic2,
+        style = TextStyles.TextSmall3,
         isSelected = true,
         isRipple = true,
         modifier = Modifier

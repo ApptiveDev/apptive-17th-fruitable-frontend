@@ -54,7 +54,7 @@ fun SignInScreen(
         LoginBtn(navController = navController, onClick = {viewModel.onEvent(SignInEvent.SignIn)})
         Text(
             text="아이디/비밀번호 찾기",
-            style = TextStyles.TextProfile2,
+            style = TextStyles.TextSmall1,
             color = MainGray6,
             modifier = Modifier
                 .fillMaxWidth()
@@ -115,7 +115,7 @@ fun LoginField(
             )
             Text(
                 text = errorList.first(),
-                style = TextStyles.TextProfile2,
+                style = TextStyles.TextSmall1,
                 color = Color.Red,
                 modifier = Modifier.padding(start = 5.dp)
             )
@@ -151,7 +151,7 @@ fun LoginBtn(
 ) {
     HashTagButton(
         text = "로그인",
-        style = TextStyles.TextBasic2,
+        style = TextStyles.TextSmall3,
         isSelected = true,
         isRipple = true,
         modifier = Modifier

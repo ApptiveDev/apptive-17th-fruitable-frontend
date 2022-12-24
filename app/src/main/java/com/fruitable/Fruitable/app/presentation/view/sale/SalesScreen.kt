@@ -61,7 +61,8 @@ fun SalesScreen(
         Column(modifier = Modifier.fillMaxWidth()) {
             SellerProfile(
                 modifier = Modifier.padding(30.dp, 48.dp, 30.dp, 49.dp),
-                onClick = { navController.navigate(Screen.UserInfoUpdateScreen.route) }
+                updateButton = { navController.navigate(Screen.UserInfoUpdateScreen.route) },
+                settingButton = { navController.navigate(Screen.SettingScreen.route) }
             )
             IsFruitTab()
             LazyColumn(
@@ -83,7 +84,8 @@ fun SalesScreen(
 @Composable
 fun SellerProfile(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
+    updateButton: () -> Unit = {},
+    settingButton: () -> Unit = {},
     farmName: String = "푸릇농장",
     nickname: String = "홍길동",
     imageUrl: String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg"
@@ -107,12 +109,12 @@ fun SellerProfile(
             ) {
                 Text(
                     text = farmName,
-                    style = TextStyles.TextProfile1,
+                    style = TextStyles.TextBold2,
                     color = Black,
                 )
                 Text(
                     text = nickname,
-                    style = TextStyles.TextBasic1,
+                    style = TextStyles.TextBasic2,
                     color = Black,
                 )
             }
@@ -127,12 +129,12 @@ fun SellerProfile(
                     .size(90.dp, 32.dp)
                     .clip(RoundedCornerShape(20.dp))
                     .background(MainGreen2)
-                    .clickable(onClick = onClick),
+                    .clickable(onClick = updateButton),
                 contentAlignment = Center
             ) {
                 Text(
                     text = "프로필 수정",
-                    style = TextStyles.TextProfile2,
+                    style = TextStyles.TextSmall1,
                     color = MainGray7,
                     textAlign = TextAlign.Center
                 )
@@ -141,7 +143,7 @@ fun SellerProfile(
             Image(
                 painter = painterResource(id = R.drawable.setting),
                 contentDescription = "setting button",
-                modifier = Modifier.size(22.dp)
+                modifier = Modifier.size(22.dp).clickable(onClick = settingButton)
             )
 
         }
@@ -207,7 +209,7 @@ fun SalesContents(
         // TODO: 과일, 채소를 구분하는 탭바 필요
         Text(
             text = "인기 해시태그",
-            style = TextStyles.TextProfile1,
+            style = TextStyles.TextBold2,
             color = Black,
             modifier = Modifier.padding(start = 21.dp)
         )
