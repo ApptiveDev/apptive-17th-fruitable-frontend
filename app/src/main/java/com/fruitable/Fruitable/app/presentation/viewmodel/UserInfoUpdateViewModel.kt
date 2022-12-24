@@ -121,7 +121,7 @@ class UserInfoUpdateViewModel @Inject constructor()
             }
             UserInfoUpdateEvent.PasswordSave -> {
                 if (isPasswordUpdatable()) {
-                    _password.value = _password.value.copy(
+                    _password.value = password.value.copy(
                         isError = false
                     )
                     _newPassword.value = newPassword.value.copy(
@@ -134,7 +134,7 @@ class UserInfoUpdateViewModel @Inject constructor()
                         _eventFlow.emit(UiEvent.SaveUserPassword)
                     }
                 } else {
-                    _password.value = _password.value.copy(
+                    _password.value = password.value.copy(
                         isError = !isPasswordValid(password.value.text)
                     )
                     _newPassword.value = newPassword.value.copy(

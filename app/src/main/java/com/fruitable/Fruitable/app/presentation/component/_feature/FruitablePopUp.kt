@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -35,7 +36,8 @@ fun FruitablePopUp(
         ){
             Column(
                 modifier = Modifier
-                    .size(300.dp, 125.dp)
+                    .padding(15.dp)
+                    .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp))
                     .background(White),
             ){
@@ -65,6 +67,7 @@ fun FruitablePopUp(
                         modifier = Modifier.weight(1f).clickable(onClick = confirm)
                     )
                 }
+                Spacer(modifier = Modifier.height(30.dp))
             }
         }
     }
