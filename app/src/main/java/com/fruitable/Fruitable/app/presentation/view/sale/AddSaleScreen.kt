@@ -18,13 +18,14 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.BottomStart
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
-import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -50,7 +51,11 @@ import coil.compose.AsyncImage
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.fruitableSpace
 import com.fruitable.Fruitable.app.domain.utils.addFocusCleaner
-import com.fruitable.Fruitable.app.presentation.component.*
+import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
+import com.fruitable.Fruitable.app.presentation.component.FruitableTextField
+import com.fruitable.Fruitable.app.presentation.component.HashTagButton
+import com.fruitable.Fruitable.app.presentation.component.NumberFormatting
+import com.fruitable.Fruitable.app.presentation.component._view.FruitableCheckBox
 import com.fruitable.Fruitable.app.presentation.event.AddSaleEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.AddSaleViewModel
@@ -199,31 +204,14 @@ fun DeadLineField(
         Row(
             modifier = Modifier.padding(4.dp, fruitableSpace, 0.dp, fruitableSpace)
         ) {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(6.dp))
-                    .border(
-                        if (isChecked) BorderStroke(0.dp, White)
-                        else BorderStroke(1.dp, MainGray4),
-                        shape = RoundedCornerShape(6.dp)
-                    )
-                    .size(18.dp)
-                    .background(if (isChecked) MainGreen3 else White)
-                    .align(CenterVertically)
-                    .clickable {
-                        if (!isChecked) mDatePickerDialog.show()
-                        viewModel.onEvent(AddSaleEvent.ChangeDeadLine)
-                    },
-                contentAlignment = Center
-            ) {
-                if (isChecked) {
-                    Image(
-                        painter = painterResource(id = R.drawable.checkbox),
-                        contentDescription = "deadline checkbox",
-                        modifier = Modifier.size(11.dp)
-                    )
+            FruitableCheckBox(
+                isChecked = deadLine.isChecked,
+                modifier = Modifier.align(CenterVertically),
+                onClick = {
+                    if (!isChecked) mDatePickerDialog.show()
+                    viewModel.onEvent(AddSaleEvent.ChangeDeadLine)
                 }
-            }
+            )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "판매기한",
