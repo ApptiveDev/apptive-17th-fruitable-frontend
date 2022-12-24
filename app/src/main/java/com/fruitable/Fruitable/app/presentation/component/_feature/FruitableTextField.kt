@@ -29,7 +29,7 @@ fun FruitableTextField(
     state: SaleTextFieldState = SaleTextFieldState(),
     modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit = {},
-    textStyle: TextStyle = TextStyles.TextBasic2,
+    textStyle: TextStyle = TextStyles.TextSmall3,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     singleLine: Boolean = true,

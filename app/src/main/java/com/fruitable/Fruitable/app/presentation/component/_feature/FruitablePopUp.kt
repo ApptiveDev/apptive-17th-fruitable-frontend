@@ -41,7 +41,7 @@ fun FruitablePopUp(
             ){
                 Text(
                     text = text,
-                    style = TextStyles.signTitle2,
+                    style = TextStyles.TextBasic3,
                     color = Black,
                     modifier = Modifier.padding(30.dp)
                 )
@@ -52,14 +52,14 @@ fun FruitablePopUp(
                 ){
                     Text(
                         text = cancelText,
-                        style = TextStyles.popUpText,
+                        style = TextStyles.TextBold1,
                         color = Black,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.weight(1f).clickable(onClick = cancel)
                     )
                     Text(
                         text = confirmText,
-                        style = TextStyles.popUpText,
+                        style = TextStyles.TextBold1,
                         color = MainGreen1,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.weight(1f).clickable(onClick = confirm)

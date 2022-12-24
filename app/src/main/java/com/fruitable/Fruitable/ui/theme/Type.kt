@@ -1,6 +1,7 @@
 package com.fruitable.Fruitable.ui.theme
 
 import androidx.compose.material.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -18,84 +19,87 @@ private val Roboto = FontFamily(
 )
 
 object TextStyles{
-    val TextProfile1 = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
-        lineHeight = 18.75.sp
-    )
-    val TextProfile2 = TextStyle(
+    /**
+     * Regular(Normal)
+     */
+    val TextSmall1 = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 14.06.sp
     )
-    val TextBasic1 = TextStyle(
+    val TextSmall2 = TextStyle(
         fontFamily = Roboto,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 16.41.sp
     )
-    val TextBasic2 = TextStyle(
+    val TextSmall3 = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 19.sp
+    )
+
+    /**
+     * Medium
+     */
+    val TextBasic1 = TextStyle(
+        fontFamily = Roboto,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp,
+        lineHeight = 14.06.sp
+    )
+    val TextBasic2 = TextStyle(
+        fontFamily = Roboto,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 16.41.sp
     )
     val TextBasic3 = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
-        lineHeight = 19.sp
+        lineHeight = 19.sp,
+        color = Color.Black
     )
-    val TextPostContent = TextStyle(
+    /**
+     * SemiBold
+     */
+    val TextBold1 = TextStyle(
         fontFamily = Roboto,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 22.sp,
-        color = MainGray5
-    )
-    val TextDetailProfile1 = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
-        lineHeight = 16.41.sp
+        lineHeight = 16.sp,
+        color = Color.Black
     )
-    val TextDetailTitle1 = TextStyle(
+    val TextBold2 = TextStyle(
         fontFamily = Roboto,
-        fontWeight = FontWeight.Bold,
-        fontSize = 22.sp,
-        lineHeight = 26.sp
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 18.75.sp,
+        color = Color.Black
     )
-    val TextDetailTitle2 = TextStyle(
+    val TextBold3 = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.SemiBold,
         fontSize = 17.sp,
         lineHeight = 19.sp
     )
-    val SignTitle1 = TextStyle(
+    val TextBold4 = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         lineHeight = 28.13.sp,
     )
-    val signTitle2 = TextStyle(
+    /**
+     * Bold
+     */
+    val TextHeavyBold = TextStyle(
         fontFamily = Roboto,
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 18.75.sp,
-    )
-    val signUpError = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 14.06.sp
-    )
-    val popUpText = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp,
-        lineHeight = 16.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 22.sp,
+        lineHeight = 26.sp
     )
 }
 val Typography = Typography(

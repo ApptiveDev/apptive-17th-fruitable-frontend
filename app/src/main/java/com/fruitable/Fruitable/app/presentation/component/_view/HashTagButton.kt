@@ -30,7 +30,7 @@ fun HashTagButton(
     modifier: Modifier = Modifier,
     text: String = "# 과일",
     isRipple: Boolean = true,
-    style: TextStyle = TextStyles.TextProfile2,
+    style: TextStyle = TextStyles.TextSmall1,
     isCancellable: Boolean = false,
     onCancelClick: () -> Unit = {},
     cornerRadius : Int = 20,
