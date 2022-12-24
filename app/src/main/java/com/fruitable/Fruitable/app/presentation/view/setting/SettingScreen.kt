@@ -20,7 +20,10 @@ fun SettingScreen(
     navController: NavController
 ){
     Column {
-        UserSetting(onClick = { navController.navigate(Screen.AccountScreen.route) })
+        UserSetting(
+            onClick = { navController.navigate(Screen.AccountScreen.route) },
+            onUpgrade = { navController.navigate(Screen.UpgradingScreen.route) }
+        )
         FruitableDivider(
             modifier = Modifier.padding(vertical = 30.dp),
             color = MainGray4
@@ -34,7 +37,8 @@ fun SettingScreen(
 
 @Composable
 fun UserSetting(
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onUpgrade: () -> Unit = {}
 ){
     Column(
         modifier = Modifier.padding(horizontal = 30.dp),
@@ -52,7 +56,8 @@ fun UserSetting(
         )
         Text(
             text = "판매자로 등업하기",
-            style = TextStyles.TextBasic3
+            style = TextStyles.TextBasic3,
+            modifier = Modifier.clickable(onClick = onUpgrade)
         )
     }
 }
