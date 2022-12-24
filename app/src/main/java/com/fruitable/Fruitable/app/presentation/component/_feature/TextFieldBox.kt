@@ -46,7 +46,7 @@ fun TextFieldBox(
     ){
         Text(
             text = state.title,
-            style = TextStyles.signTitle2,
+            style = TextStyles.TextBasic3,
             color = Color.Black
         )
         Spacer(modifier = Modifier.height(10.dp))
@@ -62,7 +62,7 @@ fun TextFieldBox(
                 value = state.text,
                 onValueChange = onValueChange,
                 singleLine = true,
-                textStyle = TextStyles.TextDetailProfile1,
+                textStyle = TextStyles.TextSmall2,
                 keyboardOptions = keyboardOptions,
                 keyboardActions = KeyboardActions(onDone = {keyboardController?.hide()}),
                 visualTransformation = visualTransformation,
@@ -75,7 +75,7 @@ fun TextFieldBox(
             if (state.isHintVisible) {
                 Text(
                     text = state.hint,
-                    style = TextStyles.TextDetailProfile1,
+                    style = TextStyles.TextSmall2,
                     color = MainGray8,
                     modifier = Modifier
                         .align(Alignment.CenterStart)
@@ -87,7 +87,7 @@ fun TextFieldBox(
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = state.error,
-                style = TextStyles.signUpError,
+                style = TextStyles.TextBasic1,
                 color = Red
             )
         }

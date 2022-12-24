@@ -98,7 +98,7 @@ fun DetailTop(
         )
         HashTagButton(
             text = deadlineText,
-            style = TextStyles.TextBasic2,
+            style = TextStyles.TextSmall3,
             modifier = Modifier
                 .padding(top = 20.dp, end = 20.dp),
             isRipple = false,
@@ -131,13 +131,13 @@ fun DetailFarmProfile(
             ) {
                 Text(
                     text = nickName,
-                    style = TextStyles.TextProfile1,
+                    style = TextStyles.TextBold2,
                     color = Color.Black,
                     modifier = Modifier.padding(end = 6.dp)
                 )
                 Text(
                     text = phoneNum,
-                    style = TextStyles.TextDetailProfile1,
+                    style = TextStyles.TextSmall2,
                     color = Color.Black,
                 )
             }
@@ -159,12 +159,12 @@ fun DetailTitle(
     ){
         Text(
             text = formatAmountOrMessage(price.toString()) +"원",
-            style = TextStyles.TextDetailTitle1,
+            style = TextStyles.TextHeavyBold,
             color = Color.Black,
         )
         Text(
             text = title,
-            style = TextStyles.TextDetailTitle2,
+            style = TextStyles.TextBold3,
             color = Color.Black,
         )
     }

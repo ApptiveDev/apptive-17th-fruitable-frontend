@@ -28,7 +28,7 @@ fun FruitableTitle(
         item {
             Text(
                 text = title,
-                style = TextStyles.SignTitle1,
+                style = TextStyles.TextBold4,
                 color = Color.Black
             )
         }
@@ -36,7 +36,7 @@ fun FruitableTitle(
         item {
             Text(
                 text = subtitle,
-                style = TextStyles.TextBasic1,
+                style = TextStyles.TextBasic2,
                 color = Color.Black
             )
         }

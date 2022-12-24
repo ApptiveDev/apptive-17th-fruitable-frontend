@@ -44,7 +44,7 @@ fun SignTextField(
     modifier: Modifier = Modifier,
     onValueChange : (String) -> Unit = {},
     onFocusChange : (FocusState) -> Unit = {},
-    textStyle: TextStyle = TextStyles.TextDetailProfile1,
+    textStyle: TextStyle = TextStyles.TextSmall2,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     isError : Boolean = false,
