@@ -19,6 +19,10 @@ import com.fruitable.Fruitable.app.presentation.state.SaleTextFieldState
 import com.fruitable.Fruitable.ui.theme.MainGray4
 import com.fruitable.Fruitable.ui.theme.TextStyles
 
+/**
+ * 게시글 등록 시 사용하는 TextField
+ * 기존과 다르게 박스가 없고 에러 메시지를 출력하지 않음
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun FruitableTextField(

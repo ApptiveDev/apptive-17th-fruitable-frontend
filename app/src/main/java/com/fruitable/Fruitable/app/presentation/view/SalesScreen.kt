@@ -10,9 +10,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.BottomEnd
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Alignment.Companion.Start
+import androidx.compose.ui.Alignment.Companion.TopStart
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -56,9 +60,8 @@ fun SalesScreen(
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             SellerProfile(
-                modifier = Modifier
-                    .align(Start)
-                    .padding(30.dp, 48.dp, 0.dp, 49.dp)
+                modifier = Modifier.padding(30.dp, 48.dp, 30.dp, 49.dp),
+                onClick = { navController.navigate(Screen.UserInfoUpdateScreen.route) }
             )
             IsFruitTab()
             LazyColumn(
@@ -80,35 +83,68 @@ fun SalesScreen(
 @Composable
 fun SellerProfile(
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
     farmName: String = "푸릇농장",
     nickname: String = "홍길동",
     imageUrl: String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg"
 ){
-    Row(
-      modifier = modifier.height(54.dp),
-      verticalAlignment = CenterVertically
-    ){
-        ProfileImage(
-            imageUrl = imageUrl,
-            contentDescription = "profile image",
-            modifier = Modifier.size(54.dp)
-        )
-        Column(
-            modifier = Modifier.padding(start = 10.dp),
-            verticalArrangement = Arrangement.Center
+    Box(
+        modifier = modifier
+            .height(54.dp)
+            .fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = CenterVertically
         ) {
-            Text(
-                text = farmName,
-                style = TextStyles.TextProfile1,
-                color = Black,
+            ProfileImage(
+                imageUrl = imageUrl,
+                contentDescription = "profile image",
+                modifier = Modifier.size(54.dp)
             )
-            Text(
-                text = nickname,
-                style = TextStyles.TextBasic1,
-                color = Black,
-            )
-        }
+            Column(
+                modifier = Modifier.padding(start = 10.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = farmName,
+                    style = TextStyles.TextProfile1,
+                    color = Black,
+                )
+                Text(
+                    text = nickname,
+                    style = TextStyles.TextBasic1,
+                    color = Black,
+                )
+            }
 
+        }
+        Row(
+            modifier = Modifier.align(BottomEnd),
+            verticalAlignment = CenterVertically
+        ){
+            Box(
+                modifier = Modifier
+                    .size(90.dp, 32.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(MainGreen2)
+                    .clickable(onClick = onClick),
+                contentAlignment = Center
+            ) {
+                Text(
+                    text = "프로필 수정",
+                    style = TextStyles.TextProfile2,
+                    color = MainGray7,
+                    textAlign = TextAlign.Center
+                )
+            }
+            Spacer(modifier = Modifier.width(6.dp))
+            Image(
+                painter = painterResource(id = R.drawable.setting),
+                contentDescription = "setting button",
+                modifier = Modifier.size(22.dp)
+            )
+
+        }
     }
 }
 @Composable
@@ -120,7 +156,9 @@ fun IsFruitTab(){
         verticalAlignment = CenterVertically
     ){
         Column(
-           modifier = Modifier.clickable{ isFruitClick = true }.weight(1f),
+           modifier = Modifier
+               .clickable { isFruitClick = true }
+               .weight(1f),
            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -137,7 +175,9 @@ fun IsFruitTab(){
             )
         }
         Column(
-            modifier = Modifier.clickable{ isFruitClick = false }.weight(1f),
+            modifier = Modifier
+                .clickable { isFruitClick = false }
+                .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(

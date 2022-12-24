@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -27,19 +28,17 @@ fun SignButton(
     modifier: Modifier = Modifier,
     text: String = "회원가입",
     isRipple: Boolean = true,
-    style: TextStyle = TextStyles.TextBasic2,
+    style: TextStyle = TextStyles.TextBasic3,
     isCancellable: Boolean = false,
+    color: Color = Color.White,
+    textColor: Color = MainGreen1,
 ){
-    val buttonColor = ButtonDefaults.buttonColors(Color.White)
-    val textColor   = MainGreen1
-    val borderColor = MainGreen1
-
+    val buttonColor = ButtonDefaults.buttonColors(color)
     Button(
         onClick = onClick,
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
-            .border(1.dp,borderColor,RoundedCornerShape(10.dp))
-            .clip(RoundedCornerShape(10.dp)),
+            .border(1.dp,textColor,RoundedCornerShape(10.dp)),
         contentPadding = if (isCancellable) PaddingValues(start = 9.dp, end = 12.dp,top=0.dp,bottom=0.dp)
                          else PaddingValues(horizontal = 15.dp),
         colors = buttonColor,
