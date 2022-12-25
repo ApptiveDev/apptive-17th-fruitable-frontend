@@ -77,4 +77,8 @@ fun NavGraphBuilder.fruitableGraph(
         val id = backStackEntry.arguments?.getInt("id") ?: 0
         NoticeDetailScreen(navController = navController, id = id )
     }
+    composable(
+        route = Screen.SplashScreen.route) {
+        SplashScreen(navController)
+    }
 }
