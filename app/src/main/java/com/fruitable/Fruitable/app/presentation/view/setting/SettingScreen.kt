@@ -1,7 +1,10 @@
 package com.fruitable.Fruitable.app.presentation.view.setting
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -12,7 +15,6 @@ import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopU
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTitle
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTwoColumn
-import com.fruitable.Fruitable.ui.theme.MainGray4
 import com.fruitable.Fruitable.ui.theme.TextStyles
 
 @Composable
@@ -26,6 +28,7 @@ fun SettingScreen(
         )
         FruitableDivider(modifier = Modifier.padding(vertical = 30.dp),)
         ExtraSetting(
+            onNotice = { navController.navigate(Screen.NoticeScreen.route) },
             onLogOut = { navController.navigate(Screen.SignInScreen.route) },
             onLeaveApp = { navController.navigate(Screen.LeaveAppScreen.route) }
         )
@@ -94,7 +97,8 @@ fun ExtraSetting(
         )
         Text(
             text = "공지사항",
-            style = TextStyles.TextBasic3
+            style = TextStyles.TextBasic3,
+            modifier = Modifier.fillMaxWidth().clickable(onClick = onNotice)
         )
         SettingTwoColumn(
             text = "언어 설정",
