@@ -1,6 +1,5 @@
 package com.fruitable.Fruitable.app.presentation.navigation
 
-import android.accounts.Account
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -76,5 +75,9 @@ fun NavGraphBuilder.fruitableGraph(
     ){ backStackEntry ->
         val id = backStackEntry.arguments?.getInt("id") ?: 0
         NoticeDetailScreen(navController = navController, id = id )
+    }
+    composable(
+        route = Screen.SplashScreen.route) {
+        SplashScreen(navController)
     }
 }

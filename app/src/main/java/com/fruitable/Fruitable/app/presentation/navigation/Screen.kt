@@ -24,4 +24,8 @@ sealed class Screen (val route: String){
     object LeaveAppScreen: Screen("leave_app_screen")
     object NoticeScreen: Screen("notice_screen")
     object NoticeDetailScreen: Screen("notice_detail_screen")
+    /**
+     * Splash 화면
+     */
+    object SplashScreen: Screen("splash_screen")
 }

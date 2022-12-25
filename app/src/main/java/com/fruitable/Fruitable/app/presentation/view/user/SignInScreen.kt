@@ -1,21 +1,20 @@
 package com.fruitable.Fruitable.app.presentation.view
 
+import android.content.Context
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
-import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.CenterVertically
-import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -23,14 +22,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.SignTextField
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.SignInViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app.presentation.component.FruitableButton
-import com.fruitable.Fruitable.app.presentation.event.LeaveAppEvent
 import com.fruitable.Fruitable.app.presentation.event.SignInEvent
 import com.fruitable.Fruitable.ui.theme.*
 
@@ -40,12 +37,14 @@ fun SignInScreen(
     viewModel : SignInViewModel = hiltViewModel()
 ){
     val focusRequester = remember { FocusRequester() }
+    val context = LocalContext.current
+    val Token = context.getSharedPreferences("token", Context.MODE_PRIVATE)
 
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest { event->
             when(event){
                 is SignInViewModel.LoginStart.login -> {
-                    //Todo 통신후 적합하면..
+                    Token.edit().putString("token", "token is here").apply()
                     navController.navigate(Screen.SalesScreen.route){
                         popUpTo(0)
                     }
@@ -114,7 +113,7 @@ fun LoginField(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 33.dp,bottom = 10.dp)
+                .padding(start = 33.dp, bottom = 10.dp)
         ){
             Image(
                 painterResource(id = R.drawable.warning),

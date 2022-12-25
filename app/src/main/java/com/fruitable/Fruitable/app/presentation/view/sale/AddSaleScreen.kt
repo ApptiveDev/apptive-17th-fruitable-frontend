@@ -49,7 +49,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.fruitable.Fruitable.R
-import com.fruitable.Fruitable.app._enums.fruitableSpace
 import com.fruitable.Fruitable.app.domain.utils.addFocusCleaner
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTextField
@@ -202,7 +201,7 @@ fun DeadLineField(
     Column {
         FruitableDivider()
         FruitableCheckBox(
-            modifier = Modifier.padding(4.dp, fruitableSpace, 0.dp, fruitableSpace),
+            modifier = Modifier.padding(4.dp, 22.dp, 0.dp, 22.dp),
             isChecked = deadLine.isChecked,
             onClick = {
                 if (!isChecked) mDatePickerDialog.show()
@@ -238,7 +237,7 @@ fun DeadLineField(
                     .align(CenterVertically)
             )
         }
-        Spacer(modifier = Modifier.height(fruitableSpace))
+        Spacer(modifier = Modifier.height(22.dp))
     }
 }
 
@@ -260,10 +259,10 @@ fun HashTagField(
             Text( text = hashTag.textList.size.toString(), color = MainGreen1, style = TextStyles.TextSmall3 )
             Text( text = "/4)", color = Black, style = TextStyles.TextSmall3 )
         }
-        Spacer(modifier = Modifier.height(fruitableSpace))
+        Spacer(modifier = Modifier.height(22.dp))
         if (hashTag.textList.size < 4) {
             Box(
-                modifier = Modifier.padding(4.dp, 0.dp, 0.dp, fruitableSpace)
+                modifier = Modifier.padding(4.dp, 0.dp, 0.dp, 22.dp)
             ) {
                 BasicTextField(
                     value = hashTag.text,
@@ -288,7 +287,7 @@ fun HashTagField(
         if (hashTag.textList.isNotEmpty()) {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(bottom = fruitableSpace)
+                contentPadding = PaddingValues(bottom = 22.dp)
             ) {
                 items(hashTag.textList) { hashTagText ->
                     HashTagButton(
