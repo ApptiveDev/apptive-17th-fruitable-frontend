@@ -1,5 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.view.setting
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
@@ -48,7 +49,7 @@ fun LeaveAppScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is LeaveAppViewModel.UiEvent.LeaveApp -> {
-                    isDialogOpen = true
+                    if (isChecked) isDialogOpen = true
                 }
             }
         }
@@ -66,7 +67,10 @@ fun LeaveAppScreen(
     Scaffold(
         bottomBar = {
             Column(
-                modifier = Modifier.fillMaxWidth().alpha(if (isLeavable) 1f else 0.7f)
+                modifier = Modifier
+                    .background(Color.White)
+                    .fillMaxWidth()
+                    .alpha(if (isLeavable) 1f else 0.7f)
             ) {
                 FruitableDivider()
                 FruitableButton(
@@ -129,6 +133,7 @@ fun LeaveAppScreen(
                 onValueChange = { viewModel.onEvent(LeaveAppEvent.EnteredPassword2(it)) },
                 onFocusChange = { viewModel.onEvent(LeaveAppEvent.ChangePassword2Focus(it)) },
             )
+            Spacer(modifier = Modifier.height(100.dp))
         }
     }
 }

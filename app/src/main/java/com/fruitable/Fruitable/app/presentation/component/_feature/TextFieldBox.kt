@@ -1,5 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.component._feature
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.fruitable.Fruitable.app.presentation.state.TextFieldBoxState
+import com.fruitable.Fruitable.ui.theme.MainGray5
 import com.fruitable.Fruitable.ui.theme.MainGray8
 import com.fruitable.Fruitable.ui.theme.MainGreen3
 import com.fruitable.Fruitable.ui.theme.TextStyles
@@ -35,6 +37,8 @@ fun TextFieldBox(
     modifier: Modifier = Modifier,
     state: TextFieldBoxState = TextFieldBoxState(),
     onValueChange: (String) -> Unit = {},
+    isSpaced: Boolean = true,
+    enabled: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     onFocusChange: (FocusState) -> Unit = {},
@@ -44,17 +48,20 @@ fun TextFieldBox(
     Column(
         modifier = modifier
     ){
-        Text(
-            text = state.title,
-            style = TextStyles.TextBasic3,
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.height(10.dp))
+        if (isSpaced) {
+            Text(
+                text = state.title,
+                style = TextStyles.TextBasic3,
+                color = Color.Black
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(38.dp)
                 .clip(RoundedCornerShape(10.dp))
+                .background(if(enabled) Color.White else MainGray5)
                 .border(1.dp, borderColor, RoundedCornerShape(10.dp)),
             contentAlignment = Alignment.Center
         ) {
@@ -62,10 +69,11 @@ fun TextFieldBox(
                 value = state.text,
                 onValueChange = onValueChange,
                 singleLine = true,
-                textStyle = TextStyles.TextSmall2,
+                textStyle = TextStyles.TextSmall2.copy(if(enabled) Color.Black else MainGray8),
                 keyboardOptions = keyboardOptions,
                 keyboardActions = KeyboardActions(onDone = {keyboardController?.hide()}),
                 visualTransformation = visualTransformation,
+                enabled = enabled,
                 modifier = Modifier
                     .padding(start = 16.dp)
                     .fillMaxWidth()
@@ -83,7 +91,7 @@ fun TextFieldBox(
                 )
             }
         }
-        if (state.isError) {
+        if (state.isError && isSpaced) {
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = state.error,

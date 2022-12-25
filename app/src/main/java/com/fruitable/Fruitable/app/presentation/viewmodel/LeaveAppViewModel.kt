@@ -69,24 +69,17 @@ class LeaveAppViewModel @Inject constructor()
                 )
             }
             LeaveAppEvent.LeaveApp -> {
+                _password.value = password.value.copy(
+                    isError = !isPasswordValid(password.value.text)
+                )
+                _password2.value = password2.value.copy(
+                    isError = !isPasswordValid(password2.value.text)
+                            || password.value.text != password2.value.text
+                )
                 if (isLeavable()) {
-                    _password.value = password.value.copy(
-                        isError = false
-                    )
-                    _password2.value = password2.value.copy(
-                        isError = false
-                    )
                     viewModelScope.launch {
                         _eventFlow.emit(UiEvent.LeaveApp)
                     }
-                } else {
-                    _password.value = password.value.copy(
-                        isError = !isPasswordValid(password.value.text)
-                    )
-                    _password2.value = password2.value.copy(
-                        isError = !isPasswordValid(password2.value.text)
-                                || password.value.text != password2.value.text
-                    )
                 }
             }
         }
