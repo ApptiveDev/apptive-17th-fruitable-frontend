@@ -6,7 +6,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.BottomCenter
+import androidx.compose.ui.Alignment.Companion.BottomEnd
+import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -24,7 +29,8 @@ import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.SignInViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.fruitable.Fruitable.R
-import com.fruitable.Fruitable.app.presentation.component.SignButton
+import com.fruitable.Fruitable.app.presentation.component.FruitableButton
+import com.fruitable.Fruitable.app.presentation.event.LeaveAppEvent
 import com.fruitable.Fruitable.app.presentation.event.SignInEvent
 import com.fruitable.Fruitable.ui.theme.*
 
@@ -51,7 +57,7 @@ fun SignInScreen(
     ) {
         LoginImage()
         LoginField(focusRequester = focusRequester, viewModel = viewModel)
-        LoginBtn(navController = navController, onClick = {viewModel.onEvent(SignInEvent.SignIn)})
+        LoginBtn(loginAble = viewModel.isLoginable(), onClick = {viewModel.onEvent(SignInEvent.SignIn)})
         Text(
             text="아이디/비밀번호 찾기",
             style = TextStyles.TextSmall1,
@@ -61,8 +67,8 @@ fun SignInScreen(
                 .padding(bottom = 3.dp, end = 35.dp),
             textAlign = TextAlign.Right,
         )
-        SignButton(
-            onClick = {navController.navigate(Screen.SingUpScreen.route)},
+        FruitableButton(
+            onClick = {navController.navigate(Screen.SignUpScreen.route)},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(30.dp, 42.dp, 30.dp, 0.dp)
@@ -74,18 +80,19 @@ fun SignInScreen(
 @Composable
 fun LoginImage(){
     val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp /5 * 2
+    val screenHeight = (configuration.screenHeightDp.dp / 5) * 2
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(screenHeight)
     ){
         Image(
-            painterResource(id = R.drawable.sign_image),
-            contentDescription = "login_image",
+            painterResource(id = R.drawable.logo_rounded),
+            contentDescription = "logo_image",
             modifier = Modifier
-                .size(96.dp)
-                .align(Alignment.Center),
+                .padding(bottom = 30.dp)
+                .size(105.dp)
+                .align(BottomCenter),
         )
     }
 }
@@ -112,6 +119,7 @@ fun LoginField(
                 contentDescription = "emailError",
                 modifier = Modifier
                     .size(14.dp)
+                    .align(CenterVertically)
             )
             Text(
                 text = errorList.first(),
@@ -146,20 +154,18 @@ fun LoginField(
 
 @Composable
 fun LoginBtn(
-    navController: NavController,
+    loginAble: Boolean = false,
     onClick : () -> Unit = {}
 ) {
-    HashTagButton(
+    FruitableButton(
         text = "로그인",
-        style = TextStyles.TextSmall3,
-        isSelected = true,
-        isRipple = true,
+        color = MainGreen1,
+        textColor = Color.White,
         modifier = Modifier
-            .fillMaxWidth()
             .padding(30.dp, 25.dp, 30.dp, 10.dp)
-            .height(44.dp),
-        cornerRadius = 10,
-        //need verify
-        onClick = onClick,
+            .fillMaxWidth()
+            .height(44.dp)
+            .alpha(if (loginAble) 1f else 0.7f),
+        onClick = onClick
     )
 }

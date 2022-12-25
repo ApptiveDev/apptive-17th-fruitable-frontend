@@ -34,7 +34,7 @@ fun NavGraphBuilder.fruitableGraph(
         }
 
     composable(
-        route = Screen.SingUpScreen.route){
+        route = Screen.SignUpScreen.route){
             SignUpScreen(navController)
     }
     composable(

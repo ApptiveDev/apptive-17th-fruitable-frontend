@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
-import com.fruitable.Fruitable.app.presentation.component.SignButton
+import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopUp
 import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
 import com.fruitable.Fruitable.app.presentation.event.UserInfoUpdateEvent
@@ -79,7 +79,7 @@ fun UserInfoUpdateScreen(
             onFocusChange = { viewModel.onEvent(UserInfoUpdateEvent.ChangeNicknameFocus(it)) },
         )
         Spacer(modifier = Modifier.height(16.dp))
-        SignButton(
+        FruitableButton(
             text = "닉네임 수정",
             color = nicknameColor,
             textColor = Color.White,
@@ -113,7 +113,7 @@ fun UserInfoUpdateScreen(
             onFocusChange = { viewModel.onEvent(UserInfoUpdateEvent.ChangeNewPasswordFocus2(it)) },
         )
         Spacer(modifier = Modifier.height(16.dp))
-        SignButton(
+        FruitableButton(
             text = "패스워드 수정",
             color = passwordColor,
             textColor = Color.White,

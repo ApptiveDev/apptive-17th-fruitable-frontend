@@ -28,10 +28,9 @@ fun FruitablePopUp(
     confirm: () -> Unit = {},
     isOpen: Boolean = false
 ){
-    var openDialog = isOpen
-    if (openDialog) {
+    if (isOpen) {
         Dialog(
-            onDismissRequest = { openDialog = false },
+            onDismissRequest = {},
             properties = DialogProperties()
         ){
             Column(

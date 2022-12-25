@@ -12,7 +12,7 @@ sealed class Screen (val route: String){
      * user - 로그인, 회원가입, 회원정보 수정 Screen
      */
     object SignInScreen : Screen("sign_in_screen")
-    object SingUpScreen : Screen("sign_up_screen")
+    object SignUpScreen : Screen("sign_up_screen")
     object UserInfoUpdateScreen : Screen("user_info_update_screen")
     /**
      * setting - 설정, 계정 정보, 이메일 정보, 판매자 등업, 회원 탈퇴 Screen

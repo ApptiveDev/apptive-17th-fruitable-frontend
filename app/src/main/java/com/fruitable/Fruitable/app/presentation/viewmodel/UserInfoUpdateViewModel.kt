@@ -38,7 +38,6 @@ class UserInfoUpdateViewModel @Inject constructor()
 
     private val _newPassword2 = mutableStateOf(TextFieldBoxState(
         title = "새 비밀번호 확인",
-        hint = "8자 이하의 한글, 영어, 숫자만 입력해주세요.",
         error = "비밀번호가 일치하지 않습니다. 다시 입력해주세요."
     ))
     val newPassword2 = _newPassword2
@@ -106,44 +105,30 @@ class UserInfoUpdateViewModel @Inject constructor()
                 )
             }
             UserInfoUpdateEvent.NicknameSave -> {
+                _nickname.value = nickname.value.copy(
+                    isError = !isNicknameUpdatable()
+                )
                 if (isNicknameUpdatable()) {
-                    _nickname.value = nickname.value.copy(
-                        isError = false
-                    )
                     viewModelScope.launch{
                         _eventFlow.emit(UiEvent.SaveUserNickname)
                     }
-                } else {
-                    _nickname.value = nickname.value.copy(
-                        isError = true
-                    )
                 }
             }
             UserInfoUpdateEvent.PasswordSave -> {
+                _password.value = password.value.copy(
+                    isError = !isPasswordValid(password.value.text)
+                )
+                _newPassword.value = newPassword.value.copy(
+                    isError = !isPasswordValid(newPassword.value.text)
+                )
+                _newPassword2.value = newPassword2.value.copy(
+                    isError = !isPasswordValid(newPassword2.value.text)
+                            || newPassword.value.text != newPassword2.value.text
+                )
                 if (isPasswordUpdatable()) {
-                    _password.value = password.value.copy(
-                        isError = false
-                    )
-                    _newPassword.value = newPassword.value.copy(
-                        isError = false
-                    )
-                    _newPassword2.value = newPassword2.value.copy(
-                        isError = false
-                    )
                     viewModelScope.launch{
                         _eventFlow.emit(UiEvent.SaveUserPassword)
                     }
-                } else {
-                    _password.value = password.value.copy(
-                        isError = !isPasswordValid(password.value.text)
-                    )
-                    _newPassword.value = newPassword.value.copy(
-                        isError = !isPasswordValid(newPassword.value.text)
-                    )
-                    _newPassword2.value = newPassword2.value.copy(
-                        isError = !isPasswordValid(newPassword2.value.text)
-                                || newPassword.value.text != newPassword2.value.text
-                    )
                 }
             }
         }

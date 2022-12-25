@@ -1,14 +1,11 @@
 package com.fruitable.Fruitable.app.presentation.viewmodel
 
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fruitable.Fruitable.app.presentation.event.SignInEvent
 import com.fruitable.Fruitable.app.presentation.state.SignInState
-import com.fruitable.Fruitable.app.presentation.state.SignUpState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -32,7 +29,10 @@ class SignInViewModel @Inject constructor() : ViewModel() {
 
     val eventFlow = _eventFlow.asSharedFlow()
 
-
+    fun isLoginable(): Boolean {
+        val exceptMap = LoginData()
+        return exceptMap.all{it.value.second}
+    }
     fun onEvent(event : SignInEvent){
         when(event){
             is SignInEvent.ChangeEmailFocus -> {

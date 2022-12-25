@@ -201,25 +201,19 @@ fun DeadLineField(
 
     Column {
         FruitableDivider()
-        Row(
-            modifier = Modifier.padding(4.dp, fruitableSpace, 0.dp, fruitableSpace)
-        ) {
-            FruitableCheckBox(
-                isChecked = deadLine.isChecked,
-                modifier = Modifier.align(CenterVertically),
-                onClick = {
-                    if (!isChecked) mDatePickerDialog.show()
-                    viewModel.onEvent(AddSaleEvent.ChangeDeadLine)
-                }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "판매기한",
-                color = Black,
-                style = TextStyles.TextSmall3,
-                modifier = Modifier.align(CenterVertically)
-            )
-        }
+        FruitableCheckBox(
+            modifier = Modifier.padding(4.dp, fruitableSpace, 0.dp, fruitableSpace),
+            isChecked = deadLine.isChecked,
+            onClick = {
+                if (!isChecked) mDatePickerDialog.show()
+                viewModel.onEvent(AddSaleEvent.ChangeDeadLine)
+            },
+            width = 8.dp,
+            text = "판매기한",
+            style = TextStyles.TextSmall3,
+            borderColor = MainGray4,
+            backgroundColor = MainGreen3
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()

@@ -1,11 +1,10 @@
 package com.fruitable.Fruitable.app.presentation.view.setting
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
@@ -17,14 +16,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
-import com.fruitable.Fruitable.app.presentation.component.SignButton
+import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopUp
 import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
 import com.fruitable.Fruitable.app.presentation.component._view.FruitableCheckBox
 import com.fruitable.Fruitable.app.presentation.event.LeaveAppEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.LeaveAppViewModel
-import com.fruitable.Fruitable.app.presentation.viewmodel.UserInfoUpdateViewModel
 import com.fruitable.Fruitable.ui.theme.MainGreen1
 import com.fruitable.Fruitable.ui.theme.TextStyles
 import kotlinx.coroutines.flow.collectLatest
@@ -48,7 +46,7 @@ fun LeaveAppScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is LeaveAppViewModel.UiEvent.LeaveApp -> {
-                    isDialogOpen = true
+                    if (isChecked) isDialogOpen = true
                 }
             }
         }
@@ -66,10 +64,13 @@ fun LeaveAppScreen(
     Scaffold(
         bottomBar = {
             Column(
-                modifier = Modifier.fillMaxWidth().alpha(if (isLeavable) 1f else 0.7f)
+                modifier = Modifier
+                    .background(Color.White)
+                    .fillMaxWidth()
+                    .alpha(if (isLeavable) 1f else 0.7f)
             ) {
                 FruitableDivider()
-                SignButton(
+                FruitableButton(
                     text = "탈퇴하기",
                     color = MainGreen1,
                     textColor = Color.White,
@@ -97,23 +98,13 @@ fun LeaveAppScreen(
                         "정보가 삭제되며 복구할 수 없습니다.",
                 style = TextStyles.TextSmall2,
             )
-            Row(
-                modifier = Modifier.padding(top = 30.dp, bottom = 40.dp)
-            ) {
-                FruitableCheckBox(
-                    isChecked = isChecked,
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    onClick = { isChecked = !isChecked },
-                    borderColor = MainGreen1,
-                    backgroundColor = MainGreen1
-                )
-                Spacer(modifier = Modifier.width(11.dp))
-                Text(
-                    text = "위의 내용을 숙지했으며 동의합니다.",
-                    style = TextStyles.TextSmall2,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
+            FruitableCheckBox(
+                modifier = Modifier.padding(top = 30.dp, bottom = 40.dp),
+                isChecked = isChecked,
+                borderColor = MainGreen1,
+                backgroundColor = MainGreen1,
+                onClick = { isChecked = !isChecked }
+            )
             TextFieldBox(
                 state = passwordState,
                 modifier = Modifier.focusRequester(focusRequester),
@@ -129,6 +120,7 @@ fun LeaveAppScreen(
                 onValueChange = { viewModel.onEvent(LeaveAppEvent.EnteredPassword2(it)) },
                 onFocusChange = { viewModel.onEvent(LeaveAppEvent.ChangePassword2Focus(it)) },
             )
+            Spacer(modifier = Modifier.height(100.dp))
         }
     }
 }

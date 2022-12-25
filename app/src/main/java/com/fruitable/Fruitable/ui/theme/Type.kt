@@ -56,7 +56,8 @@ object TextStyles{
         fontFamily = Roboto,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
-        lineHeight = 16.41.sp
+        lineHeight = 24.sp,
+        color = Color.Black
     )
     val TextBasic3 = TextStyle(
         fontFamily = Roboto,
@@ -116,6 +117,13 @@ object TextStyles{
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
         lineHeight = 26.sp
+    )
+    val TextHeavyBold2 = TextStyle(
+        fontFamily = Roboto,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+        lineHeight = 26.sp,
+        color = Color.Black
     )
 }
 val Typography = Typography(
