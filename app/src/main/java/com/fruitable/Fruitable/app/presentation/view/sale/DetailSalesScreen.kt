@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.app._enums.HashTag
-import com.fruitable.Fruitable.app._enums.fruitableSpace
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
@@ -50,7 +49,7 @@ fun DetailSalesScreen(
         item{
             LazyRow(
                 modifier = Modifier
-                    .padding(start = fruitableSpace , top = 20.dp , bottom = 19.dp)
+                    .padding(start = 22.dp , top = 20.dp , bottom = 19.dp)
             ){
                 item {
                     //itemId별로 태그가 다를테니까 이거 서버 받으면 바꾸기
@@ -154,7 +153,7 @@ fun DetailTitle(
 ){
     Column(
         modifier = Modifier
-            .padding(start = fruitableSpace, top = fruitableSpace, bottom = 5.dp)
+            .padding(start = 22.dp, top = 22.dp, bottom = 5.dp)
             .fillMaxWidth()
     ){
         Text(

@@ -3,7 +3,6 @@ package com.fruitable.Fruitable.app.presentation.view
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -14,8 +13,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
 import com.fruitable.Fruitable.app.presentation.component.FruitableButton
+import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
 import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopUp
 import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
 import com.fruitable.Fruitable.app.presentation.event.UserInfoUpdateEvent

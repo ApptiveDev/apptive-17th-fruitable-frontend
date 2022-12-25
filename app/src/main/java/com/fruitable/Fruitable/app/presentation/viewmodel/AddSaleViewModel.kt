@@ -1,6 +1,5 @@
 package com.fruitable.Fruitable.app.presentation.viewmodel
 
-import android.media.Image
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -14,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import java.lang.Integer.min
 import java.time.LocalDate
 import javax.inject.Inject
 

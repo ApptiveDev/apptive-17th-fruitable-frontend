@@ -15,7 +15,6 @@ import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTitle
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTwoColumn
 import com.fruitable.Fruitable.app.presentation.view.user.AgreementPopUp
-import com.fruitable.Fruitable.ui.theme.MainGray4
 import com.fruitable.Fruitable.ui.theme.MainGray8
 import com.fruitable.Fruitable.ui.theme.TextStyles
 

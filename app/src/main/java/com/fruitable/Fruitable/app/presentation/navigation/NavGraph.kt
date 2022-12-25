@@ -1,6 +1,5 @@
 package com.fruitable.Fruitable.app.presentation.navigation
 
-import android.accounts.Account
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
