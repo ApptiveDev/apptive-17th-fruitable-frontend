@@ -3,7 +3,9 @@ package com.fruitable.Fruitable.app.presentation.navigation
 import android.accounts.Account
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.fruitable.Fruitable.app.presentation.view.*
 import com.fruitable.Fruitable.app.presentation.view.setting.*
 
@@ -42,7 +44,7 @@ fun NavGraphBuilder.fruitableGraph(
         UserInfoUpdateScreen(navController)
     }
     /**
-     * setting - 설정, 계정 정보, 이메일 정보, 판매자 등업, 회원 탈퇴 Screen
+     * setting - 설정, 계정 정보, 이메일 정보, 판매자 등업, 회원 탈퇴, 공지, 공지 상세 Screen
      */
     composable(
         route = Screen.AccountScreen.route) {
@@ -63,5 +65,16 @@ fun NavGraphBuilder.fruitableGraph(
     composable(
         route = Screen.LeaveAppScreen.route) {
         LeaveAppScreen(navController)
+    }
+    composable(
+        route = Screen.NoticeScreen.route) {
+        NoticeScreen(navController)
+    }
+    composable(
+        route = Screen.NoticeDetailScreen.route+"/{id}",
+        arguments = listOf(navArgument("id") { type = NavType.IntType })
+    ){ backStackEntry ->
+        val id = backStackEntry.arguments?.getInt("id") ?: 0
+        NoticeDetailScreen(navController = navController, id = id )
     }
 }
