@@ -1,7 +1,10 @@
 package com.fruitable.Fruitable.app.presentation.view.setting
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -12,7 +15,6 @@ import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopU
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTitle
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTwoColumn
-import com.fruitable.Fruitable.ui.theme.MainGray4
 import com.fruitable.Fruitable.ui.theme.TextStyles
 
 @Composable
@@ -24,11 +26,9 @@ fun SettingScreen(
             onClick = { navController.navigate(Screen.AccountScreen.route) },
             onUpgrade = { navController.navigate(Screen.UpgradingScreen.route) }
         )
-        FruitableDivider(
-            modifier = Modifier.padding(vertical = 30.dp),
-            color = MainGray4
-        )
+        FruitableDivider(modifier = Modifier.padding(vertical = 30.dp),)
         ExtraSetting(
+            onNotice = { navController.navigate(Screen.NoticeScreen.route) },
             onLogOut = { navController.navigate(Screen.SignInScreen.route) },
             onLeaveApp = { navController.navigate(Screen.LeaveAppScreen.route) }
         )
@@ -40,25 +40,27 @@ fun UserSetting(
     onClick: () -> Unit = {},
     onUpgrade: () -> Unit = {}
 ){
-    Column(
-        modifier = Modifier.padding(horizontal = 30.dp),
-        verticalArrangement = Arrangement.spacedBy(30.dp)
-    ) {
+    Column {
         SettingTitle()
-        Text(
-            text = "사용자 설정",
-            style = TextStyles.TextBold1
-        )
-        Text(
-            text = "계정 정보",
-            style = TextStyles.TextBasic3,
-            modifier = Modifier.clickable(onClick = onClick)
-        )
-        Text(
-            text = "판매자로 등업하기",
-            style = TextStyles.TextBasic3,
-            modifier = Modifier.clickable(onClick = onUpgrade)
-        )
+        Column(
+            modifier = Modifier.padding(30.dp, 30.dp, 30.dp, 0.dp),
+            verticalArrangement = Arrangement.spacedBy(30.dp)
+        ) {
+            Text(
+                text = "사용자 설정",
+                style = TextStyles.TextBold1
+            )
+            Text(
+                text = "계정 정보",
+                style = TextStyles.TextBasic3,
+                modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)
+            )
+            Text(
+                text = "판매자로 등업하기",
+                style = TextStyles.TextBasic3,
+                modifier = Modifier.fillMaxWidth().clickable(onClick = onUpgrade)
+            )
+        }
     }
 }
 @Composable
@@ -95,7 +97,8 @@ fun ExtraSetting(
         )
         Text(
             text = "공지사항",
-            style = TextStyles.TextBasic3
+            style = TextStyles.TextBasic3,
+            modifier = Modifier.fillMaxWidth().clickable(onClick = onNotice)
         )
         SettingTwoColumn(
             text = "언어 설정",
@@ -108,12 +111,12 @@ fun ExtraSetting(
         Text(
             text = "로그아웃",
             style = TextStyles.TextBasic3,
-            modifier = Modifier.clickable{ logOutConfirmDialog = true }
+            modifier = Modifier.fillMaxWidth().clickable{ logOutConfirmDialog = true }
         )
         Text(
             text = "서비스 탈퇴하기",
             style = TextStyles.TextBasic3,
-            modifier = Modifier.clickable(onClick = onLeaveApp)
+            modifier = Modifier.fillMaxWidth().clickable(onClick = onLeaveApp)
         )
     }
 }

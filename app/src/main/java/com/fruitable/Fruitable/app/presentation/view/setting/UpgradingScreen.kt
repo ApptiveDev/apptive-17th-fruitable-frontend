@@ -1,6 +1,8 @@
 package com.fruitable.Fruitable.app.presentation.view.setting
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -34,7 +36,7 @@ fun UpgradingScreen(
                 withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold, color = MainGreen1)) {
                     append("사업자 등록증")
                 }
-                append("과")
+                append("과 ")
                 withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold, color = MainGreen1)) {
                     append("통신판매업 신고서")
                 }
