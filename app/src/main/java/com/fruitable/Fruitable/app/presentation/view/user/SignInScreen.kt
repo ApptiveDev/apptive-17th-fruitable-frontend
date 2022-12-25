@@ -46,7 +46,9 @@ fun SignInScreen(
             when(event){
                 is SignInViewModel.LoginStart.login -> {
                     //Todo 통신후 적합하면..
-                    navController.navigate(Screen.SalesScreen.route)
+                    navController.navigate(Screen.SalesScreen.route){
+                        popUpTo(0)
+                    }
                 }
             }
         }
