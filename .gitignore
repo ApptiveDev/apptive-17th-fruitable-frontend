@@ -274,3 +274,23 @@ fabric.properties
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/kotlin,android,androidstudio
+
+app/src/main/ic_launcher-playstore.png
+
+app/src/main/res/mipmap-anydpi-v26/
+
+app/src/main/res/mipmap-hdpi/
+
+app/src/main/res/mipmap-mdpi/
+
+app/src/main/res/mipmap-xxxhdpi/
+
+app/src/main/res/values/
+
+*.webp
+
+*.xml
+
+app/src/main/res/mipmap-xxhdpi/
+
+app/src/main/res/mipmap-xhdpi/
