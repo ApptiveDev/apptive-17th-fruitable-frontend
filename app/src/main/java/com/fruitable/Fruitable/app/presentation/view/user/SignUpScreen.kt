@@ -1,29 +1,39 @@
 package com.fruitable.Fruitable.app.presentation.view
 
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.fruitable.Fruitable.R
-import com.fruitable.Fruitable.app.presentation.component.*
+import com.fruitable.Fruitable.app.presentation.component.FruitableButton
+import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
+import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
+import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
 import com.fruitable.Fruitable.app.presentation.event.SignUpEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.SignUpViewModel
+import com.fruitable.Fruitable.ui.theme.MainGreen1
+import com.fruitable.Fruitable.ui.theme.MainGreen4
 import com.fruitable.Fruitable.ui.theme.TextStyles
 import kotlinx.coroutines.flow.collectLatest
 
@@ -32,361 +42,132 @@ fun SignUpScreen(
     navController: NavController,
     viewModel : SignUpViewModel = hiltViewModel()
 ) {
+    val nicknameState = viewModel.nickname.value
+    val emailState = viewModel.email.value
+    val numberState = viewModel.number.value
+    val passwordState = viewModel.password.value
+    val password2State = viewModel.password2.value
+
+    var certification = viewModel.certification.value
     val focusRequester = remember { FocusRequester() }
+    val emailColor = if (certification%2 == 1) MainGreen1 else MainGreen4
+    val isSignUpAble = viewModel.isSignUpAble()
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                SignUpViewModel.RegisterStart.Register -> {
+                SignUpViewModel.UiEvent.SignUp -> {
                     navController.navigate(Screen.SignInScreen.route)
                 }
-                SignUpViewModel.RegisterStart.PrevCertification -> {
-                    //Todo 이메일에 인증번호 전송 및 밑의 상태로 변경
-                    viewModel.state = viewModel.state.copy(
-                        certificationBtnOn = true
-                    )
-                }
-                SignUpViewModel.RegisterStart.Certification -> {
-                    //Todo 홈페이지 인증번호와 비교 후 같으면.. 밑에 상태로 변경하기
-                    viewModel.state = viewModel.state.copy(
-                        certificationCheck = true
-                    )
-                }
             }
         }
     }
-    FruitableTitle(
-        title = "회원가입",
-        subtitle = "푸릇에이블에 오신 것을 환영합니다!"
-    ) {
-        NameField(viewModel, focusRequester)
-        NicknameField(viewModel, focusRequester)
-        EmailField(viewModel, focusRequester, viewModel.isCertificationCheck() == false)
-
-        if (!viewModel.CertificationBtnOn()) {
-            PrevCertificationBtn(
-                onClick = { viewModel.onEvent((SignUpEvent.PrevCertification)) },
-                isPrevCertifiable = viewModel.isPrevCertifiable(),
-            )
-        } else {
-            if (!viewModel.isCertificationCheck()) {
-                CertificationField(
-                    viewModel = viewModel,
-                    focusRequester = focusRequester,
-                    isCertifiable = viewModel.isCertifiable(),
-                    reClick = { viewModel.onEvent(SignUpEvent.PrevCertification) },      //이메일 재전송
-                    onClick = { viewModel.onEvent(SignUpEvent.Certification) }
-                )
-            } else {
-                PrevCertificationBtn(
-                    onClick = {},
-                    isPrevCertifiable = false,
-                    text = "인증완료"
+    Scaffold(
+        bottomBar = {
+            Column(
+                modifier = Modifier
+                    .background(Color.White)
+                    .fillMaxWidth()
+                    .alpha(if (isSignUpAble) 1f else 0.7f)
+            ) {
+                FruitableDivider()
+                FruitableButton(
+                    text = "가입완료",
+                    color = MainGreen1,
+                    textColor = Color.White,
+                    modifier = Modifier
+                        .padding(30.dp, 14.dp, 30.dp, 30.dp)
+                        .fillMaxWidth()
+                        .height(44.dp),
+                    onClick = { viewModel.onEvent(SignUpEvent.SignUp) }
                 )
             }
         }
-
-        PasswordField(viewModel, focusRequester)
-        RepeatedPasswordField(viewModel, focusRequester)
-
-        RegisterBtn(onClick = { viewModel.onEvent(SignUpEvent.SignUp) })
-
-    }
-}
-
-
-
-
-@Composable
-fun InputLabel(
-    text : String,
-    isEssential : Boolean = false,
-){
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 9.dp)
-    ){
-        Text(
-            text = text,
-            style = TextStyles.TextBasic3,
-            color = Color.Black,
-            modifier = Modifier
-                .padding(end = 3.dp)
-        )
-        if(isEssential){
-            Image(
-                painterResource(id = R.drawable.essential),
-                contentDescription = "essentail mark",
-            )
-        }
-    }
-}
-
-@Composable
-fun NameField(
-    viewModel: SignUpViewModel,
-    focusRequester: FocusRequester,
-){
-    val value = viewModel.state.name
-    val isError = viewModel.state.nameError != null
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 28.dp)
-    ){
-        InputLabel(text = "이름",true)
-        SignTextField(
-            modifier = Modifier
-                .focusRequester(focusRequester),
-            value = value,
-            onValueChange = {viewModel.onEvent(SignUpEvent.EnteredName(it))},
-            isError = isError,
-        )
-        if(isError){
-            Text(
-                text = viewModel.state.nameError!!,
-                style = TextStyles.TextBasic1,
-                color = Color.Red,
-                modifier = Modifier.padding(top=10.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun NicknameField(
-    viewModel: SignUpViewModel,
-    focusRequester: FocusRequester,
-){
-    val value = viewModel.state.nickname
-    val isError = viewModel.state.nicknameError != null
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 28.dp)
-    ){
-        InputLabel(text = "닉네임")
-        SignTextField(
-            modifier = Modifier
-                .focusRequester(focusRequester),
-            value = value,
-            onValueChange = {viewModel.onEvent(SignUpEvent.EnteredNickname(it))},
-            isError = isError,
-        )
-        if(isError){
-            Text(
-                text = viewModel.state.nicknameError!!,
-                style = TextStyles.TextBasic1,
-                color = Color.Red,
-                modifier = Modifier.padding(top=10.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun EmailField(
-    viewModel: SignUpViewModel,
-    focusRequester: FocusRequester,
-    enable : Boolean,
-){
-    val value = viewModel.state.email
-    val isError = viewModel.state.emailError != null
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
     ) {
-        InputLabel(text = "이메일")
-        SignTextField(
-            modifier = Modifier
-                .focusRequester(focusRequester),
-            value = value,
-            onValueChange = {viewModel.onEvent(SignUpEvent.EnteredEmail(it))},
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            isError = isError,
-            enable = enable
-        )
-        if(isError){
-            Text(
-                text = viewModel.state.emailError!!,
-                style = TextStyles.TextBasic1,
-                color = Color.Red,
-                modifier = Modifier.padding(top=10.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun PasswordField(
-    viewModel: SignUpViewModel,
-    focusRequester: FocusRequester,
-){
-    val value = viewModel.state.password
-    val isError = viewModel.state.passwordError != null
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 28.dp)
-    ){
-        InputLabel(text = "비밀번호")
-        SignTextField(
-            modifier = Modifier
-                .focusRequester(focusRequester),
-            value = value,
-            onValueChange = {viewModel.onEvent(SignUpEvent.EnteredPassword(it))},
-            visualTransformation = PasswordVisualTransformation(),
-            isError = isError,
-        )
-        if(isError){
-            Text(
-                text = viewModel.state.passwordError!!,
-                style = TextStyles.TextBasic1,
-                color = Color.Red,
-                modifier = Modifier.padding(top=10.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun RepeatedPasswordField(
-    viewModel: SignUpViewModel,
-    focusRequester: FocusRequester,
-){
-    val value = viewModel.state.repeatedPassword
-    val isError = viewModel.state.repeatedPasswordError != null
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 28.dp)
-    ) {
-        InputLabel(text = "비밀번호 확인")
-        SignTextField(
-            modifier = Modifier
-                .focusRequester(focusRequester),
-            value = value,
-            onValueChange = {viewModel.onEvent(SignUpEvent.EnteredRepeatedPassword(it))},
-            visualTransformation = PasswordVisualTransformation(),
-            isError = isError,
-        )
-        if(isError){
-            Text(
-                text = viewModel.state.repeatedPasswordError!!,
-                style = TextStyles.TextBasic1,
-                color = Color.Red,
-                modifier = Modifier.padding(top=10.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun CertificationField(
-    viewModel: SignUpViewModel,
-    focusRequester: FocusRequester,
-    isCertifiable : Boolean,
-    onClick: () -> Unit,
-    reClick: () -> Unit,
-){
-    val value = viewModel.state.certification
-    val isError = viewModel.state.certificationError != null
-
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 30.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
+        FruitableTitle(
+            title = "회원가입",
+            subtitle = "푸릇에이블에 오신 것을 환영합니다 !"
         ) {
-            SignTextField(
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .width(180.dp)
-                    .height(38.dp),
-                value = value,
-                onValueChange = { viewModel.onEvent(SignUpEvent.EnteredCertification(it)) },
-                isError = isError,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            TextFieldBox(
+                state = nicknameState,
+                modifier = Modifier.focusRequester(focusRequester),
+                onValueChange = { viewModel.onEvent(SignUpEvent.EnteredNickname(it)) },
+                onFocusChange = { viewModel.onEvent(SignUpEvent.ChangeNicknameFocus(it)) },
             )
+            Spacer(modifier = Modifier.height(28.dp))
+            TextFieldBox(
+                state = emailState,
+                modifier = Modifier.focusRequester(focusRequester),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                onValueChange = {
+                    viewModel.onEvent(SignUpEvent.EnteredEmail(it))
+                },
+                enabled = certification != 4,
+                onFocusChange = { viewModel.onEvent(SignUpEvent.ChangeEmailFocus(it)) },
+            )
+            if (certification in 2..3) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    verticalAlignment = CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TextFieldBox(
+                        state = numberState,
+                        isSpaced = false,
+                        modifier = Modifier.focusRequester(focusRequester).weight(1f),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        onValueChange = {
+                            viewModel.onEvent(SignUpEvent.EnteredCertification(it))
+                        },
+                    )
+                    Text (
+                        text = "인증번호 재발송",
+                        style = TextStyles.TextBasic1,
+                        color = MainGreen1,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .border(1.dp, MainGreen1, RoundedCornerShape(10.dp))
+                            .padding(16.dp, 12.dp)
+                            .clickable{ viewModel.onEvent(SignUpEvent.EnteredCertification("")) }
+                    )
+                }
+                if (numberState.isError)
+                    Text(
+                        text = "정확한 인증번호 6자리를 입력해주세요.",
+                        style = TextStyles.TextBasic1,
+                        color = Color.Red,
+                        modifier = Modifier.padding(top = 10.dp).align(Start)
+                    )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
             FruitableButton(
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .padding(start = 8.dp)
-                    .height(38.dp),
-                text = "인증번호 재발송",
-                isCancellable = true,
-                style = TextStyles.TextBasic1,
-                onClick = reClick
+                text = if (certification <= 1) "인증번호 발송"
+                        else if (certification <= 3) "인증 확인" else "인증 완료",
+                color = emailColor,
+                textColor = Color.White,
+                modifier = Modifier.fillMaxWidth().height(44.dp),
+                onClick = {
+                    viewModel.onEvent(SignUpEvent.ChangeCertification(certification))
+                }
             )
-        }
-        if (isError) {
-            Text(
-                text = viewModel.state.certificationError!!,
-                style = TextStyles.TextBasic1,
-                color = Color.Red,
-                modifier = Modifier.padding(top = 10.dp)
+            Spacer(modifier = Modifier.height(28.dp))
+            TextFieldBox(
+                state = passwordState,
+                modifier = Modifier.focusRequester(focusRequester),
+                visualTransformation = PasswordVisualTransformation(),
+                onValueChange = { viewModel.onEvent(SignUpEvent.EnteredPassword(it)) },
+                onFocusChange = { viewModel.onEvent(SignUpEvent.ChangePasswordFocus(it)) },
             )
+            Spacer(modifier = Modifier.height(28.dp))
+            TextFieldBox(
+                state = password2State,
+                modifier = Modifier.focusRequester(focusRequester),
+                visualTransformation = PasswordVisualTransformation(),
+                onValueChange = { viewModel.onEvent(SignUpEvent.EnteredPassword2(it)) },
+                onFocusChange = { viewModel.onEvent(SignUpEvent.ChangePassword2Focus(it)) },
+            )
+            Spacer(modifier = Modifier.height(100.dp))
         }
 
-        HashTagButton(
-            text = "확인",
-            style = TextStyles.TextSmall3,
-            isSelected = true,
-            isRipple = true,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 44.dp)
-                .height(44.dp),
-            onClick = onClick,
-            cornerRadius = 10,
-        )
     }
-}
-
-@Composable
-fun PrevCertificationBtn(
-    onClick: () -> Unit,
-    isPrevCertifiable : Boolean,
-    text : String = "인증번호 발송"
-){
-    HashTagButton(
-        text = text,
-        style = TextStyles.TextSmall3,
-        isSelected = true,
-        isRipple = true,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 28.dp)
-            .height(44.dp),
-        onClick = onClick,
-        cornerRadius = 10,
-        enabled = isPrevCertifiable
-    )
-}
-
-@Composable
-fun RegisterBtn(
-    onClick : () -> Unit,
-){
-    HashTagButton(
-        text = "가입완료하기",
-        style = TextStyles.TextSmall3,
-        isSelected = true,
-        isRipple = true,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(0.dp, 22.dp, 0.dp, 30.dp)
-            .height(44.dp),
-        cornerRadius = 10,
-        onClick = onClick,
-    )
 }
