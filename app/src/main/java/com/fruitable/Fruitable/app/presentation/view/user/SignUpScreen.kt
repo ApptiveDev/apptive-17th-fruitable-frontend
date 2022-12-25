@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
@@ -34,6 +35,7 @@ import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
 import com.fruitable.Fruitable.app.presentation.component._view.FruitableCheckBox
 import com.fruitable.Fruitable.app.presentation.event.SignUpEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
+import com.fruitable.Fruitable.app.presentation.view.user.AgreementPopUp
 import com.fruitable.Fruitable.app.presentation.viewmodel.SignUpViewModel
 import com.fruitable.Fruitable.ui.theme.MainGreen1
 import com.fruitable.Fruitable.ui.theme.MainGreen3
@@ -52,7 +54,7 @@ fun SignUpScreen(
     val passwordState = viewModel.password.value
     val password2State = viewModel.password2.value
 
-    var certification = viewModel.certification.value
+    val certification = viewModel.certification.value
     val focusRequester = remember { FocusRequester() }
     val emailColor = if (certification%2 == 1) MainGreen1 else MainGreen4
     var isAgree by remember { mutableStateOf(false) }
@@ -186,13 +188,18 @@ fun SignUpScreen(
 
     }
 }
-
 @Composable
 fun Agreement(): Boolean {
 
     var utilCheck by remember { mutableStateOf(false) }
     var infoCheck by remember { mutableStateOf(false) }
     var ageCheck by remember { mutableStateOf(false) }
+
+    var isUtilOpen by remember { mutableStateOf(false) }
+    var isInfoOpen by remember { mutableStateOf(false) }
+
+    AgreementPopUp(isOpen = isUtilOpen, category = true, onDismiss = {isUtilOpen = !isUtilOpen}, onAgree = {utilCheck = true})
+    AgreementPopUp(isOpen = isInfoOpen, category = false, onDismiss = {isInfoOpen = !isInfoOpen}, onAgree = {infoCheck = true} )
 
     Column(
         modifier = Modifier
@@ -232,7 +239,10 @@ fun Agreement(): Boolean {
             Image(
                 painter = painterResource(id = R.drawable.arrow),
                 contentDescription = "agreement detail button",
-                modifier = Modifier.align(CenterEnd).width(7.dp)
+                modifier = Modifier
+                    .align(CenterEnd)
+                    .width(7.dp)
+                    .clickable{ isUtilOpen = !isUtilOpen}
             )
         }
         Box(
@@ -248,7 +258,10 @@ fun Agreement(): Boolean {
             Image(
                 painter = painterResource(id = R.drawable.arrow),
                 contentDescription = "agreement detail button",
-                modifier = Modifier.align(CenterEnd).width(7.dp)
+                modifier = Modifier
+                    .align(CenterEnd)
+                    .width(7.dp)
+                    .clickable{ isInfoOpen = !isInfoOpen}
             )
         }
         FruitableCheckBox(
