@@ -21,11 +21,11 @@ fun AccountScreen(
     navController: NavController
 ){
     Column {
+        SettingTitle("계정 정보")
         Column(
             modifier = Modifier.padding(horizontal = 30.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            SettingTitle("계정 정보")
             Text(
                 text = "계정 정보",
                 style = TextStyles.TextBold1,
@@ -42,10 +42,7 @@ fun AccountScreen(
                 style = TextStyles.TextSmall3
             )
         }
-        FruitableDivider(
-            modifier = Modifier.padding(vertical = 30.dp),
-            color = MainGray4
-        )
+        FruitableDivider(modifier = Modifier.padding(vertical = 30.dp),)
         Column(
             modifier = Modifier.padding(horizontal = 30.dp),
             verticalArrangement = Arrangement.spacedBy(30.dp)

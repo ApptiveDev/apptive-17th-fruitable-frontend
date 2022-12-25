@@ -24,10 +24,7 @@ fun SettingScreen(
             onClick = { navController.navigate(Screen.AccountScreen.route) },
             onUpgrade = { navController.navigate(Screen.UpgradingScreen.route) }
         )
-        FruitableDivider(
-            modifier = Modifier.padding(vertical = 30.dp),
-            color = MainGray4
-        )
+        FruitableDivider(modifier = Modifier.padding(vertical = 30.dp),)
         ExtraSetting(
             onLogOut = { navController.navigate(Screen.SignInScreen.route) },
             onLeaveApp = { navController.navigate(Screen.LeaveAppScreen.route) }
@@ -40,25 +37,27 @@ fun UserSetting(
     onClick: () -> Unit = {},
     onUpgrade: () -> Unit = {}
 ){
-    Column(
-        modifier = Modifier.padding(horizontal = 30.dp),
-        verticalArrangement = Arrangement.spacedBy(30.dp)
-    ) {
+    Column {
         SettingTitle()
-        Text(
-            text = "사용자 설정",
-            style = TextStyles.TextBold1
-        )
-        Text(
-            text = "계정 정보",
-            style = TextStyles.TextBasic3,
-            modifier = Modifier.clickable(onClick = onClick)
-        )
-        Text(
-            text = "판매자로 등업하기",
-            style = TextStyles.TextBasic3,
-            modifier = Modifier.clickable(onClick = onUpgrade)
-        )
+        Column(
+            modifier = Modifier.padding(30.dp, 30.dp, 30.dp, 0.dp),
+            verticalArrangement = Arrangement.spacedBy(30.dp)
+        ) {
+            Text(
+                text = "사용자 설정",
+                style = TextStyles.TextBold1
+            )
+            Text(
+                text = "계정 정보",
+                style = TextStyles.TextBasic3,
+                modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)
+            )
+            Text(
+                text = "판매자로 등업하기",
+                style = TextStyles.TextBasic3,
+                modifier = Modifier.fillMaxWidth().clickable(onClick = onUpgrade)
+            )
+        }
     }
 }
 @Composable
@@ -108,12 +107,12 @@ fun ExtraSetting(
         Text(
             text = "로그아웃",
             style = TextStyles.TextBasic3,
-            modifier = Modifier.clickable{ logOutConfirmDialog = true }
+            modifier = Modifier.fillMaxWidth().clickable{ logOutConfirmDialog = true }
         )
         Text(
             text = "서비스 탈퇴하기",
             style = TextStyles.TextBasic3,
-            modifier = Modifier.clickable(onClick = onLeaveApp)
+            modifier = Modifier.fillMaxWidth().clickable(onClick = onLeaveApp)
         )
     }
 }

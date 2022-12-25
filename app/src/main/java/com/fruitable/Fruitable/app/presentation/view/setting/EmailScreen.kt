@@ -20,33 +20,34 @@ import com.fruitable.Fruitable.ui.theme.TextStyles
 fun EmailScreen(
     navController: NavController
 ){
-    Column(
-        modifier = Modifier.padding(horizontal = 30.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
+    Column {
         SettingTitle("계정 정보")
-        Text(
-            text = "이메일 인증 정보",
-            style = TextStyles.TextBold5,
-            modifier = Modifier.padding(top = 20.dp, bottom = 30.dp)
-        )
-        Text(
-            text = "인증날짜",
-            style = TextStyles.TextBold1
-        )
-        Text(
-            text = "2022.11.27",
-            style = TextStyles.TextSmall3
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "이메일",
-            style = TextStyles.TextBold1
-        )
-        Text(
-            text = "honggildong@gmail.com",
-            style = TextStyles.TextSmall3
-        )
+        Column(
+            modifier = Modifier.padding(horizontal = 30.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Text(
+                text = "이메일 인증 정보",
+                style = TextStyles.TextBold5,
+                modifier = Modifier.padding(top = 20.dp, bottom = 30.dp)
+            )
+            Text(
+                text = "인증날짜",
+                style = TextStyles.TextBold1
+            )
+            Text(
+                text = "2022.11.27",
+                style = TextStyles.TextSmall3
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "이메일",
+                style = TextStyles.TextBold1
+            )
+            Text(
+                text = "honggildong@gmail.com",
+                style = TextStyles.TextSmall3
+            )
+        }
     }
-
 }
