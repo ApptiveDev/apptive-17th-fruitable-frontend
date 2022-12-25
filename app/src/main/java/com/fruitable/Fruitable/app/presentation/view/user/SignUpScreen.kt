@@ -317,7 +317,7 @@ fun CertificationField(
                 isError = isError,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             )
-            SignButton(
+            FruitableButton(
                 modifier = Modifier
                     .focusRequester(focusRequester)
                     .padding(start = 8.dp)

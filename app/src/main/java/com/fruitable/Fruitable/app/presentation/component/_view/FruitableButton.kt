@@ -3,10 +3,8 @@ package com.fruitable.Fruitable.app.presentation.component
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -14,16 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app.domain.utils.NoRippleInteractionSource
 import com.fruitable.Fruitable.ui.theme.*
 
 @Composable
-fun SignButton(
+fun FruitableButton(
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     text: String = "회원가입",

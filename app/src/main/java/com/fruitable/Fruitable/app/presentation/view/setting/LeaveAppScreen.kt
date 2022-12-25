@@ -17,7 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
-import com.fruitable.Fruitable.app.presentation.component.SignButton
+import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopUp
 import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
 import com.fruitable.Fruitable.app.presentation.component._view.FruitableCheckBox
@@ -69,7 +69,7 @@ fun LeaveAppScreen(
                 modifier = Modifier.fillMaxWidth().alpha(if (isLeavable) 1f else 0.7f)
             ) {
                 FruitableDivider()
-                SignButton(
+                FruitableButton(
                     text = "탈퇴하기",
                     color = MainGreen1,
                     textColor = Color.White,

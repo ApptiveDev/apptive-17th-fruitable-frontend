@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -24,7 +25,7 @@ import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.SignInViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.fruitable.Fruitable.R
-import com.fruitable.Fruitable.app.presentation.component.SignButton
+import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.event.SignInEvent
 import com.fruitable.Fruitable.ui.theme.*
 
@@ -61,7 +62,7 @@ fun SignInScreen(
                 .padding(bottom = 3.dp, end = 35.dp),
             textAlign = TextAlign.Right,
         )
-        SignButton(
+        FruitableButton(
             onClick = {navController.navigate(Screen.SingUpScreen.route)},
             modifier = Modifier
                 .fillMaxWidth()
@@ -112,6 +113,7 @@ fun LoginField(
                 contentDescription = "emailError",
                 modifier = Modifier
                     .size(14.dp)
+                    .align(CenterVertically)
             )
             Text(
                 text = errorList.first(),
