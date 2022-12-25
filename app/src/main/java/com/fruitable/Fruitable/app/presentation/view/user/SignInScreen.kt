@@ -68,7 +68,7 @@ fun SignInScreen(
             textAlign = TextAlign.Right,
         )
         FruitableButton(
-            onClick = {navController.navigate(Screen.SingUpScreen.route)},
+            onClick = {navController.navigate(Screen.SignUpScreen.route)},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(30.dp, 42.dp, 30.dp, 0.dp)
