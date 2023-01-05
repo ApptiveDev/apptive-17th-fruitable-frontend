@@ -70,10 +70,7 @@ fun AgreementPopUp(
                         text = "동의하기",
                         color = MainGreen1,
                         textColor = Color.White,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 50.dp)
-                            .height(44.dp),
+                        modifier = Modifier.padding(top = 50.dp),
                         onClick = {
                             onDismiss()
                             onAgree()

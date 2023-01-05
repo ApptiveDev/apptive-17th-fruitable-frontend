@@ -35,6 +35,8 @@ fun FruitableButton(
     Button(
         onClick = onClick,
         modifier = modifier
+            .fillMaxWidth()
+            .height(44.dp)
             .clip(RoundedCornerShape(cornerShape))
             .border(1.dp,textColor,RoundedCornerShape(cornerShape)),
         contentPadding = if (isCancellable) PaddingValues(start = 9.dp, end = 12.dp,top=0.dp,bottom=0.dp)

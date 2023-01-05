@@ -63,7 +63,7 @@ fun SignUpScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 SignUpViewModel.UiEvent.SignUp -> {
-                    if(isAgree) navController.navigate(Screen.SignInScreen.route)
+                    if(isAgree) navController.navigate(Screen.LogInScreen.route)
                 }
             }
         }
@@ -81,10 +81,7 @@ fun SignUpScreen(
                     text = "가입완료",
                     color = MainGreen1,
                     textColor = Color.White,
-                    modifier = Modifier
-                        .padding(30.dp, 14.dp, 30.dp, 30.dp)
-                        .fillMaxWidth()
-                        .height(44.dp),
+                    modifier = Modifier.padding(30.dp, 14.dp, 30.dp, 30.dp),
                     onClick = { viewModel.onEvent(SignUpEvent.SignUp) }
                 )
             }
@@ -157,12 +154,7 @@ fun SignUpScreen(
                         else if (certification <= 3) "인증 확인" else "인증 완료",
                 color = emailColor,
                 textColor = Color.White,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(44.dp),
-                onClick = {
-                    viewModel.onEvent(SignUpEvent.ChangeCertification(certification))
-                }
+                onClick = { viewModel.onEvent(SignUpEvent.ChangeCertification(certification)) }
             )
             Spacer(modifier = Modifier.height(28.dp))
             TextFieldBox(

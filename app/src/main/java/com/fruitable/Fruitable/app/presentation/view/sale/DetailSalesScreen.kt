@@ -47,10 +47,7 @@ fun DetailSalesScreen(
                     text = "주문하기",
                     color = MainGreen1,
                     textColor = Color.White,
-                    modifier = Modifier
-                        .padding(30.dp, 14.dp, 30.dp, 30.dp)
-                        .fillMaxWidth()
-                        .height(44.dp),
+                    modifier = Modifier.padding(30.dp, 14.dp, 30.dp, 30.dp),
                     onClick = { navController.navigate(Screen.SalesScreen.route) }
                 )
             }
