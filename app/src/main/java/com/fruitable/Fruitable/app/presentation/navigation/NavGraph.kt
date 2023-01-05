@@ -30,8 +30,8 @@ fun NavGraphBuilder.fruitableGraph(
      * user - 로그인, 회원가입, 회원정보 수정 Screen
      */
     composable(
-        route = Screen.SignInScreen.route){
-            SignInScreen(navController)
+        route = Screen.LogInScreen.route){
+            LogInScreen(navController)
         }
 
     composable(
