@@ -2,7 +2,7 @@ package com.fruitable.Fruitable.di
 
 import android.content.Context
 import com.fruitable.Fruitable.app.data.network.api.UserApi
-import com.fruitable.Fruitable.app.data.repository.UserRepositoryImpl
+import com.fruitable.Fruitable.app.data.repository.RepositoryImpl
 import com.fruitable.Fruitable.app.domain.repository.UserRepository
 import com.fruitable.Fruitable.app.domain.utils.log
 import dagger.Module
@@ -75,6 +75,6 @@ object NetWorkModule {
     @Provides
     @Singleton
     fun provideUserRepository(api: UserApi): UserRepository {
-        return UserRepositoryImpl(api)
+        return RepositoryImpl(api)
     }
 }
