@@ -29,7 +29,7 @@ fun SettingScreen(
         FruitableDivider(modifier = Modifier.padding(vertical = 30.dp),)
         ExtraSetting(
             onNotice = { navController.navigate(Screen.NoticeScreen.route) },
-            onLogOut = { navController.navigate(Screen.SignInScreen.route) },
+            onLogOut = { navController.navigate(Screen.LogInScreen.route) },
             onLeaveApp = { navController.navigate(Screen.LeaveAppScreen.route) }
         )
     }

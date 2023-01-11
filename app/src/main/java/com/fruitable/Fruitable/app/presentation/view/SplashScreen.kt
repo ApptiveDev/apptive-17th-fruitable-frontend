@@ -29,7 +29,7 @@ fun SplashScreen(
     LaunchedEffect(key1 = true) {
         token.log()
         val nextScreen = when (token.isEmpty()){
-            true -> Screen.SignInScreen
+            true -> Screen.LogInScreen
             false -> Screen.SalesScreen
         }
         delay(1000L)

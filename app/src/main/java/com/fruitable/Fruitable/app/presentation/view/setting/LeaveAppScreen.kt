@@ -58,7 +58,7 @@ fun LeaveAppScreen(
         cancelText = "취소",
         confirmText = "탈퇴하기",
         cancel = { isDialogOpen = false},
-        confirm = { navController.navigate(Screen.SignInScreen.route) },
+        confirm = { navController.navigate(Screen.LogInScreen.route) },
         isOpen = isDialogOpen
     )
     Scaffold(
@@ -74,10 +74,7 @@ fun LeaveAppScreen(
                     text = "탈퇴하기",
                     color = MainGreen1,
                     textColor = Color.White,
-                    modifier = Modifier
-                        .padding(30.dp, 14.dp, 30.dp, 30.dp)
-                        .fillMaxWidth()
-                        .height(44.dp),
+                    modifier = Modifier.padding(30.dp, 14.dp, 30.dp, 30.dp),
                     onClick = { viewModel.onEvent(LeaveAppEvent.LeaveApp) }
                 )
             }

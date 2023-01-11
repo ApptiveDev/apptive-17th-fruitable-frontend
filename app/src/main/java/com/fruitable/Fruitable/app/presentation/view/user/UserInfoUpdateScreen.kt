@@ -3,6 +3,7 @@ package com.fruitable.Fruitable.app.presentation.view
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -73,52 +74,42 @@ fun UserInfoUpdateScreen(
     ) {
         TextFieldBox(
             state = nicknameState,
-            modifier = Modifier.focusRequester(focusRequester),
+            modifier = Modifier.padding(bottom = 16.dp).focusRequester(focusRequester),
             onValueChange = { viewModel.onEvent(UserInfoUpdateEvent.EnteredNickname(it)) },
             onFocusChange = { viewModel.onEvent(UserInfoUpdateEvent.ChangeNicknameFocus(it)) },
         )
-        Spacer(modifier = Modifier.height(16.dp))
         FruitableButton(
             text = "닉네임 수정",
             color = nicknameColor,
             textColor = Color.White,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(44.dp),
+            modifier = Modifier.padding(bottom = 28.dp),
             onClick = { viewModel.onEvent(UserInfoUpdateEvent.NicknameSave) }
         )
-        Spacer(modifier = Modifier.height(28.dp))
         TextFieldBox(
             state = passwordState,
-            modifier = Modifier.focusRequester(focusRequester),
+            modifier = Modifier.padding(bottom = 28.dp).focusRequester(focusRequester),
             visualTransformation = PasswordVisualTransformation(),
             onValueChange = { viewModel.onEvent(UserInfoUpdateEvent.EnteredPassword(it)) },
             onFocusChange = { viewModel.onEvent(UserInfoUpdateEvent.ChangePasswordFocus(it)) },
         )
-        Spacer(modifier = Modifier.height(28.dp))
         TextFieldBox(
             state = newPasswordState,
-            modifier = Modifier.focusRequester(focusRequester),
+            modifier = Modifier.padding(bottom = 28.dp).focusRequester(focusRequester),
             visualTransformation = PasswordVisualTransformation(),
             onValueChange = { viewModel.onEvent(UserInfoUpdateEvent.EnteredNewPassword(it)) },
             onFocusChange = { viewModel.onEvent(UserInfoUpdateEvent.ChangeNewPasswordFocus(it)) },
         )
-        Spacer(modifier = Modifier.height(28.dp))
         TextFieldBox(
             state = newPasswordState2,
-            modifier = Modifier.focusRequester(focusRequester),
+            modifier = Modifier.padding(bottom = 16.dp).focusRequester(focusRequester),
             visualTransformation = PasswordVisualTransformation(),
             onValueChange = { viewModel.onEvent(UserInfoUpdateEvent.EnteredNewPassword2(it)) },
             onFocusChange = { viewModel.onEvent(UserInfoUpdateEvent.ChangeNewPasswordFocus2(it)) },
         )
-        Spacer(modifier = Modifier.height(16.dp))
         FruitableButton(
             text = "패스워드 수정",
             color = passwordColor,
             textColor = Color.White,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(44.dp),
             onClick = { viewModel.onEvent(UserInfoUpdateEvent.PasswordSave) }
         )
     }
