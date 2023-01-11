@@ -15,6 +15,7 @@
         android:roundIcon="@drawable/logo_rounded"
         android:supportsRtl="true"
         android:theme="@style/Theme.Fruitable"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
