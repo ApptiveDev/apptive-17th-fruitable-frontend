@@ -2,17 +2,16 @@ package com.fruitable.Fruitable.app.presentation.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fruitable.Fruitable.app.data.network.dto.user.NicknameDTO
 import com.fruitable.Fruitable.app.data.network.dto.user.SignUpDTO
-import com.fruitable.Fruitable.app.domain.use_case.user.SignUp
+import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
 import com.fruitable.Fruitable.app.domain.utils.Resource
 import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.event.SignUpEvent
 import com.fruitable.Fruitable.app.presentation.state.TextFieldBoxState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -23,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    val signUpUseCase: SignUp
+    val userUseCase: UserUseCase
 ) : ViewModel(){
 
     private val _nickname = mutableStateOf(
@@ -75,31 +74,51 @@ class SignUpViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    private fun isNicknameDuplicated(): Boolean {
+        var returnValue = true
+        userUseCase(
+            userDTO = NicknameDTO(nickname.value.text),
+            type = "nicknameValid"
+        ).onEach {
+            when (it) {
+                is Resource.Success -> {
+                    returnValue = false
+                    "nickname is available".log()
+                }
+                is Resource.Error -> "[ERROR] nickname is duplicated".log()
+                is Resource.Loading -> "nickname duplication loading".log()
+            }
+        }.launchIn(viewModelScope)
 
-    private fun isPasswordValid(value: String): Boolean {
-        return value.isNotBlank()
-                && Pattern.matches("^[a-zA-Z0-9]*$", value)
-                && value.length >= 8
-    }
-
-    fun isEmailValid(): Boolean {
-        return Pattern.matches("^[a-zA-Z0-9]*@[a-zA-Z0-9]*.com",
-            email.value.text)
+        return returnValue
     }
     private fun isNicknameValid(): Boolean {
         return nickname.value.text.isNotBlank()
-                && Pattern.matches("^[가-힣a-zA-Z0-9]*$" ,nickname.value.text)
-                && nickname.value.text.length <= 8
+                && Pattern.matches("^[가-힣a-zA-Z\\d]*$" ,nickname.value.text)
+                && nickname.value.text.length in 2..8
+                && !isNicknameDuplicated()
     }
-    fun isSignUpAble(): Boolean {
-        val passwordList = listOf(password.value.text, password2.value.text,)
-        val isPasswordValid = passwordList.all{ isPasswordValid(it) } && passwordList[0] == passwordList[1]
-        return isNicknameValid() && isPasswordValid && isEmailValid() && isNumberValid()
+    private fun isEmailValid(): Boolean {
+        return Pattern.matches("^[a-zA-Z0-9]*@[a-zA-Z\\d.]*$",
+            email.value.text)
     }
-    fun isNumberValid(): Boolean {
-        return number.value.text.length == 6 && number.value.text.isDigitsOnly()
+    private fun isNumberValid(): Boolean {
+        return number.value.text.length == 6
+    }
+    private fun isPasswordValid(value: String): Boolean {
+        return value.isNotBlank()
+                && Pattern.matches("^[a-zA-Z\\d]*$", value)
+                && value.length in 8..20
+    }
+    private fun isPasswordCorrect(): Boolean {
+        return password.value.text == password2.value.text
     }
 
+    fun isSignUpAble(): Boolean {
+        val isPasswordValid = isPasswordValid(password.value.text)
+                && isPasswordValid(password2.value.text) && isPasswordCorrect()
+        return isNicknameValid() && isPasswordValid && isEmailValid() && isNumberValid()
+    }
     fun onEvent(event: SignUpEvent){
         when (event) {
             is SignUpEvent.EnteredNickname -> {
@@ -185,13 +204,13 @@ class SignUpViewModel @Inject constructor(
                 if (isSignUpAble()) {
                     viewModelScope.launch {
                         try {
-                            signUpUseCase(
-                                SignUpDTO(
+                            userUseCase(
+                                userDTO = SignUpDTO(
                                     email = email.value.text,
                                     name = nickname.value.text,
                                     pwd = password.value.text,
-                                    pwd2 = password2.value.text
-                                )
+                                    pwd2 = password2.value.text),
+                                type = "signUp"
                             ).collect {
                                 _eventFlow.emit(UiEvent.SignUpSuccess)
                             }
