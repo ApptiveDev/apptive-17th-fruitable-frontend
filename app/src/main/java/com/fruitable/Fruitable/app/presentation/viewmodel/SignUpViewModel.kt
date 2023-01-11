@@ -5,17 +5,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fruitable.Fruitable.app.data.network.dto.user.SignUpDTO
+import com.fruitable.Fruitable.app.domain.use_case.user.SignUp
+import com.fruitable.Fruitable.app.domain.utils.Resource
+import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.event.SignUpEvent
 import com.fruitable.Fruitable.app.presentation.state.TextFieldBoxState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor() : ViewModel(){
+class SignUpViewModel @Inject constructor(
+    val signUpUseCase: SignUp
+) : ViewModel(){
 
     private val _nickname = mutableStateOf(
         TextFieldBoxState(
@@ -174,14 +183,29 @@ class SignUpViewModel @Inject constructor() : ViewModel(){
                             || password.value.text != password2.value.text
                 )
                 if (isSignUpAble()) {
-                    viewModelScope.launch{
-                        _eventFlow.emit(UiEvent.SignUp)
+                    viewModelScope.launch {
+                        try {
+                            signUpUseCase(
+                                SignUpDTO(
+                                    email = email.value.text,
+                                    name = nickname.value.text,
+                                    pwd = password.value.text,
+                                    pwd2 = password2.value.text
+                                )
+                            ).collect {
+                                _eventFlow.emit(UiEvent.SignUpSuccess)
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            _eventFlow.emit(UiEvent.SignUPError)
+                        }
                     }
                 }
             }
         }
     }
     sealed class UiEvent {
-        object SignUp: UiEvent()
+        object SignUPError: UiEvent()
+        object SignUpSuccess: UiEvent()
     }
 }
