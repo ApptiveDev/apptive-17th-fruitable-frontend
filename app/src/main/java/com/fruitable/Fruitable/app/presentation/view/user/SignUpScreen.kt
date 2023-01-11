@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
+import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
@@ -62,8 +63,12 @@ fun SignUpScreen(
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                SignUpViewModel.UiEvent.SignUp -> {
+                SignUpViewModel.UiEvent.SignUpSuccess -> {
                     if(isAgree) navController.navigate(Screen.LogInScreen.route)
+                    "회원가입 성공 in Screen".log()
+                }
+                SignUpViewModel.UiEvent.SignUPError -> {
+                    "회원가입 실패 in Screen".log()
                 }
             }
         }
