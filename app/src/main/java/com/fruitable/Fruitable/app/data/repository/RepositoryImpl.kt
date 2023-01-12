@@ -11,16 +11,21 @@ import javax.inject.Singleton
 class RepositoryImpl @Inject constructor(
     private val api: UserApi
 ) : UserRepository {
-    override suspend fun userMethod(
-        userDTO: UserBaseClass,
-        type: String
-    ): Response<String> {
+    override suspend fun userMethod(userDTO: UserBaseClass, type: String)
+    : Response<String> {
+        return api.signUp(userDTO as SignUpDTO)
+    }
+    override suspend fun userMethodSingle(key: String, type: String)
+    : Response<String> {
         return when (type) {
-            "signUp" -> api.signUp(userDTO as SignUpDTO)
-            /*"nicknameValid" -> api.nicknameValid(userDTO as NicknameDTO)
-            "emailValid" -> api.emailValid(userDTO as EmailDTO)
-            "emailCodeValid" -> api.emailCodeValid(userDTO as EmailCodeDTO)*/
-            else -> api.signUp(userDTO as SignUpDTO)
+            "nickname" -> api.nicknameValid(key)
+            "email" -> api.emailValid(key)
+            "emailCode" -> api.emailCodeValid(key)
+            else -> api.nicknameValid(key)
         }
+    }
+    override suspend fun userMethodDouble(key: String, key2: String)
+    : Response<String> {
+        return api.logIn(key, key2)
     }
 }

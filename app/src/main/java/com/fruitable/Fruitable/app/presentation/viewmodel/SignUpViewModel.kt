@@ -4,7 +4,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fruitable.Fruitable.app.data.network.dto.user.NicknameDTO
 import com.fruitable.Fruitable.app.data.network.dto.user.SignUpDTO
 import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
 import com.fruitable.Fruitable.app.domain.utils.Resource
@@ -76,8 +75,8 @@ class SignUpViewModel @Inject constructor(
 
     private fun isNicknameDuplicated(): Boolean {
         var returnValue = true
-        userUseCase(
-            userDTO = NicknameDTO(nickname.value.text),
+        userUseCase.invokeSingle(
+            key = nickname.value.text,
             type = "nicknameValid"
         ).onEach {
             when (it) {
@@ -204,7 +203,7 @@ class SignUpViewModel @Inject constructor(
                 if (isSignUpAble()) {
                     viewModelScope.launch {
                         try {
-                            userUseCase(
+                            userUseCase.invoke(
                                 userDTO = SignUpDTO(
                                     email = email.value.text,
                                     name = nickname.value.text,
