@@ -1,10 +1,16 @@
 package com.fruitable.Fruitable.app.domain.use_case
 
+import android.content.Context
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalFocusManager
 import com.fruitable.Fruitable.app.data.network.dto.user.UserBaseClass
 import com.fruitable.Fruitable.app.domain.repository.UserRepository
 import com.fruitable.Fruitable.app.domain.utils.Resource
 import com.fruitable.Fruitable.app.domain.utils.log
+import com.fruitable.Fruitable.app.presentation.viewmodel.LogInViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import retrofit2.Response
@@ -12,13 +18,15 @@ import java.io.IOException
 import javax.inject.Inject
 
 class UserUseCase @Inject constructor(
-    private val repository: UserRepository
+    private val repository: UserRepository,
+    @ApplicationContext val context: Context
 ){
     private fun useCaseInvocation(r: Response<String>): Resource<String> {
         return try {
             Resource.Loading("LOADING")
             r.body().toString().log()
-            r.headers().get("Set-Cookie")?.log()
+            val Cookie = context.getSharedPreferences("cookie", Context.MODE_PRIVATE)
+            Cookie.edit().putString("cookie", r.headers().toMultimap()["Set-Cookie"].toString()).apply()
             when (r.code()) {
                 200 -> Resource.Success(r.body()!!)
                 201 -> Resource.Success(r.body()!!)
