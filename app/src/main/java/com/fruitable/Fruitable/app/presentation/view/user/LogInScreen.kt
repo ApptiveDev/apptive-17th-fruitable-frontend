@@ -52,9 +52,7 @@ fun LogInScreen(
             when(event){
                 is LogInViewModel.LogInUiEvent.LogInSuccess -> {
                     Token.edit().putString("token", "token is here").apply()
-                    navController.navigate(Screen.SalesScreen.route){
-                        popUpTo(0)
-                    }
+                    navController.navigate(Screen.SalesScreen.route){ popUpTo(0) }
                 }
                 is LogInViewModel.LogInUiEvent.LogInError -> {
                     "login error ${event.message}".log()

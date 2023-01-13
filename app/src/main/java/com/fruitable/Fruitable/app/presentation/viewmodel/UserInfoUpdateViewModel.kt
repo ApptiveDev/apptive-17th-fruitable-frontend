@@ -4,6 +4,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fruitable.Fruitable.app.data.network.dto.user.NicknameDTO
+import com.fruitable.Fruitable.app.data.network.dto.user.PasswordDTO
+import com.fruitable.Fruitable.app.data.network.dto.user.PasswordUpdateDTO
+import com.fruitable.Fruitable.app.data.network.dto.user.SignUpDTO
+import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
 import com.fruitable.Fruitable.app.presentation.event.UserInfoUpdateEvent
 import com.fruitable.Fruitable.app.presentation.state.TextFieldBoxState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,8 +19,9 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
-class UserInfoUpdateViewModel @Inject constructor()
-: ViewModel() {
+class UserInfoUpdateViewModel @Inject constructor(
+    val userUseCase: UserUseCase
+) : ViewModel() {
     private val _nickname = mutableStateOf(TextFieldBoxState(
         title = "닉네임",
         hint = "8자 이하의 한글, 영어, 숫자만 입력해주세요.",
@@ -109,8 +115,13 @@ class UserInfoUpdateViewModel @Inject constructor()
                     isError = !isNicknameUpdatable()
                 )
                 if (isNicknameUpdatable()) {
-                    viewModelScope.launch{
-                        _eventFlow.emit(UiEvent.SaveUserNickname)
+                    viewModelScope.launch {
+                        try {
+                            userUseCase.invoke(
+                                userDTO = NicknameDTO(newName = nickname.value.text),
+                                type = "updateName"
+                            ).collect { _eventFlow.emit(UiEvent.SaveUserNickname) }
+                        } catch (e: Exception) { e.printStackTrace() }
                     }
                 }
             }
@@ -126,8 +137,17 @@ class UserInfoUpdateViewModel @Inject constructor()
                             || newPassword.value.text != newPassword2.value.text
                 )
                 if (isPasswordUpdatable()) {
-                    viewModelScope.launch{
-                        _eventFlow.emit(UiEvent.SaveUserPassword)
+                    viewModelScope.launch {
+                        try {
+                            userUseCase.invoke(
+                                userDTO = PasswordUpdateDTO(
+                                    pwd = password.value.text,
+                                    newPwd = newPassword.value.text,
+                                    newPwd2 = newPassword2.value.text
+                                ),
+                                type = "updatePassword"
+                            ).collect { _eventFlow.emit(UiEvent.SaveUserPassword) }
+                        } catch (e: Exception) { e.printStackTrace() }
                     }
                 }
             }

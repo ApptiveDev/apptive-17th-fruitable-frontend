@@ -1,5 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.view.setting
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
@@ -10,6 +11,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,13 +42,14 @@ fun LeaveAppScreen(
     var isDialogOpen by remember { mutableStateOf(false) }
 
     val isLeavable = viewModel.isLeavable() && isChecked
-
+    val Token = LocalContext.current.getSharedPreferences("token", Context.MODE_PRIVATE)
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is LeaveAppViewModel.UiEvent.LeaveApp -> {
-                    if (isChecked) isDialogOpen = true
+                    Token.edit().putString("token", "").apply()
+                    navController.navigate(Screen.LogInScreen.route){ popUpTo(0) }
                 }
             }
         }
@@ -58,7 +61,7 @@ fun LeaveAppScreen(
         cancelText = "취소",
         confirmText = "탈퇴하기",
         cancel = { isDialogOpen = false},
-        confirm = { navController.navigate(Screen.LogInScreen.route) },
+        confirm = { viewModel.onEvent(LeaveAppEvent.LeaveApp) },
         isOpen = isDialogOpen
     )
     Scaffold(
@@ -75,7 +78,7 @@ fun LeaveAppScreen(
                     color = MainGreen1,
                     textColor = Color.White,
                     modifier = Modifier.padding(30.dp, 14.dp, 30.dp, 30.dp),
-                    onClick = { viewModel.onEvent(LeaveAppEvent.LeaveApp) }
+                    onClick = { if (isChecked) isDialogOpen = true }
                 )
             }
         }

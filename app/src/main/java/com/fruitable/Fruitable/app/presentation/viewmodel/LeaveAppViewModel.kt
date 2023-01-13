@@ -3,18 +3,25 @@ package com.fruitable.Fruitable.app.presentation.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fruitable.Fruitable.app.data.network.dto.user.PasswordDTO
+import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
+import com.fruitable.Fruitable.app.domain.utils.Resource
+import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.event.LeaveAppEvent
 import com.fruitable.Fruitable.app.presentation.state.TextFieldBoxState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
-class LeaveAppViewModel @Inject constructor()
-: ViewModel() {
+class LeaveAppViewModel @Inject constructor(
+    val userUseCase: UserUseCase
+): ViewModel() {
     private val _password = mutableStateOf(
         TextFieldBoxState(
         title = "비밀번호",
@@ -80,6 +87,23 @@ class LeaveAppViewModel @Inject constructor()
                     viewModelScope.launch {
                         _eventFlow.emit(UiEvent.LeaveApp)
                     }
+                    userUseCase.invoke(
+                        userDTO = PasswordDTO(
+                            pwd = password.value.text,
+                            pwd2 = password2.value.text
+                        ),
+                        type = "leaveApp"
+                    ).onEach {
+                        when (it) {
+                            is Resource.Success -> {
+                                "회원탈퇴 성공".log()
+                                _eventFlow.emit(UiEvent.LeaveApp)
+                            }
+                            is Resource.Error -> "회원탈퇴 실패".log()
+                            is Resource.Loading -> "회원탈퇴 로딩중".log()
+                        }
+                    }.launchIn(viewModelScope)
+
                 }
             }
         }
