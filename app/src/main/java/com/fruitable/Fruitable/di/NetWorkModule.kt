@@ -2,9 +2,10 @@ package com.fruitable.Fruitable.di
 
 import android.content.Context
 import com.fruitable.Fruitable.app.data.network.api.UserApi
-import com.fruitable.Fruitable.app.data.repository.UserRepositoryImpl
+import com.fruitable.Fruitable.app.data.repository.RepositoryImpl
 import com.fruitable.Fruitable.app.domain.repository.UserRepository
 import com.fruitable.Fruitable.app.domain.utils.log
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +15,7 @@ import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.net.CookieManager
 import javax.inject.Singleton
 
@@ -59,9 +61,11 @@ object NetWorkModule {
         val okHttpClient = client.newBuilder()
             .cookieJar(JavaNetCookieJar(CookieManager()))
             .build()
+        val gson = GsonBuilder().setLenient().create()
         return Retrofit.Builder()
             .baseUrl("http://3.34.197.243:8080") // baseURL
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
             .build()
     }
@@ -75,6 +79,6 @@ object NetWorkModule {
     @Provides
     @Singleton
     fun provideUserRepository(api: UserApi): UserRepository {
-        return UserRepositoryImpl(api)
+        return RepositoryImpl(api)
     }
 }

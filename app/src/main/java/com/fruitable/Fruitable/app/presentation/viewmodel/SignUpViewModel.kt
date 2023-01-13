@@ -1,18 +1,16 @@
 package com.fruitable.Fruitable.app.presentation.viewmodel
 
+import android.util.Patterns
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fruitable.Fruitable.app.data.network.dto.user.SignUpDTO
-import com.fruitable.Fruitable.app.domain.use_case.user.SignUp
+import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
 import com.fruitable.Fruitable.app.domain.utils.Resource
-import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.event.SignUpEvent
 import com.fruitable.Fruitable.app.presentation.state.TextFieldBoxState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -23,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    val signUpUseCase: SignUp
+    val userUseCase: UserUseCase
 ) : ViewModel(){
 
     private val _nickname = mutableStateOf(
@@ -43,8 +41,8 @@ class SignUpViewModel @Inject constructor(
     )
     val email: State<TextFieldBoxState> = _email
 
-    private val _number = mutableStateOf(TextFieldBoxState())
-    val number: State<TextFieldBoxState> = _number
+    private val _emailCode = mutableStateOf(TextFieldBoxState())
+    val emailCode: State<TextFieldBoxState> = _emailCode
 
     private val _password = mutableStateOf(
         TextFieldBoxState(
@@ -66,40 +64,107 @@ class SignUpViewModel @Inject constructor(
      * [인증번호 state 단계]
      *      0. 초기 단계 ("email")
      *      1. 이메일 입력 ("email success") | example@naver.com 의 형식이 아닌 경우
-     *      2. 인증번호 발송, 재발송 ("send number")
+     *      2. 인증번호 발송, 재발송 ("send emailCode")
      *      3. 인증번호 입력  ("certification success") | 숫자로만 구성된게 아닐 경우, 시간 초과
      *      4. 완료 -> 수정 불가
      */
     val certification = mutableStateOf(0)
+    val nicknameValid = mutableStateOf(false)
+    val emailValid = mutableStateOf(false)
+    val emailCodeValid = mutableStateOf(false)
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-
-    private fun isPasswordValid(value: String): Boolean {
-        return value.isNotBlank()
-                && Pattern.matches("^[a-zA-Z0-9]*$", value)
-                && value.length >= 8
-    }
-
-    fun isEmailValid(): Boolean {
-        return Pattern.matches("^[a-zA-Z0-9]*@[a-zA-Z0-9]*.com",
-            email.value.text)
+    private fun nicknameDuplicated() {
+        userUseCase.invokeSingle(
+            key = nickname.value.text,
+            type = "nickname"
+        ).onEach {
+            when (it) {
+                is Resource.Success -> {
+                    _nickname.value = nickname.value.copy(
+                        isError = !isNicknameValid(),
+                        error = "적절하지 않은 닉네임입니다. 다시 입력해주세요."
+                    )
+                    nicknameValid.value = true
+                }
+                is Resource.Error -> {
+                    _nickname.value = nickname.value.copy(
+                        isError = true,
+                        error = if (isNicknameValid()) "중복된 닉네임입니다. 다시 입력해주세요."
+                            else "적절하지 않은 닉네임입니다. 다시 입력해주세요."
+                    )
+                }
+                is Resource.Loading -> {} // nickname duplication loading
+            }
+        }.launchIn(viewModelScope)
     }
     private fun isNicknameValid(): Boolean {
         return nickname.value.text.isNotBlank()
-                && Pattern.matches("^[가-힣a-zA-Z0-9]*$" ,nickname.value.text)
-                && nickname.value.text.length <= 8
+                && Pattern.matches("^[가-힣a-zA-Z\\d]*$" ,nickname.value.text)
+                && nickname.value.text.length in 2..8
     }
-    fun isSignUpAble(): Boolean {
-        val passwordList = listOf(password.value.text, password2.value.text,)
-        val isPasswordValid = passwordList.all{ isPasswordValid(it) } && passwordList[0] == passwordList[1]
-        return isNicknameValid() && isPasswordValid && isEmailValid() && isNumberValid()
+    fun emailDuplication() {
+        userUseCase.invokeSingle(
+            key = email.value.text,
+            type = "email"
+        ).onEach {
+            when (it) {
+                is Resource.Success -> {
+                    _email.value = email.value.copy(
+                        isError = !isEmailValid(),
+                        error = "잘못된 형식의 이메일입니다. 다시 입력해주세요."
+                    )
+                    emailValid.value = true
+                    if (certification.value == 1) certification.value += 1
+                }
+                is Resource.Error -> {
+                    _email.value = email.value.copy(
+                        isError = true,
+                        error = if (!isEmailValid()) "잘못된 형식의 이메일입니다. 다시 입력해주세요."
+                            else "중복된 이메일입니다. 다시 입력해주세요."
+                    )
+                }
+                is Resource.Loading -> {}
+            }
+        }.launchIn(viewModelScope)
     }
-    fun isNumberValid(): Boolean {
-        return number.value.text.length == 6 && number.value.text.isDigitsOnly()
+    private fun emailCodeCorrect() {
+        userUseCase.invokeSingle(
+            key = emailCode.value.text,
+            type = "emailCode"
+        ).onEach {
+            when (it) {
+                is Resource.Success -> {
+                    _emailCode.value = emailCode.value.copy(isError = false)
+                    emailCodeValid.value = true
+                    if (certification.value == 2) certification.value += 1
+                }
+                is Resource.Error -> {}
+                is Resource.Loading -> {}
+            }
+        }.launchIn(viewModelScope)
+    }
+    private fun isEmailValid(): Boolean {
+        return email.value.text.isNotBlank()
+                && Patterns.EMAIL_ADDRESS.matcher(email.value.text).matches()
+    }
+    private fun isPasswordValid(value: String): Boolean {
+        return value.isNotBlank()
+                && Pattern.matches("^[a-zA-Z\\d]*$", value)
+                && value.length in 8..20
+    }
+    private fun isPasswordCorrect(): Boolean {
+        return password.value.text == password2.value.text
     }
 
+    fun isSignUpAble(): Boolean {
+        val isPasswordValid = isPasswordValid(password.value.text)
+                && isPasswordValid(password2.value.text) && isPasswordCorrect()
+        return isNicknameValid() && isPasswordValid && isEmailValid()
+                && nicknameValid.value && emailValid.value && emailCodeValid.value
+    }
     fun onEvent(event: SignUpEvent){
         when (event) {
             is SignUpEvent.EnteredNickname -> {
@@ -112,6 +177,8 @@ class SignUpViewModel @Inject constructor(
                     isHintVisible = !event.focusState.isFocused &&
                             nickname.value.text.isBlank()
                 )
+                if (!event.focusState.isFocused && nickname.value.text.isNotBlank())
+                    nicknameDuplicated()
             }
             is SignUpEvent.EnteredEmail -> {
                 _email.value = email.value.copy(
@@ -126,10 +193,13 @@ class SignUpViewModel @Inject constructor(
                 )
             }
             is SignUpEvent.EnteredCertification -> {
-                _number.value = number.value.copy(
-                    text = event.value
+                _emailCode.value = emailCode.value.copy(
+                    text = event.value,
+                    isError = emailCodeValid.value
                 )
-                certification.value = if (isNumberValid()) 3 else 2
+                certification.value = if (emailCodeValid.value) 3 else 2
+                if (emailCode.value.text.length == 6) emailCodeCorrect()
+                else emailCodeValid.value = false
             }
 
             is SignUpEvent.EnteredPassword -> {
@@ -155,25 +225,25 @@ class SignUpViewModel @Inject constructor(
                 )
             }
             is SignUpEvent.ChangeCertification -> {
-                _email.value = email.value.copy(
-                    isError = !isEmailValid()
-                )
-                if (event.value >= 2){
-                    _number.value = number.value.copy(
-                        isError = !isNumberValid()
+                if (event.value >= 2) {
+                    if (emailCode.value.text.isNotBlank()) emailCodeCorrect()
+                }
+                else emailDuplication()
+                if (certification.value == 3) certification.value += 1
+                if (certification.value == 2) {
+                    _emailCode.value = emailCode.value.copy(
+                        isError = true,
+                        error = "인증번호가 일치하지 않습니다. 다시 입력해주세요."
                     )
                 }
-                if (certification.value == 1 || certification.value == 3) certification.value += 1
             }
             is SignUpEvent.SignUp -> {
+                if (isNicknameValid()) nicknameDuplicated()
                 _nickname.value = nickname.value.copy(
                     isError = !isNicknameValid()
                 )
                 _email.value = email.value.copy(
                     isError = !isEmailValid()
-                )
-                _number.value = number.value.copy(
-                    isError = !isNumberValid()
                 )
                 _password.value = password.value.copy(
                     isError = !isPasswordValid(password.value.text)
@@ -185,13 +255,13 @@ class SignUpViewModel @Inject constructor(
                 if (isSignUpAble()) {
                     viewModelScope.launch {
                         try {
-                            signUpUseCase(
-                                SignUpDTO(
+                            userUseCase.invoke(
+                                userDTO = SignUpDTO(
                                     email = email.value.text,
                                     name = nickname.value.text,
                                     pwd = password.value.text,
-                                    pwd2 = password2.value.text
-                                )
+                                    pwd2 = password2.value.text),
+                                type = "signUp"
                             ).collect {
                                 _eventFlow.emit(UiEvent.SignUpSuccess)
                             }

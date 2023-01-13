@@ -1,5 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.view
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,12 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.HashTag
+import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
@@ -35,6 +38,10 @@ import com.fruitable.Fruitable.ui.theme.*
 fun SalesScreen(
     navController: NavController
 ){
+    val context = LocalContext.current
+    val Cookie = context.getSharedPreferences("cookie", Context.MODE_PRIVATE)
+    val cookie = Cookie.getString("cookie", "").toString()
+    "내가 만든 쿠키~ $cookie".log()
     Scaffold(
         floatingActionButton = {
             Button(

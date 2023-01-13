@@ -5,4 +5,4 @@ data class SignUpDTO(
     val name: String = "",
     val pwd: String = "",
     val pwd2: String = ""
-)
+): UserBaseClass()

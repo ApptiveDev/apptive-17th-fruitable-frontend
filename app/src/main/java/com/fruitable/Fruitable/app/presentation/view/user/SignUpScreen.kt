@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
-import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
@@ -50,7 +49,7 @@ fun SignUpScreen(
 ) {
     val nicknameState = viewModel.nickname.value
     val emailState = viewModel.email.value
-    val numberState = viewModel.number.value
+    val numberState = viewModel.emailCode.value
     val passwordState = viewModel.password.value
     val password2State = viewModel.password2.value
 
@@ -65,11 +64,8 @@ fun SignUpScreen(
             when (event) {
                 SignUpViewModel.UiEvent.SignUpSuccess -> {
                     if(isAgree) navController.navigate(Screen.LogInScreen.route)
-                    "회원가입 성공 in Screen".log()
                 }
-                SignUpViewModel.UiEvent.SignUPError -> {
-                    "회원가입 실패 in Screen".log()
-                }
+                SignUpViewModel.UiEvent.SignUPError -> {}
             }
         }
     }
@@ -107,30 +103,22 @@ fun SignUpScreen(
                 state = emailState,
                 modifier = Modifier.focusRequester(focusRequester),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                onValueChange = {
-                    viewModel.onEvent(SignUpEvent.EnteredEmail(it))
-                },
+                onValueChange = { viewModel.onEvent(SignUpEvent.EnteredEmail(it)) },
                 enabled = certification != 4,
                 onFocusChange = { viewModel.onEvent(SignUpEvent.ChangeEmailFocus(it)) },
             )
             if (certification in 2..3) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     verticalAlignment = CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     TextFieldBox(
                         state = numberState,
                         isSpaced = false,
-                        modifier = Modifier
-                            .focusRequester(focusRequester)
-                            .weight(1f),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        onValueChange = {
-                            viewModel.onEvent(SignUpEvent.EnteredCertification(it))
-                        },
+                        modifier = Modifier.focusRequester(focusRequester).weight(1f),
+                        onValueChange = { viewModel.onEvent(SignUpEvent.EnteredCertification(it)) },
+                        enabled = (certification < 3)
                     )
                     Text (
                         text = "인증번호 재발송",
@@ -140,7 +128,10 @@ fun SignUpScreen(
                         modifier = Modifier
                             .border(1.dp, MainGreen1, RoundedCornerShape(10.dp))
                             .padding(16.dp, 12.dp)
-                            .clickable { viewModel.onEvent(SignUpEvent.EnteredCertification("")) }
+                            .clickable {
+                                viewModel.emailDuplication()
+                                viewModel.onEvent(SignUpEvent.EnteredCertification(""))
+                            }
                     )
                 }
                 if (numberState.isError)
@@ -148,15 +139,13 @@ fun SignUpScreen(
                         text = "정확한 인증번호 6자리를 입력해주세요.",
                         style = TextStyles.TextBasic1,
                         color = Color.Red,
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                            .align(Start)
+                        modifier = Modifier.padding(top = 10.dp).align(Start)
                     )
             }
             Spacer(modifier = Modifier.height(16.dp))
             FruitableButton(
                 text = if (certification <= 1) "인증번호 발송"
-                        else if (certification <= 3) "인증 확인" else "인증 완료",
+                       else if (certification <= 3) "인증 확인" else "인증 완료",
                 color = emailColor,
                 textColor = Color.White,
                 onClick = { viewModel.onEvent(SignUpEvent.ChangeCertification(certification)) }
@@ -186,7 +175,6 @@ fun SignUpScreen(
 }
 @Composable
 fun Agreement(): Boolean {
-
     var utilCheck by remember { mutableStateOf(false) }
     var infoCheck by remember { mutableStateOf(false) }
     var ageCheck by remember { mutableStateOf(false) }

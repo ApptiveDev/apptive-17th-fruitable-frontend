@@ -3,6 +3,7 @@ package com.fruitable.Fruitable.app.presentation.view
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,6 +19,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,6 +45,7 @@ fun LogInScreen(
 ){
     val context = LocalContext.current
     val Token = context.getSharedPreferences("token", Context.MODE_PRIVATE)
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest { event->
@@ -61,7 +64,7 @@ fun LogInScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 30.dp)
+        modifier = Modifier.fillMaxSize().padding(horizontal = 30.dp).addFocusCleaner(focusManager)
     ) {
         LoginImage()
         LoginField(viewModel = viewModel)
@@ -71,8 +74,8 @@ fun LogInScreen(
             textColor = Color.White,
             modifier = Modifier
                 .padding(top = 32.dp)
-                .alpha(if (true) 1f else 0.7f),
-            onClick = {viewModel.onEvent(LogInEvent.SignIn)}
+                .alpha(if (viewModel.isLoginAble()) 1f else 0.7f),
+            onClick = { viewModel.onEvent(LogInEvent.SignIn) }
         )
         Text(
             text="아이디/비밀번호 찾기",
@@ -119,25 +122,29 @@ fun LoginField(
     Column(
         modifier = modifier.addFocusCleaner(focusManager)
     ) {
-        Row {
-            Image(
-                painterResource(id = R.drawable.warning),
-                contentDescription = "emailError",
-                modifier = Modifier
-                    .size(14.dp)
-                    .align(CenterVertically)
-            )
-            Text(
-                text = "에러 발생",
-                style = TextStyles.TextSmall1,
-                color = Color.Red,
-                modifier = Modifier.padding(start = 5.dp)
-            )
+        val errorMessage = viewModel.errorMessage.value
+        if (errorMessage.isNotBlank()) {
+            Row {
+                Image(
+                    painterResource(id = R.drawable.warning),
+                    contentDescription = "emailError",
+                    modifier = Modifier
+                        .size(14.dp)
+                        .align(CenterVertically)
+                )
+                Text(
+                    text = errorMessage,
+                    style = TextStyles.TextSmall1,
+                    color = Color.Red,
+                    modifier = Modifier.padding(start = 5.dp)
+                )
+            }
         }
 
         TextFieldBox(
             state = viewModel.email.value,
             isSpaced = false,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.focusRequester(focusRequester).padding(top = 10.dp, bottom = 14.dp),
             onValueChange = { viewModel.onEvent(LogInEvent.EnteredEmail(it)) },
             onFocusChange = { viewModel.onEvent(LogInEvent.ChangeEmailFocus(it)) },
