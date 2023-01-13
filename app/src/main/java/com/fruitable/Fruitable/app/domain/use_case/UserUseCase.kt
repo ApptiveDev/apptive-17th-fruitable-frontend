@@ -1,16 +1,12 @@
 package com.fruitable.Fruitable.app.domain.use_case
 
 import android.content.Context
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalFocusManager
-import com.fruitable.Fruitable.app.data.network.dto.user.UserBaseClass
+import com.fruitable.Fruitable.app.data.network.dto.BaseClass
 import com.fruitable.Fruitable.app.domain.repository.UserRepository
 import com.fruitable.Fruitable.app.domain.utils.Resource
 import com.fruitable.Fruitable.app.domain.utils.log
-import com.fruitable.Fruitable.app.presentation.viewmodel.LogInViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import retrofit2.Response
@@ -41,10 +37,13 @@ class UserUseCase @Inject constructor(
         }
     }
     fun invoke(
-        userDTO: UserBaseClass,
+        userDTO: BaseClass,
         type: String
     ) : Flow<Resource<String>> = flow {
         emit(useCaseInvocation(repository.userMethod(userDTO, type)))
+    }
+    fun invokeNone(type: String): Flow<Resource<String>> = flow {
+        emit(useCaseInvocation(repository.userMethodNone(type)))
     }
     fun invokeSingle(
         key: String,
