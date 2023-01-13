@@ -91,6 +91,7 @@ dependencies {
     //Proto DataStore
     implementation("androidx.datastore:datastore:1.0.0")
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+    implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
 
     implementation("androidx.compose.runtime:runtime:$compose_version")
@@ -100,8 +101,8 @@ dependencies {
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-    implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.6"
-    implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6"
+    implementation "com.squareup.okhttp3:okhttp:4.10.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
     implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
     implementation "com.squareup.okhttp3:okhttp-urlconnection:4.9.1"
 
