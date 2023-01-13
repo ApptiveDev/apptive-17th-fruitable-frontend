@@ -14,39 +14,40 @@ import javax.inject.Inject
 class UserUseCase @Inject constructor(
     private val repository: UserRepository
 ){
-    private fun apiConnect(r: Response<String>): Flow<Resource<String>> = flow {
-        try {
-            emit(Resource.Loading())
+    private fun useCaseInvocation(r: Response<String>): Resource<String> {
+        return try {
+            Resource.Loading("LOADING")
             r.body().toString().log()
+            r.headers().get("Set-Cookie")?.log()
             when (r.code()) {
-                200 -> emit(Resource.Success(r.body()!!))
-                201 -> emit(Resource.Success(r.body()!!))
-                400 -> emit(Resource.Error("[ERROR] Bad Request error occurred"))
-                500 -> emit(Resource.Error("[ERROR] Internal Server error occurred"))
-                else -> emit(Resource.Error("[ERROR] An unexpected error occurred"))
+                200 -> Resource.Success(r.body()!!)
+                201 -> Resource.Success(r.body()!!)
+                400 -> Resource.Error("[ERROR] Bad Request error occurred")
+                500 -> Resource.Error("[ERROR] Internal Server error occurred")
+                else -> Resource.Error("[ERROR] An unexpected error occurred")
             }
         } catch (e: HttpException) {
-            emit(Resource.Error("[ERROR/SIGNUP] HTTP Exception occurred"))
+            Resource.Error("[ERROR/SIGNUP] HTTP Exception occurred")
         } catch (e: IOException) {
-            emit(Resource.Error("[ERROR/SIGNUP] IOException occurred"))
+            Resource.Error("[ERROR/SIGNUP] IOException occurred")
         }
     }
     fun invoke(
         userDTO: UserBaseClass,
         type: String
     ) : Flow<Resource<String>> = flow {
-        apiConnect(repository.userMethod(userDTO, type))
+        emit(useCaseInvocation(repository.userMethod(userDTO, type)))
     }
     fun invokeSingle(
         key: String,
         type: String
     ) : Flow<Resource<String>> = flow {
-        apiConnect(repository.userMethodSingle(key, type))
+        emit(useCaseInvocation(repository.userMethodSingle(key, type)))
     }
     fun invokeDouble(
         key: String,
         key2: String
     ) : Flow<Resource<String>> = flow {
-        apiConnect(repository.userMethodDouble(key, key2))
+        emit(useCaseInvocation(repository.userMethodDouble(key, key2)))
     }
 }
