@@ -1,5 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.view.setting
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,18 +9,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopUp
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTitle
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTwoColumn
+import com.fruitable.Fruitable.app.presentation.viewmodel.UserViewModel
 import com.fruitable.Fruitable.ui.theme.TextStyles
 
 @Composable
 fun SettingScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel : UserViewModel = hiltViewModel()
 ){
     Column {
         UserSetting(
@@ -29,8 +34,9 @@ fun SettingScreen(
         FruitableDivider(modifier = Modifier.padding(vertical = 30.dp),)
         ExtraSetting(
             onNotice = { navController.navigate(Screen.NoticeScreen.route) },
-            onLogOut = { navController.navigate(Screen.LogInScreen.route) },
-            onLeaveApp = { navController.navigate(Screen.LeaveAppScreen.route) }
+            onLogOut = {  navController.navigate(Screen.LogInScreen.route){ popUpTo(0) } },
+            onLeaveApp = { navController.navigate(Screen.LeaveAppScreen.route) },
+            viewModel = viewModel
         )
     }
 }
@@ -67,17 +73,24 @@ fun UserSetting(
 fun ExtraSetting(
     onNotice: () -> Unit = {},
     onLogOut: () -> Unit = {},
-    onLeaveApp: () -> Unit = {}
+    onLeaveApp: () -> Unit = {},
+    viewModel: UserViewModel
 ){
     var logOutConfirmDialog by remember { mutableStateOf(false) }
     var logOutDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val Token = context.getSharedPreferences("token", Context.MODE_PRIVATE)
 
     FruitablePopUp(
         text = "로그아웃 하시겠습니까?",
         cancelText = "취소",
         confirmText = "로그아웃",
         cancel = { logOutConfirmDialog = false},
-        confirm = { logOutDialog = true },
+        confirm = {
+            viewModel.logOut()
+            Token.edit().putString("token", "").apply()
+            logOutDialog = true
+        },
         isOpen = logOutConfirmDialog
     )
     FruitablePopUp(

@@ -1,11 +1,11 @@
 package com.fruitable.Fruitable.app.data.network.api
 
 import com.fruitable.Fruitable.app.data.network.dto.user.SignUpDTO
+import com.fruitable.Fruitable.app.data.network.dto.user.NicknameDTO
+import com.fruitable.Fruitable.app.data.network.dto.user.PasswordDTO
+import com.fruitable.Fruitable.app.data.network.dto.user.PasswordUpdateDTO
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface UserApi {
     /**
@@ -30,5 +30,13 @@ interface UserApi {
         @Query("email") email: String,
         @Query("pwd") pwd: String
     ): Response<String>
+    @GET("/member/logout")
+    suspend fun logOut(): Response<String>
+    @PUT("/member/updateName")
+    suspend fun updateName(@Body nicknameDTO: NicknameDTO): Response<String>
+    @PUT("/member/updatePwd")
+    suspend fun updatePassword(@Body passwordUpdateDTO: PasswordUpdateDTO): Response<String>
+    @HTTP(method="DELETE", path="/member/delete", hasBody=true)
+    suspend fun leaveApp(@Body passwordDTO: PasswordDTO): Response<String>
 
 }
