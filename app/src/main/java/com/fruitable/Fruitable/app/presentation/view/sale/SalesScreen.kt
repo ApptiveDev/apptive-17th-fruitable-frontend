@@ -40,8 +40,11 @@ fun SalesScreen(
 ){
     val context = LocalContext.current
     val Cookie = context.getSharedPreferences("cookie", Context.MODE_PRIVATE)
-    val cookie = Cookie.getString("cookie", "").toString()
-    "내가 만든 쿠키~ $cookie".log()
+    val myList = listOf("id", "email", "name", "pwd", "role", "date")
+    myList.forEach {
+        "쿠키 야미".log()
+        Cookie.getString(it, "").toString().log()
+    }
     Scaffold(
         floatingActionButton = {
             Button(

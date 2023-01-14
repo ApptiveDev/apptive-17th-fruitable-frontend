@@ -22,7 +22,10 @@ class UserUseCase @Inject constructor(
             Resource.Loading("LOADING")
             r.body().toString().log()
             val Cookie = context.getSharedPreferences("cookie", Context.MODE_PRIVATE)
-            Cookie.edit().putString("cookie", r.headers().toMultimap()["Set-Cookie"].toString()).apply()
+            r.headers().toMultimap()["Set-Cookie"]?.forEach { cookie ->
+                val cookieList = cookie.split(";", "=")
+                Cookie.edit().putString(cookieList[0], cookieList[1]).apply()
+            }
             when (r.code()) {
                 200 -> Resource.Success(r.body()!!)
                 201 -> Resource.Success(r.body()!!)
