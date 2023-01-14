@@ -5,7 +5,7 @@ sealed class Screen (val route: String){
      * sale - 전체 게시글, 상세 게시글, 게시글 추가 Screen
      */
     object SalesScreen: Screen("sales_screen")
-    object DetailSalesScreen : Screen("detail_sales_screen/{itemId}")
+    object SaleDetailScreen : Screen("sale_detail_screen")
     object AddSaleScreen: Screen("add_sale_screen")
 
     /**
