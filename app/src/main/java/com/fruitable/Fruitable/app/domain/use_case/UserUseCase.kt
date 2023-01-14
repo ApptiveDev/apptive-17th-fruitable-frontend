@@ -21,10 +21,9 @@ class UserUseCase @Inject constructor(
         return try {
             Resource.Loading("LOADING")
             r.body().toString().log()
-            val Cookie = context.getSharedPreferences("cookie", Context.MODE_PRIVATE)
             r.headers().toMultimap()["Set-Cookie"]?.forEach { cookie ->
                 val cookieList = cookie.split(";", "=")
-                Cookie.edit().putString(cookieList[0], cookieList[1]).apply()
+                repository.setCookie(cookieList[0], cookieList[1])
             }
             when (r.code()) {
                 200 -> Resource.Success(r.body()!!)
@@ -34,9 +33,9 @@ class UserUseCase @Inject constructor(
                 else -> Resource.Error("[ERROR] An unexpected error occurred")
             }
         } catch (e: HttpException) {
-            Resource.Error("[ERROR/SIGNUP] HTTP Exception occurred")
+            Resource.Error("[ERROR/USER] HTTP Exception occurred")
         } catch (e: IOException) {
-            Resource.Error("[ERROR/SIGNUP] IOException occurred")
+            Resource.Error("[ERROR/USER] IOException occurred")
         }
     }
     fun invoke(
@@ -59,5 +58,8 @@ class UserUseCase @Inject constructor(
         key2: String
     ) : Flow<Resource<String>> = flow {
         emit(useCaseInvocation(repository.userMethodDouble(key, key2)))
+    }
+    fun getCookie(key: String): String {
+        return repository.getCooke(key)
     }
 }
