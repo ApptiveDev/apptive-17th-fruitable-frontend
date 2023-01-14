@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.HashTag
@@ -32,19 +34,14 @@ import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
+import com.fruitable.Fruitable.app.presentation.viewmodel.sale.SalesViewModel
 import com.fruitable.Fruitable.ui.theme.*
 
 @Composable
 fun SalesScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: SalesViewModel = hiltViewModel()
 ){
-    val context = LocalContext.current
-    val Cookie = context.getSharedPreferences("cookie", Context.MODE_PRIVATE)
-    val myList = listOf("id", "email", "name", "pwd", "role", "date")
-    myList.forEach {
-        "쿠키 야미".log()
-        Cookie.getString(it, "").toString().log()
-    }
     Scaffold(
         floatingActionButton = {
             Button(
@@ -68,19 +65,17 @@ fun SalesScreen(
         Column(modifier = Modifier.fillMaxWidth()) {
             SellerProfile(
                 modifier = Modifier.padding(30.dp, 48.dp, 30.dp, 49.dp),
+                nickname = viewModel.name.value.ifBlank { "사용자" },
                 updateButton = { navController.navigate(Screen.UserInfoUpdateScreen.route) },
                 settingButton = { navController.navigate(Screen.SettingScreen.route) }
             )
             IsFruitTab()
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
                     SalesContents(
-                        modifier = Modifier
-                            .padding(top = 33.dp)
-                            .fillMaxSize(),
-                        navController = navController
+                        modifier = Modifier.padding(top = 33.dp).fillMaxSize(),
+                        navController = navController,
+                        viewModel = viewModel
                     )
                 }
             }
@@ -93,44 +88,27 @@ fun SellerProfile(
     modifier: Modifier = Modifier,
     updateButton: () -> Unit = {},
     settingButton: () -> Unit = {},
-    farmName: String = "푸릇농장",
     nickname: String = "홍길동",
     imageUrl: String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg"
 ){
     Box(
-        modifier = modifier
-            .height(54.dp)
-            .fillMaxWidth()
+        modifier = modifier.height(54.dp).fillMaxWidth(),
+        contentAlignment = CenterStart
     ) {
-        Row(
-            verticalAlignment = CenterVertically
-        ) {
+        Row {
             ProfileImage(
                 imageUrl = imageUrl,
                 contentDescription = "profile image",
                 modifier = Modifier.size(54.dp)
             )
-            Column(
-                modifier = Modifier.padding(start = 10.dp),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = farmName,
-                    style = TextStyles.TextBold2,
-                    color = Black,
-                )
-                Text(
-                    text = nickname,
-                    style = TextStyles.TextBasic2,
-                    color = Black,
-                )
-            }
-
+            Text(
+                text = nickname,
+                style = TextStyles.TextBasic2,
+                color = Black,
+                modifier = Modifier.padding(start = 10.dp).align(CenterVertically),
+            )
         }
-        Row(
-            modifier = Modifier.align(BottomEnd),
-            verticalAlignment = CenterVertically
-        ){
+        Row(modifier = Modifier.align(BottomEnd)) {
             Box(
                 modifier = Modifier
                     .size(90.dp, 32.dp)
@@ -150,9 +128,8 @@ fun SellerProfile(
             Image(
                 painter = painterResource(id = R.drawable.setting),
                 contentDescription = "setting button",
-                modifier = Modifier.size(22.dp).clickable(onClick = settingButton)
+                modifier = Modifier.size(22.dp).clickable(onClick = settingButton).align(CenterVertically)
             )
-
         }
     }
 }
@@ -165,9 +142,7 @@ fun IsFruitTab(){
         verticalAlignment = CenterVertically
     ){
         Column(
-           modifier = Modifier
-               .clickable { isFruitClick = true }
-               .weight(1f),
+           modifier = Modifier.clickable { isFruitClick = true }.weight(1f),
            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -176,17 +151,13 @@ fun IsFruitTab(){
                 color = if (isFruitClick) MainGreen1 else MainGray2,
             )
             Divider(
-                modifier = Modifier
-                    .padding(top = 14.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(top = 14.dp).fillMaxWidth(),
                 color = if (isFruitClick) MainGreen1 else MainGray4,
                 thickness = if (isFruitClick) 3.dp else 1.dp
             )
         }
         Column(
-            modifier = Modifier
-                .clickable { isFruitClick = false }
-                .weight(1f),
+            modifier = Modifier.clickable { isFruitClick = false }.weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -195,9 +166,7 @@ fun IsFruitTab(){
                 color = if (isFruitClick) MainGray2 else MainGreen1,
             )
             Divider(
-                modifier = Modifier
-                    .padding(top = 14.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(top = 14.dp).fillMaxWidth(),
                 color = if (isFruitClick) MainGray4 else MainGreen1,
                 thickness = if (isFruitClick) 1.dp else 3.dp,
             )
@@ -207,13 +176,11 @@ fun IsFruitTab(){
 @Composable
 fun SalesContents(
     navController: NavController,
+    viewModel: SalesViewModel,
     modifier: Modifier = Modifier
 ){
     var selectedItem by remember { mutableStateOf("all") }
-    Column(
-        modifier = modifier
-    ){
-        // TODO: 과일, 채소를 구분하는 탭바 필요
+    Column(modifier = modifier){
         Text(
             text = "인기 해시태그",
             style = TextStyles.TextBold2,
@@ -230,11 +197,9 @@ fun SalesContents(
                         HashTagButton(
                             text = it.name,
                             isSelected = selectedItem == it.tag,
-                            modifier = Modifier
-                                .selectable(
+                            modifier = Modifier.selectable(
                                     selected = selectedItem == it.tag,
-                                    onClick = { selectedItem = it.tag }
-                                ),
+                                    onClick = { selectedItem = it.tag }),
                             onClick = { selectedItem = it.tag }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -245,12 +210,17 @@ fun SalesContents(
         Column(
             verticalArrangement = Arrangement.spacedBy(17.dp),
             modifier = Modifier.padding(23.dp, 37.dp, 37.dp, 21.dp)
-        ){
-           for(id in 1..10) {
-                SaleItem(onClick = {
-                    navController.navigate("${Screen.DetailSalesScreen.route}/$id")
-                })
-               FruitableDivider()
+        ) {
+            viewModel.sales.value.salesDTO.forEach {
+                SaleItem(
+                    itemImageUrl = it.fileURL[0],
+                    title = it.title,
+                    nickname = it.userId.name,
+                    price = it.price,
+                    deadline = it.endDate,
+                    onClick = { navController.navigate("${Screen.SaleDetailScreen.route}/${it.id}") }
+                )
+                FruitableDivider()
             }
         }
     }
