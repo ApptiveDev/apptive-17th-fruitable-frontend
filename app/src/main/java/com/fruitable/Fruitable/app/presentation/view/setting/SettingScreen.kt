@@ -18,7 +18,7 @@ import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopU
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTitle
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTwoColumn
-import com.fruitable.Fruitable.app.presentation.viewmodel.UserViewModel
+import com.fruitable.Fruitable.app.presentation.viewmodel.user.UserViewModel
 import com.fruitable.Fruitable.ui.theme.TextStyles
 
 @Composable

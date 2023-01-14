@@ -1,8 +1,5 @@
 package com.fruitable.Fruitable.app.presentation.view
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
@@ -20,7 +17,7 @@ import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopU
 import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
 import com.fruitable.Fruitable.app.presentation.event.UserInfoUpdateEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
-import com.fruitable.Fruitable.app.presentation.viewmodel.UserInfoUpdateViewModel
+import com.fruitable.Fruitable.app.presentation.viewmodel.user.UserInfoUpdateViewModel
 import com.fruitable.Fruitable.ui.theme.MainGreen1
 import com.fruitable.Fruitable.ui.theme.MainGreen4
 import kotlinx.coroutines.flow.collectLatest

@@ -1,4 +1,4 @@
-package com.fruitable.Fruitable.app.presentation.viewmodel
+package com.fruitable.Fruitable.app.presentation.viewmodel.user
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -84,7 +83,6 @@ class LogInViewModel @Inject constructor(
                         is Resource.Loading -> {} // nickname duplication loading
                     }
                 }.launchIn(viewModelScope)
-
             }
         }
     }

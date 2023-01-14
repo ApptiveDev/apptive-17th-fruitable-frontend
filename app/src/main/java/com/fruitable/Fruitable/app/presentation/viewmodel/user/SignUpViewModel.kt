@@ -1,4 +1,4 @@
-package com.fruitable.Fruitable.app.presentation.viewmodel
+package com.fruitable.Fruitable.app.presentation.viewmodel.user
 
 import android.util.Patterns
 import androidx.compose.runtime.State
