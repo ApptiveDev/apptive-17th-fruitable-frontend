@@ -57,7 +57,7 @@ import com.fruitable.Fruitable.app.presentation.component.NumberFormatting
 import com.fruitable.Fruitable.app.presentation.component._view.FruitableCheckBox
 import com.fruitable.Fruitable.app.presentation.event.AddSaleEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
-import com.fruitable.Fruitable.app.presentation.viewmodel.AddSaleViewModel
+import com.fruitable.Fruitable.app.presentation.viewmodel.sale.AddSaleViewModel
 import com.fruitable.Fruitable.ui.theme.*
 import kotlinx.coroutines.flow.collectLatest
 import java.util.*
@@ -131,9 +131,7 @@ fun AddSaleScreen(
                         state = priceState,
                         onValueChange = {
                             if (it.length < 10) viewModel.onEvent(
-                                AddSaleEvent.EnteredPrice(
-                                    it
-                                )
+                                AddSaleEvent.EnteredPrice(it.toInt())
                             )
                         },
                         onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangePriceFocus(it)) },
@@ -192,8 +190,9 @@ fun DeadLineField(
     val mDatePickerDialog = DatePickerDialog(
         mContext,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+            val month = if (mMonth < 9) "0${mMonth+1}" else mMonth
             val day = if (mDayOfMonth < 10) "0$mDayOfMonth" else mDayOfMonth
-            viewModel.onEvent(AddSaleEvent.EnterDeadLine("$mYear-${mMonth+1}-$day"))
+            viewModel.onEvent(AddSaleEvent.EnterDeadLine("$mYear-${month}-$day"))
         }, mYear, mMonth, mDay
     )
     val isChecked = deadLine.isChecked
@@ -202,7 +201,7 @@ fun DeadLineField(
         FruitableDivider()
         FruitableCheckBox(
             modifier = Modifier.padding(4.dp, 22.dp, 0.dp, 22.dp),
-            isChecked = deadLine.isChecked,
+            isChecked = isChecked,
             onClick = {
                 if (!isChecked) mDatePickerDialog.show()
                 viewModel.onEvent(AddSaleEvent.ChangeDeadLine)
@@ -222,10 +221,7 @@ fun DeadLineField(
                     BorderStroke(1.dp, MainGreen3),
                     shape = RoundedCornerShape(10.dp)
                 )
-                .clickable {
-                    if (isChecked)
-                        mDatePickerDialog.show()
-                },
+                .clickable { if (isChecked) mDatePickerDialog.show() },
         ){
             Text(
                 text = if (isChecked) deadLine.text
@@ -303,7 +299,7 @@ fun HashTagField(
 }
 @Composable
 fun PhotoPicker(
-    viewModel: AddSaleViewModel = hiltViewModel()
+    viewModel: AddSaleViewModel = hiltViewModel(),
 ) {
     val saleImage = viewModel.saleImage
     val galleryLauncher = rememberLauncherForActivityResult(
@@ -323,15 +319,13 @@ fun PhotoPicker(
         item {
             PhotoImage(
                onClick = { galleryLauncher.launch("image/") },
-               size =  saleImage.value.listOfSelectedImages.size
+               size =  saleImage.size
             )
         }
-        item {
-            Spacer(modifier = Modifier.width(5.dp))
-        }
-        if (saleImage.value.listOfSelectedImages.isNotEmpty()){
-            itemsIndexed(saleImage.value.listOfSelectedImages){ index: Int, item: Uri ->
-                ImagePreviewItem(uri = item, onDeleteClick = { viewModel.onEvent(AddSaleEvent.RemoveImage(item)) })
+        item { Spacer(modifier = Modifier.width(5.dp)) }
+        if (saleImage.isNotEmpty()){
+            itemsIndexed(saleImage) { index: Int, item: Uri ->
+                ImagePreviewItem(uri = item, onDeleteClick = { viewModel.onEvent(AddSaleEvent.RemoveImage(index)) })
             }
         }
     }

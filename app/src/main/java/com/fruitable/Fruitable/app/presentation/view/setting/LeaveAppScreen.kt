@@ -24,7 +24,7 @@ import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
 import com.fruitable.Fruitable.app.presentation.component._view.FruitableCheckBox
 import com.fruitable.Fruitable.app.presentation.event.LeaveAppEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
-import com.fruitable.Fruitable.app.presentation.viewmodel.LeaveAppViewModel
+import com.fruitable.Fruitable.app.presentation.viewmodel.user.LeaveAppViewModel
 import com.fruitable.Fruitable.ui.theme.MainGreen1
 import com.fruitable.Fruitable.ui.theme.TextStyles
 import kotlinx.coroutines.flow.collectLatest

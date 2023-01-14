@@ -35,7 +35,7 @@ import com.fruitable.Fruitable.app.presentation.component._view.FruitableCheckBo
 import com.fruitable.Fruitable.app.presentation.event.SignUpEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.view.user.AgreementPopUp
-import com.fruitable.Fruitable.app.presentation.viewmodel.SignUpViewModel
+import com.fruitable.Fruitable.app.presentation.viewmodel.user.SignUpViewModel
 import com.fruitable.Fruitable.ui.theme.MainGreen1
 import com.fruitable.Fruitable.ui.theme.MainGreen3
 import com.fruitable.Fruitable.ui.theme.MainGreen4

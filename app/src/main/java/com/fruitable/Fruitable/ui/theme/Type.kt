@@ -26,7 +26,8 @@ object TextStyles{
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
-        lineHeight = 14.06.sp
+        lineHeight = 14.06.sp,
+        color = Color.Black,
     )
     val TextSmall2 = TextStyle(
         fontFamily = Roboto,
@@ -50,7 +51,8 @@ object TextStyles{
         fontFamily = Roboto,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
-        lineHeight = 14.06.sp
+        lineHeight = 14.06.sp,
+        color = Color.Black,
     )
     val TextBasic2 = TextStyle(
         fontFamily = Roboto,
@@ -87,13 +89,15 @@ object TextStyles{
         fontFamily = Roboto,
         fontWeight = FontWeight.SemiBold,
         fontSize = 17.sp,
-        lineHeight = 19.sp
+        lineHeight = 19.sp,
+        color = Color.Black,
     )
     val TextBold4 = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         lineHeight = 28.13.sp,
+        color = Color.Black,
     )
     val TextBold5 = TextStyle(
         fontFamily = Roboto,
@@ -116,7 +120,8 @@ object TextStyles{
         fontFamily = Roboto,
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
-        lineHeight = 26.sp
+        lineHeight = 26.sp,
+        color = Color.Black,
     )
     val TextHeavyBold2 = TextStyle(
         fontFamily = Roboto,

@@ -1,13 +1,11 @@
-package com.fruitable.Fruitable.app.presentation.viewmodel
+package com.fruitable.Fruitable.app.presentation.viewmodel.user
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fruitable.Fruitable.app.data.network.dto.user.NicknameDTO
-import com.fruitable.Fruitable.app.data.network.dto.user.PasswordDTO
 import com.fruitable.Fruitable.app.data.network.dto.user.PasswordUpdateDTO
-import com.fruitable.Fruitable.app.data.network.dto.user.SignUpDTO
 import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
 import com.fruitable.Fruitable.app.presentation.event.UserInfoUpdateEvent
 import com.fruitable.Fruitable.app.presentation.state.TextFieldBoxState

@@ -1,4 +1,4 @@
-package com.fruitable.Fruitable.app.presentation.viewmodel
+package com.fruitable.Fruitable.app.presentation.viewmodel.user
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

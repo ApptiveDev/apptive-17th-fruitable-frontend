@@ -23,8 +23,11 @@ fun NavGraphBuilder.fruitableGraph(
         AddSaleScreen(navController)
     }
     composable(
-        route = Screen.DetailSalesScreen.route+"/{itemId}"){ backStackEntry ->
-        DetailSalesScreen(navController = navController, itemId = (backStackEntry.arguments?.getInt("itemId") ?: "") as Int)
+        route = Screen.SaleDetailScreen.route+"/{saleId}",
+        arguments = listOf(navArgument("saleId") { type = NavType.IntType })
+    ){ backStackEntry ->
+        val id = backStackEntry.arguments?.getInt("saleId") ?: 0
+        SaleDetailScreen(navController = navController, saleId = id)
     }
     /**
      * user - 로그인, 회원가입, 회원정보 수정 Screen
