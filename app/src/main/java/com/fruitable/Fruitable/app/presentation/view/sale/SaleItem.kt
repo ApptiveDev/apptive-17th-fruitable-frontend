@@ -21,7 +21,7 @@ fun SaleItem(
     itemImageUrl: String = "https://images-prod.healthline.com/hlcmsresource/images/AN_images/health-benefits-of-apples-1296x728-feature.jpg",
     title: String = "프레샤인 충주 GAP 인증\n당도선별 사과",
     nickname: String = "푸릇농장",
-    deadline: Int = 30,
+    deadline: String = "2020.01.23",
     price: Int = 14500
 ){
     Row(
@@ -45,7 +45,7 @@ fun SaleItem(
                 maxLines = 2,
             )
             Text(
-                text = nickname + "ㆍ마감 " + deadline.toString() + "일 전",
+                text = nickname + "ㆍ마감 " + deadline + "일 전",
                 style = TextStyles.TextSmall1,
                 color = MainGray1,
                 overflow = TextOverflow.Ellipsis,
