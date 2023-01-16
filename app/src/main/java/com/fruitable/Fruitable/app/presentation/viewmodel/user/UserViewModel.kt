@@ -24,4 +24,7 @@ class UserViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+    fun getCookie(key: String): String {
+        return userUseCase.getCookie(key)
+    }
 }
