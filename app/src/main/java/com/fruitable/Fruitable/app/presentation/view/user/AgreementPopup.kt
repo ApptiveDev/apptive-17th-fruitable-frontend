@@ -1,18 +1,17 @@
 package com.fruitable.Fruitable.app.presentation.view.user
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -23,6 +22,7 @@ import androidx.compose.ui.window.Popup
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
+import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.data.agreeTitle
 import com.fruitable.Fruitable.app.presentation.data.infoAgree
 import com.fruitable.Fruitable.ui.theme.MainGreen1
@@ -45,15 +45,13 @@ fun AgreementPopUp(
                 horizontalAlignment = CenterHorizontally
             ) {
                 item {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Image(
-                            painter = painterResource(id = R.drawable.cancel_thin),
-                            contentDescription = "cancel",
-                            modifier = Modifier
-                                .padding(0.dp, 48.dp, 30.dp, 0.dp)
-                                .clickable(onClick = onDismiss)
-                                .size(30.dp)
-                                .align(End)
+                    Column {
+                        ResourceImage(
+                            resId = R.drawable.cancel_thin,
+                            size = 30.dp,
+                            boxModifier = Modifier.fillMaxWidth().align(End).clickable(onClick = onDismiss),
+                            modifier = Modifier.padding(top = 48.dp, end = 30.dp),
+                            contentAlignment = Alignment.CenterEnd
                         )
                     }
                 }

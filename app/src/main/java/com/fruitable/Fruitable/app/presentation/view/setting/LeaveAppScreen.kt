@@ -55,9 +55,9 @@ fun LeaveAppScreen(
         }
     }
     FruitablePopUp(
-        text  = "탈퇴 시 본인 계정의 모든 기록이\n" +
-                "삭제되며 복구되지 않습니다.\n" +
-                "정말 탈퇴하시겠습니까?",
+        text  = """탈퇴 시 본인 계정의 모든 기록이
+            삭제되며 복구할 수 없습니다.
+            정말 탈퇴하시겠습니까?""".trimIndent(),
         cancelText = "취소",
         confirmText = "탈퇴하기",
         cancel = { isDialogOpen = false},

@@ -32,7 +32,6 @@ fun UserInfoUpdateScreen(
     val newPasswordState = viewModel.newPassword.value
     val newPasswordState2 = viewModel.newPassword2.value
 
-    val scaffoldState = rememberScaffoldState()
     val focusRequester = remember { FocusRequester() }
 
     val nicknameColor = if (viewModel.isNicknameUpdatable()) MainGreen1 else MainGreen4

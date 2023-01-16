@@ -1,8 +1,7 @@
 package com.fruitable.Fruitable.app.presentation.view
 
-import android.content.Context
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,19 +19,15 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.HashTag
-import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
-import com.fruitable.Fruitable.app.presentation.component.ProfileImage
+import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.sale.SalesViewModel
 import com.fruitable.Fruitable.ui.theme.*
@@ -54,11 +49,7 @@ fun SalesScreen(
                 colors = ButtonDefaults.buttonColors(MainGreen1),
                 contentPadding = PaddingValues(0.dp)
             ){
-                Image(
-                    painterResource(id = R.drawable.plusbtn),
-                    contentDescription = "add_post",
-                    modifier = Modifier.size(24.dp)
-                )
+                ResourceImage(resId = R.drawable.plusbtn, size = 24.dp)
             }
         }
     ) {
@@ -89,22 +80,16 @@ fun SellerProfile(
     updateButton: () -> Unit = {},
     settingButton: () -> Unit = {},
     nickname: String = "홍길동",
-    imageUrl: String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg"
 ){
     Box(
         modifier = modifier.height(54.dp).fillMaxWidth(),
         contentAlignment = CenterStart
     ) {
         Row {
-            ProfileImage(
-                imageUrl = imageUrl,
-                contentDescription = "profile image",
-                modifier = Modifier.size(54.dp)
-            )
+            ResourceImage(boxModifier = Modifier.size(54.dp).clip(CircleShape).background(MainGreen2))
             Text(
                 text = nickname,
-                style = TextStyles.TextBasic2,
-                color = Black,
+                style = TextStyles.TextBold2,
                 modifier = Modifier.padding(start = 10.dp).align(CenterVertically),
             )
         }
@@ -125,10 +110,10 @@ fun SellerProfile(
                 )
             }
             Spacer(modifier = Modifier.width(6.dp))
-            Image(
-                painter = painterResource(id = R.drawable.setting),
-                contentDescription = "setting button",
-                modifier = Modifier.size(22.dp).clickable(onClick = settingButton).align(CenterVertically)
+            ResourceImage(
+                resId = R.drawable.setting,
+                size = 22.dp,
+                boxModifier = Modifier.clickable(onClick = settingButton).align(CenterVertically)
             )
         }
     }
@@ -184,7 +169,6 @@ fun SalesContents(
         Text(
             text = "인기 해시태그",
             style = TextStyles.TextBold2,
-            color = Black,
             modifier = Modifier.padding(start = 21.dp)
         )
         LazyRow(
@@ -210,7 +194,7 @@ fun SalesContents(
         Column(
             verticalArrangement = Arrangement.spacedBy(17.dp),
             modifier = Modifier.padding(23.dp, 37.dp, 37.dp, 21.dp)
-        ) {
+        ) {/*
             viewModel.sales.value.salesDTO.forEach {
                 SaleItem(
                     itemImageUrl = it.fileURL[0],
@@ -220,6 +204,10 @@ fun SalesContents(
                     deadline = it.endDate,
                     onClick = { navController.navigate("${Screen.SaleDetailScreen.route}/${it.id}") }
                 )
+                FruitableDivider()
+            }*/
+            for (i in 1..10) {
+                SaleItem(onClick = { navController.navigate(Screen.SaleDetailScreen.route) })
                 FruitableDivider()
             }
         }

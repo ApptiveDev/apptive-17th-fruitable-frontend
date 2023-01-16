@@ -5,7 +5,10 @@ import android.net.Uri
 import android.widget.DatePicker
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -33,13 +36,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -55,6 +56,7 @@ import com.fruitable.Fruitable.app.presentation.component.FruitableTextField
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.NumberFormatting
 import com.fruitable.Fruitable.app.presentation.component._view.FruitableCheckBox
+import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.event.AddSaleEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.sale.AddSaleViewModel
@@ -129,11 +131,7 @@ fun AddSaleScreen(
                     FruitableTextField(
                         modifier = Modifier.focusRequester(focusRequester),
                         state = priceState,
-                        onValueChange = {
-                            if (it.length < 10) viewModel.onEvent(
-                                AddSaleEvent.EnteredPrice(it.toInt())
-                            )
-                        },
+                        onValueChange = { if (it.length < 10) viewModel.onEvent(AddSaleEvent.EnteredPrice(it.toInt())) },
                         onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangePriceFocus(it)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         visualTransformation = NumberFormatting(),
@@ -154,12 +152,8 @@ fun AddSaleScreen(
                         PhotoPicker()
                     }
                 }
-                item {
-                    HashTagField(focusRequester = focusRequester)
-                }
-                item {
-                    DeadLineField()
-                }
+                item { HashTagField(focusRequester = focusRequester) }
+                item { DeadLineField() }
                 item {
                     FruitableTextField(
                         modifier = Modifier.focusRequester(focusRequester),
@@ -251,9 +245,9 @@ fun HashTagField(
         Row(
             modifier = Modifier.padding(4.dp,18.dp,0.dp,0.dp)
         ) {
-            Text( text = "해시태그 (", color = Black, style = TextStyles.TextSmall3 )
+            Text( text = "해시태그 (", style = TextStyles.TextSmall3 )
             Text( text = hashTag.textList.size.toString(), color = MainGreen1, style = TextStyles.TextSmall3 )
-            Text( text = "/4)", color = Black, style = TextStyles.TextSmall3 )
+            Text( text = "/4)", style = TextStyles.TextSmall3 )
         }
         Spacer(modifier = Modifier.height(22.dp))
         if (hashTag.textList.size < 4) {
@@ -265,11 +259,7 @@ fun HashTagField(
                     onValueChange = { viewModel.onEvent(AddSaleEvent.EnteredHashTag(it)) },
                     singleLine = true,
                     textStyle = TextStyles.TextSmall3,
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            keyboardController?.hide()
-                        }
-                    ),
+                    keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
                     modifier = Modifier
                         .focusRequester(focusRequester)
                         .fillMaxWidth()
@@ -304,9 +294,7 @@ fun PhotoPicker(
     val saleImage = viewModel.saleImage
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) {
-        viewModel.onEvent(AddSaleEvent.EnteredImage(it))
-    }
+    ) { viewModel.onEvent(AddSaleEvent.EnteredImage(it)) }
 
     LazyRow(
         modifier = Modifier
@@ -318,7 +306,7 @@ fun PhotoPicker(
     ){
         item {
             PhotoImage(
-               onClick = { galleryLauncher.launch("image/") },
+               onClick = { if(saleImage.size < 5) galleryLauncher.launch("image/") },
                size =  saleImage.size
             )
         }
@@ -349,13 +337,10 @@ fun ImagePreviewItem(
                 .size(size)
                 .clip(RoundedCornerShape(4.dp))
         )
-        Image(
-            painter = painterResource(id = R.drawable.delete_picture),
-            contentDescription = "delete picture button",
-            modifier = Modifier
-                .align(TopEnd)
-                .clickable(onClick = onDeleteClick)
-                .size(18.dp)
+        ResourceImage(
+            resId = R.drawable.delete_picture,
+            boxModifier = Modifier.align(TopEnd).clickable(onClick = onDeleteClick),
+            size = 18.dp
         )
     }
 }
@@ -371,8 +356,7 @@ fun Title(
         Text(
             text = "글쓰기",
             style = TextStyles.TextBold2,
-            color = Black,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.align(Center)
         )
         Text(
             text = "등록",
@@ -453,11 +437,7 @@ fun PhotoImage(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Image(
-            painter = painterResource(id = R.drawable.camera),
-            contentDescription = "camera image",
-            modifier = Modifier.size(24.dp)
-        )
+        ResourceImage(resId = R.drawable.camera, size = 24.dp)
         Row {
             Text(
                 text = size.toString(),

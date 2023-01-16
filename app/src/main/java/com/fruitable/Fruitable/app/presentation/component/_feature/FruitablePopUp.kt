@@ -9,12 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.*
 import com.fruitable.Fruitable.ui.theme.MainGreen1
 import com.fruitable.Fruitable.ui.theme.TextStyles
 
@@ -42,7 +40,6 @@ fun FruitablePopUp(
                 Text(
                     text = text,
                     style = TextStyles.TextBasic3,
-                    color = Black,
                     modifier = Modifier.padding(30.dp)
                 )
                 Row(
@@ -53,7 +50,6 @@ fun FruitablePopUp(
                     Text(
                         text = cancelText,
                         style = TextStyles.TextBold1,
-                        color = Black,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.weight(1f).clickable(onClick = cancel)
                     )

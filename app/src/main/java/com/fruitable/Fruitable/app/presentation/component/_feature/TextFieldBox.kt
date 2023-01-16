@@ -4,9 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,10 +19,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.fruitable.Fruitable.app.presentation.state.TextFieldBoxState
-import com.fruitable.Fruitable.ui.theme.MainGray5
-import com.fruitable.Fruitable.ui.theme.MainGray8
-import com.fruitable.Fruitable.ui.theme.MainGreen3
-import com.fruitable.Fruitable.ui.theme.TextStyles
+import com.fruitable.Fruitable.ui.theme.*
 
 /**
  * 로그인, 회원가입, 회원탈퇴, 회원정보 수정 화면에서 사용
@@ -48,11 +43,7 @@ fun TextFieldBox(
         modifier = modifier
     ){
         if (isSpaced) {
-            Text(
-                text = state.title,
-                style = TextStyles.TextBasic3,
-                color = Color.Black
-            )
+            Text(text = state.title, style = TextStyles.TextBasic3)
             Spacer(modifier = Modifier.height(10.dp))
         }
         Box(
@@ -84,9 +75,7 @@ fun TextFieldBox(
                     text = state.hint,
                     style = TextStyles.TextSmall2,
                     color = MainGray8,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 16.dp)
+                    modifier = Modifier.align(Alignment.CenterStart).padding(start = 16.dp)
                 )
             }
         }

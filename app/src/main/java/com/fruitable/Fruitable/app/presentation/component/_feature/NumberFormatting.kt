@@ -26,7 +26,6 @@ class NumberFormatting : VisualTransformation {
                 }
                 return offset
             }
-
             override fun transformedToOriginal(offset: Int): Int {
                 if (originalText.isValidFormattableAmount) {
                     return when {
@@ -40,7 +39,6 @@ class NumberFormatting : VisualTransformation {
                 return offset
             }
         }
-
         return TransformedText(
             text = AnnotatedString(formattedText),
             offsetMapping = offsetMapping
@@ -51,5 +49,4 @@ class NumberFormatting : VisualTransformation {
 val String.isValidFormattableAmount get(): Boolean = isNotBlank() && isDigitsOnly() && length <= 10
 
 fun formatAmountOrMessage(input: String)
-        : String = if (input.isValidFormattableAmount) { DecimalFormat("#,###").format(input.toDouble()) }
-else { input }
+: String = if (input.isValidFormattableAmount) { DecimalFormat("#,###").format(input.toDouble()) } else { input }

@@ -52,10 +52,7 @@ fun UserSetting(
             modifier = Modifier.padding(30.dp, 30.dp, 30.dp, 0.dp),
             verticalArrangement = Arrangement.spacedBy(30.dp)
         ) {
-            Text(
-                text = "사용자 설정",
-                style = TextStyles.TextBold1
-            )
+            Text(text = "사용자 설정", style = TextStyles.TextBold1)
             Text(
                 text = "계정 정보",
                 style = TextStyles.TextBasic3,
@@ -104,23 +101,14 @@ fun ExtraSetting(
         modifier = Modifier.padding(horizontal = 30.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
-        Text(
-            text = "기타",
-            style = TextStyles.TextBold1
-        )
+        Text(text = "기타", style = TextStyles.TextBold1)
         Text(
             text = "공지사항",
             style = TextStyles.TextBasic3,
             modifier = Modifier.fillMaxWidth().clickable(onClick = onNotice)
         )
-        SettingTwoColumn(
-            text = "언어 설정",
-            value = "한국어"
-        )
-        SettingTwoColumn(
-            text = "버전 정보",
-            value = "1.0.0"
-        )
+        SettingTwoColumn(text = "언어 설정", value = "한국어")
+        SettingTwoColumn(text = "버전 정보", value = "1.0.0")
         Text(
             text = "로그아웃",
             style = TextStyles.TextBasic3,

@@ -13,15 +13,14 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.fruitable.Fruitable.ui.theme.*
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app.domain.utils.NoRippleInteractionSource
+import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
+import com.fruitable.Fruitable.ui.theme.*
 
 @Composable
 fun HashTagButton(
@@ -62,20 +61,16 @@ fun HashTagButton(
         enabled = enabled,
     ) {
         if (isCancellable) {
-            Box(
-                modifier = Modifier
+            ResourceImage(
+                resId = R.drawable.cancel,
+                size = 8.dp,
+                contentAlignment = Center,
+                boxModifier = Modifier
                     .clip(CircleShape)
                     .size(16.dp)
+                    .background(MainGreen3)
                     .clickable(onClick = onCancelClick)
-                    .background(MainGreen3),
-                contentAlignment = Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.cancel),
-                    contentDescription = "cancel",
-                    modifier = Modifier.size(8.dp)
-                )
-            }
+            )
             Spacer(modifier = Modifier.width(8.dp))
         }
         Text(

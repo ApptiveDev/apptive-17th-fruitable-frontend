@@ -9,18 +9,22 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTitle
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTwoColumn
 import com.fruitable.Fruitable.app.presentation.view.user.AgreementPopUp
+import com.fruitable.Fruitable.app.presentation.viewmodel.user.UserViewModel
 import com.fruitable.Fruitable.ui.theme.MainGray8
 import com.fruitable.Fruitable.ui.theme.TextStyles
 
 @Composable
 fun AccountScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: UserViewModel = hiltViewModel()
 ){
     var isDialogOpen by remember { mutableStateOf(false) }
     AgreementPopUp(isOpen = isDialogOpen, category = true, onDismiss = {isDialogOpen = !isDialogOpen})
@@ -42,7 +46,7 @@ fun AccountScreen(
                 onClick = { navController.navigate(Screen.EmailScreen.route) }
             )
             Text(
-                text = "2022.11.27",
+                text = viewModel.getCookie("date"),
                 color = MainGray8,
                 style = TextStyles.TextSmall3
             )
@@ -52,10 +56,7 @@ fun AccountScreen(
             modifier = Modifier.padding(horizontal = 30.dp),
             verticalArrangement = Arrangement.spacedBy(30.dp)
         ) {
-            Text(
-                text = "기타",
-                style = TextStyles.TextBold1
-            )
+            Text(text = "기타", style = TextStyles.TextBold1)
             Text(
                 text = "서비스 이용약관",
                 style = TextStyles.TextBasic3,

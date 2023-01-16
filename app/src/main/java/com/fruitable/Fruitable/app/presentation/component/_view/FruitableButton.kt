@@ -39,7 +39,7 @@ fun FruitableButton(
             .height(44.dp)
             .clip(RoundedCornerShape(cornerShape))
             .border(1.dp,textColor,RoundedCornerShape(cornerShape)),
-        contentPadding = if (isCancellable) PaddingValues(start = 9.dp, end = 12.dp,top=0.dp,bottom=0.dp)
+        contentPadding = if (isCancellable) PaddingValues(start = 9.dp, end = 12.dp)
                          else PaddingValues(horizontal = 15.dp),
         colors = buttonColor,
         interactionSource = if (isRipple) MutableInteractionSource()

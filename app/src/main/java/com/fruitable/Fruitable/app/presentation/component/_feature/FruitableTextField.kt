@@ -10,7 +10,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
@@ -45,7 +44,7 @@ fun FruitableTextField(
             modifier = Modifier.padding(4.dp, 16.dp, 0.dp, 16.dp)
         ) {
             Row {
-                if (isPrice) Text(text = "₩ ", style = textStyle, color= Color.Black)
+                if (isPrice) Text(text = "₩ ", style = textStyle)
                 BasicTextField(
                     value = state.text,
                     onValueChange = onValueChange,
@@ -53,11 +52,8 @@ fun FruitableTextField(
                     textStyle = textStyle,
                     visualTransformation = visualTransformation,
                     keyboardOptions = keyboardOptions,
-                    keyboardActions = KeyboardActions(
-                        onDone = {keyboardController?.hide()}),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .onFocusChanged { onFocusChange(it) }
+                    keyboardActions = KeyboardActions(onDone = {keyboardController?.hide()}),
+                    modifier = Modifier.fillMaxWidth().onFocusChanged { onFocusChange(it) }
                 )
             }
             if (state.isHintVisible) {
