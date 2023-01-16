@@ -20,27 +20,15 @@ fun FruitableTitle(
     val focusManager = LocalFocusManager.current
     LazyColumn(
         modifier = Modifier
-            .padding(30.dp, 0.dp, 30.dp, 0.dp)
+            .padding(horizontal = 30.dp)
             .fillMaxSize()
             .addFocusCleaner(focusManager),
     ){
         item { Spacer(modifier = Modifier.height(48.dp)) }
-        item {
-            Text(
-                text = title,
-                style = TextStyles.TextBold4,
-                color = Color.Black
-            )
-        }
+        item { Text(text = title, style = TextStyles.TextBold4) }
         item { Spacer(modifier = Modifier.height(4.dp)) }
-        item {
-            Text(
-                text = subtitle,
-                style = TextStyles.TextBasic2,
-                color = Color.Black
-            )
-        }
-        item{ FruitableDivider(modifier = Modifier.padding(top = 16.dp, bottom = 30.dp)) }
+        item { Text(text = subtitle, style = TextStyles.TextBasic2) }
+        item { FruitableDivider(modifier = Modifier.padding(top = 16.dp, bottom = 30.dp)) }
         item { Column(content = content) }
     }
 }

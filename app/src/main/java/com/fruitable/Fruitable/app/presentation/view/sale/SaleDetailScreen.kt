@@ -63,7 +63,6 @@ fun SaleDetailScreen(
             item {
                 Text (
                     text = saleDetail.content,
-                    color = Color.Black,
                     modifier = Modifier.padding(20.dp, 18.dp, 0.dp, 5.dp),
                     style = TextStyles.TextSmall3
                 )
@@ -129,14 +128,9 @@ fun DetailFarmProfile(
                 Text(
                     text = nickName,
                     style = TextStyles.TextBold2,
-                    color = Color.Black,
                     modifier = Modifier.padding(end = 6.dp)
                 )
-                Text(
-                    text = phoneNum,
-                    style = TextStyles.TextSmall2,
-                    color = Color.Black,
-                )
+                Text(text = phoneNum, style = TextStyles.TextSmall2,)
             }
         }
         FruitableDivider(modifier = Modifier.padding(28.dp,0.dp))

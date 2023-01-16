@@ -104,7 +104,6 @@ fun SellerProfile(
             Text(
                 text = nickname,
                 style = TextStyles.TextBasic2,
-                color = Black,
                 modifier = Modifier.padding(start = 10.dp).align(CenterVertically),
             )
         }
@@ -184,7 +183,6 @@ fun SalesContents(
         Text(
             text = "인기 해시태그",
             style = TextStyles.TextBold2,
-            color = Black,
             modifier = Modifier.padding(start = 21.dp)
         )
         LazyRow(

@@ -18,10 +18,7 @@ fun FruitableDivider(
     color: Color = MainGray3
 ){
     Divider(
-        modifier= modifier
-            .fillMaxWidth()
-            .padding(padding)
-            .height(1.dp),
+        modifier= modifier.fillMaxWidth().padding(padding).height(1.dp),
         color = color
     )
 }

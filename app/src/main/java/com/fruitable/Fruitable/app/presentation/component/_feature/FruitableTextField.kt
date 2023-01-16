@@ -45,7 +45,7 @@ fun FruitableTextField(
             modifier = Modifier.padding(4.dp, 16.dp, 0.dp, 16.dp)
         ) {
             Row {
-                if (isPrice) Text(text = "₩ ", style = textStyle, color= Color.Black)
+                if (isPrice) Text(text = "₩ ", style = textStyle)
                 BasicTextField(
                     value = state.text,
                     onValueChange = onValueChange,
@@ -53,11 +53,8 @@ fun FruitableTextField(
                     textStyle = textStyle,
                     visualTransformation = visualTransformation,
                     keyboardOptions = keyboardOptions,
-                    keyboardActions = KeyboardActions(
-                        onDone = {keyboardController?.hide()}),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .onFocusChanged { onFocusChange(it) }
+                    keyboardActions = KeyboardActions(onDone = {keyboardController?.hide()}),
+                    modifier = Modifier.fillMaxWidth().onFocusChanged { onFocusChange(it) }
                 )
             }
             if (state.isHintVisible) {

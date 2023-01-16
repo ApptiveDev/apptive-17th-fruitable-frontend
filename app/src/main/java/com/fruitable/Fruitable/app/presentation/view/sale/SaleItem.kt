@@ -41,7 +41,6 @@ fun SaleItem(
                 text = title,
                 style = TextStyles.TextSmall3,
                 overflow = TextOverflow.Ellipsis,
-                color = Color.Black,
                 maxLines = 2,
             )
             Text(
@@ -49,11 +48,10 @@ fun SaleItem(
                 style = TextStyles.TextSmall1,
                 color = MainGray1,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1
+                maxLines = 2
             )
             Text(
                 text = formatAmountOrMessage(price.toString()) + "원",
-                color = Color.Black,
                 style = TextStyles.TextBold2
             )
         }

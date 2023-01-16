@@ -48,11 +48,7 @@ fun TextFieldBox(
         modifier = modifier
     ){
         if (isSpaced) {
-            Text(
-                text = state.title,
-                style = TextStyles.TextBasic3,
-                color = Color.Black
-            )
+            Text(text = state.title, style = TextStyles.TextBasic3)
             Spacer(modifier = Modifier.height(10.dp))
         }
         Box(
@@ -84,9 +80,7 @@ fun TextFieldBox(
                     text = state.hint,
                     style = TextStyles.TextSmall2,
                     color = MainGray8,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 16.dp)
+                    modifier = Modifier.align(Alignment.CenterStart).padding(start = 16.dp)
                 )
             }
         }

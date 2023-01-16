@@ -25,10 +25,7 @@ fun NoticeDetailScreen(
         Column(
             modifier = Modifier.padding(30.dp, 30.dp, 25.dp ,0.dp)
         ) {
-            Text(
-                text = notices[id][0],
-                style = TextStyles.TextBold6
-            )
+            Text(text = notices[id][0], style = TextStyles.TextBold6)
             Spacer(modifier = Modifier.height(14.dp))
             Text(
                 text = notices[id][1],
@@ -36,11 +33,7 @@ fun NoticeDetailScreen(
                 color = MainGray8
             )
             FruitableDivider(Modifier.padding(vertical = 30.dp))
-            Text(
-                text = notices[id][2],
-                style = TextStyles.TextSmall3,
-
-            )
+            Text(text = notices[id][2], style = TextStyles.TextSmall3)
         }
     }
 }

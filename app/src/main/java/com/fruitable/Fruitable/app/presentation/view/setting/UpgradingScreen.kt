@@ -24,10 +24,7 @@ fun UpgradingScreen(
         title = "판매자 되기",
         subtitle = "푸릇에이블의 판매자가 되어보세요 !"
     ){
-        Text(
-            text = "판매자 되기 안내",
-            style = TextStyles.TextBold6
-        )
+        Text(text = "판매자 되기 안내", style = TextStyles.TextBold6)
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             buildAnnotatedString {

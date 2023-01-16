@@ -126,9 +126,7 @@ fun LoginField(
                 Image(
                     painterResource(id = R.drawable.warning),
                     contentDescription = "emailError",
-                    modifier = Modifier
-                        .size(14.dp)
-                        .align(CenterVertically)
+                    modifier = Modifier.size(14.dp).align(CenterVertically)
                 )
                 Text(
                     text = errorMessage,

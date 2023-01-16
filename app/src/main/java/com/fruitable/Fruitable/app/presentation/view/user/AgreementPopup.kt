@@ -38,9 +38,7 @@ fun AgreementPopUp(
     if (isOpen) {
         Popup {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White),
+                modifier = Modifier.fillMaxSize().background(Color.White),
                 verticalArrangement = Arrangement.spacedBy(30.dp),
                 horizontalAlignment = CenterHorizontally
             ) {

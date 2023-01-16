@@ -42,7 +42,6 @@ fun FruitablePopUp(
                 Text(
                     text = text,
                     style = TextStyles.TextBasic3,
-                    color = Black,
                     modifier = Modifier.padding(30.dp)
                 )
                 Row(
@@ -53,7 +52,6 @@ fun FruitablePopUp(
                     Text(
                         text = cancelText,
                         style = TextStyles.TextBold1,
-                        color = Black,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.weight(1f).clickable(onClick = cancel)
                     )

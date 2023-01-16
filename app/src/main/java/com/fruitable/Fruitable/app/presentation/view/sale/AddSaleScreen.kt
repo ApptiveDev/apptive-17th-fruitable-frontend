@@ -33,7 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -129,11 +128,7 @@ fun AddSaleScreen(
                     FruitableTextField(
                         modifier = Modifier.focusRequester(focusRequester),
                         state = priceState,
-                        onValueChange = {
-                            if (it.length < 10) viewModel.onEvent(
-                                AddSaleEvent.EnteredPrice(it.toInt())
-                            )
-                        },
+                        onValueChange = { if (it.length < 10) viewModel.onEvent(AddSaleEvent.EnteredPrice(it.toInt())) },
                         onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangePriceFocus(it)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         visualTransformation = NumberFormatting(),
@@ -154,12 +149,8 @@ fun AddSaleScreen(
                         PhotoPicker()
                     }
                 }
-                item {
-                    HashTagField(focusRequester = focusRequester)
-                }
-                item {
-                    DeadLineField()
-                }
+                item { HashTagField(focusRequester = focusRequester) }
+                item { DeadLineField() }
                 item {
                     FruitableTextField(
                         modifier = Modifier.focusRequester(focusRequester),
@@ -228,9 +219,7 @@ fun DeadLineField(
                        else deadLine.hint,
                 style = TextStyles.TextSmall3,
                 color = if (isChecked) MainGray2 else MainGray4,
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .align(CenterVertically)
+                modifier = Modifier.padding(start = 12.dp).align(CenterVertically)
             )
         }
         Spacer(modifier = Modifier.height(22.dp))
@@ -251,9 +240,9 @@ fun HashTagField(
         Row(
             modifier = Modifier.padding(4.dp,18.dp,0.dp,0.dp)
         ) {
-            Text( text = "해시태그 (", color = Black, style = TextStyles.TextSmall3 )
+            Text( text = "해시태그 (", style = TextStyles.TextSmall3 )
             Text( text = hashTag.textList.size.toString(), color = MainGreen1, style = TextStyles.TextSmall3 )
-            Text( text = "/4)", color = Black, style = TextStyles.TextSmall3 )
+            Text( text = "/4)", style = TextStyles.TextSmall3 )
         }
         Spacer(modifier = Modifier.height(22.dp))
         if (hashTag.textList.size < 4) {
@@ -265,11 +254,7 @@ fun HashTagField(
                     onValueChange = { viewModel.onEvent(AddSaleEvent.EnteredHashTag(it)) },
                     singleLine = true,
                     textStyle = TextStyles.TextSmall3,
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            keyboardController?.hide()
-                        }
-                    ),
+                    keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
                     modifier = Modifier
                         .focusRequester(focusRequester)
                         .fillMaxWidth()
@@ -304,9 +289,7 @@ fun PhotoPicker(
     val saleImage = viewModel.saleImage
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) {
-        viewModel.onEvent(AddSaleEvent.EnteredImage(it))
-    }
+    ) { viewModel.onEvent(AddSaleEvent.EnteredImage(it)) }
 
     LazyRow(
         modifier = Modifier
@@ -371,8 +354,7 @@ fun Title(
         Text(
             text = "글쓰기",
             style = TextStyles.TextBold2,
-            color = Black,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.align(Center)
         )
         Text(
             text = "등록",
