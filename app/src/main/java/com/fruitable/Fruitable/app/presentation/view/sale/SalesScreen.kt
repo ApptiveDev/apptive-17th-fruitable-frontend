@@ -1,7 +1,5 @@
 package com.fruitable.Fruitable.app.presentation.view
 
-import android.content.Context
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,19 +18,16 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.HashTag
-import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.ProfileImage
+import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.sale.SalesViewModel
 import com.fruitable.Fruitable.ui.theme.*
@@ -54,11 +49,7 @@ fun SalesScreen(
                 colors = ButtonDefaults.buttonColors(MainGreen1),
                 contentPadding = PaddingValues(0.dp)
             ){
-                Image(
-                    painterResource(id = R.drawable.plusbtn),
-                    contentDescription = "add_post",
-                    modifier = Modifier.size(24.dp)
-                )
+                ResourceImage(resId = R.drawable.plusbtn, size = 24.dp)
             }
         }
     ) {
@@ -73,7 +64,9 @@ fun SalesScreen(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
                     SalesContents(
-                        modifier = Modifier.padding(top = 33.dp).fillMaxSize(),
+                        modifier = Modifier
+                            .padding(top = 33.dp)
+                            .fillMaxSize(),
                         navController = navController,
                         viewModel = viewModel
                     )
@@ -92,7 +85,9 @@ fun SellerProfile(
     imageUrl: String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg"
 ){
     Box(
-        modifier = modifier.height(54.dp).fillMaxWidth(),
+        modifier = modifier
+            .height(54.dp)
+            .fillMaxWidth(),
         contentAlignment = CenterStart
     ) {
         Row {
@@ -104,7 +99,9 @@ fun SellerProfile(
             Text(
                 text = nickname,
                 style = TextStyles.TextBasic2,
-                modifier = Modifier.padding(start = 10.dp).align(CenterVertically),
+                modifier = Modifier
+                    .padding(start = 10.dp)
+                    .align(CenterVertically),
             )
         }
         Row(modifier = Modifier.align(BottomEnd)) {
@@ -124,10 +121,10 @@ fun SellerProfile(
                 )
             }
             Spacer(modifier = Modifier.width(6.dp))
-            Image(
-                painter = painterResource(id = R.drawable.setting),
-                contentDescription = "setting button",
-                modifier = Modifier.size(22.dp).clickable(onClick = settingButton).align(CenterVertically)
+            ResourceImage(
+                resId = R.drawable.setting,
+                size = 22.dp,
+                boxModifier = Modifier.clickable(onClick = settingButton).align(CenterVertically)
             )
         }
     }
@@ -141,7 +138,9 @@ fun IsFruitTab(){
         verticalAlignment = CenterVertically
     ){
         Column(
-           modifier = Modifier.clickable { isFruitClick = true }.weight(1f),
+           modifier = Modifier
+               .clickable { isFruitClick = true }
+               .weight(1f),
            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -150,13 +149,17 @@ fun IsFruitTab(){
                 color = if (isFruitClick) MainGreen1 else MainGray2,
             )
             Divider(
-                modifier = Modifier.padding(top = 14.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(top = 14.dp)
+                    .fillMaxWidth(),
                 color = if (isFruitClick) MainGreen1 else MainGray4,
                 thickness = if (isFruitClick) 3.dp else 1.dp
             )
         }
         Column(
-            modifier = Modifier.clickable { isFruitClick = false }.weight(1f),
+            modifier = Modifier
+                .clickable { isFruitClick = false }
+                .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -165,7 +168,9 @@ fun IsFruitTab(){
                 color = if (isFruitClick) MainGray2 else MainGreen1,
             )
             Divider(
-                modifier = Modifier.padding(top = 14.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(top = 14.dp)
+                    .fillMaxWidth(),
                 color = if (isFruitClick) MainGray4 else MainGreen1,
                 thickness = if (isFruitClick) 1.dp else 3.dp,
             )

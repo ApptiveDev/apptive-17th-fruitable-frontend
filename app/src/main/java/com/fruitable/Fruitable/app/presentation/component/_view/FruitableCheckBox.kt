@@ -6,17 +6,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.fruitable.Fruitable.R
@@ -38,28 +34,23 @@ fun FruitableCheckBox(
     Row (
         modifier = modifier
     ) {
-        Box(
-            modifier = Modifier
+        ResourceImage(
+            resId = R.drawable.checkbox,
+            size = 11.dp,
+            isVisible = isChecked,
+            contentAlignment = Alignment.Center,
+            boxModifier = Modifier
                 .clip(RoundedCornerShape(6.dp))
+                .size(18.dp)
+                .clickable(onClick = onClick)
+                .align(CenterVertically)
+                .background(if (isChecked) backgroundColor else White)
                 .border(
                     if (isChecked) BorderStroke(0.dp, White)
                     else BorderStroke(1.dp, borderColor),
                     shape = RoundedCornerShape(6.dp)
                 )
-                .size(18.dp)
-                .background(if (isChecked) backgroundColor else White)
-                .align(Alignment.CenterVertically)
-                .clickable(onClick = onClick),
-            contentAlignment = Center
-        ) {
-            if (isChecked) {
-                Image(
-                    painter = painterResource(id = R.drawable.checkbox),
-                    contentDescription = "deadline checkbox",
-                    modifier = Modifier.size(11.dp)
-                )
-            }
-        }
+        )
         Spacer(modifier = Modifier.width(width))
         Text(
             buildAnnotatedString {

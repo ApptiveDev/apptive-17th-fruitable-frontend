@@ -1,20 +1,16 @@
 package com.fruitable.Fruitable.app.presentation.view
 
 import android.content.Context
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
-import com.fruitable.Fruitable.app.domain.utils.log
+import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import kotlinx.coroutines.delay
 
@@ -27,7 +23,6 @@ fun SplashScreen(
     val token = Token.getString("token", "").toString()
 
     LaunchedEffect(key1 = true) {
-        token.log()
         val nextScreen = when (token.isEmpty()){
             true -> Screen.LogInScreen
             false -> Screen.SalesScreen
@@ -36,14 +31,10 @@ fun SplashScreen(
         navController.popBackStack()
         navController.navigate(nextScreen.route)
     }
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        Image(
-            painter = painterResource(id = R.drawable.logo_rounded),
-            contentDescription = "logo image",
-            modifier = Modifier.size(120.dp)
-        )
-    }
+    ResourceImage(
+        boxModifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+        resId = R.drawable.logo_rounded,
+        size = 120.dp
+    )
 }

@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.BottomCenter
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -30,6 +31,7 @@ import com.fruitable.Fruitable.app.domain.utils.addFocusCleaner
 import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
+import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.event.LogInEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.user.LogInViewModel
@@ -62,7 +64,10 @@ fun LogInScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 30.dp).addFocusCleaner(focusManager)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 30.dp)
+            .addFocusCleaner(focusManager)
     ) {
         LoginImage()
         LoginField(viewModel = viewModel)
@@ -70,16 +75,14 @@ fun LogInScreen(
             text = "로그인",
             color = MainGreen1,
             textColor = Color.White,
-            modifier = Modifier
-                .padding(top = 32.dp)
-                .alpha(if (viewModel.isLoginAble()) 1f else 0.7f),
+            modifier = Modifier.padding(top = 32.dp).alpha(if (viewModel.isLoginAble()) 1f else 0.7f),
             onClick = { viewModel.onEvent(LogInEvent.SignIn) }
         )
         Text(
             text="아이디/비밀번호 찾기",
             style = TextStyles.TextSmall1,
             color = MainGray6,
-            modifier = Modifier.fillMaxWidth().padding(top = 3.dp),
+            modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
             textAlign = TextAlign.Right,
         )
         FruitableButton(
@@ -93,22 +96,14 @@ fun LogInScreen(
 fun LoginImage(){
     val configuration = LocalConfiguration.current
     val screenHeight = (configuration.screenHeightDp.dp / 5) * 2
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(screenHeight)
-    ){
-        Image(
-            painterResource(id = R.drawable.logo_rounded),
-            contentDescription = "logo_image",
-            modifier = Modifier
-                .padding(bottom = 30.dp)
-                .size(105.dp)
-                .align(BottomCenter),
-        )
-    }
+    ResourceImage(
+        resId = R.drawable.logo_rounded,
+        boxModifier = Modifier.fillMaxWidth().height(screenHeight),
+        modifier  = Modifier.padding(bottom = 30.dp),
+        size = 105.dp,
+        contentAlignment = BottomCenter
+    )
 }
-
 
 @Composable
 fun LoginField(
@@ -123,10 +118,10 @@ fun LoginField(
         val errorMessage = viewModel.errorMessage.value
         if (errorMessage.isNotBlank()) {
             Row {
-                Image(
-                    painterResource(id = R.drawable.warning),
-                    contentDescription = "emailError",
-                    modifier = Modifier.size(14.dp).align(CenterVertically)
+                ResourceImage(
+                    resId = R.drawable.warning,
+                    size = 14.dp,
+                    boxModifier = Modifier.align(CenterVertically)
                 )
                 Text(
                     text = errorMessage,
@@ -136,7 +131,6 @@ fun LoginField(
                 )
             }
         }
-
         TextFieldBox(
             state = viewModel.email.value,
             isSpaced = false,
@@ -148,6 +142,7 @@ fun LoginField(
         TextFieldBox(
             state = viewModel.password.value,
             isSpaced = false,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.focusRequester(focusRequester),
             visualTransformation = PasswordVisualTransformation(),
             onValueChange = { viewModel.onEvent(LogInEvent.EnteredPassword(it)) },

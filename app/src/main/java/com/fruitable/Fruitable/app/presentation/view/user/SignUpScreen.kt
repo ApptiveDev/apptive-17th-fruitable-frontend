@@ -1,7 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.view
 
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,7 +18,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +30,7 @@ import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
 import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
 import com.fruitable.Fruitable.app.presentation.component._view.FruitableCheckBox
+import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.event.SignUpEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.view.user.AgreementPopUp
@@ -220,13 +219,10 @@ fun Agreement(): Boolean {
                 text = "푸릇에이블 이용약관",
                 style = TextStyles.TextBasic2
             )
-            Image(
-                painter = painterResource(id = R.drawable.arrow),
-                contentDescription = "agreement detail button",
-                modifier = Modifier
-                    .align(CenterEnd)
-                    .width(7.dp)
-                    .clickable{ isUtilOpen = !isUtilOpen}
+            ResourceImage(
+                resId = R.drawable.arrow,
+                size = 14.dp,
+                boxModifier = Modifier.align(CenterEnd).clickable{ isUtilOpen = !isUtilOpen}
             )
         }
         Box(
@@ -239,13 +235,10 @@ fun Agreement(): Boolean {
                 text = "개인정보 수집 및 이용 동의",
                 style = TextStyles.TextBasic2
             )
-            Image(
-                painter = painterResource(id = R.drawable.arrow),
-                contentDescription = "agreement detail button",
-                modifier = Modifier
-                    .align(CenterEnd)
-                    .width(7.dp)
-                    .clickable{ isInfoOpen = !isInfoOpen}
+            ResourceImage(
+                resId = R.drawable.arrow,
+                boxModifier = Modifier.align(CenterEnd).clickable{ isInfoOpen = !isInfoOpen},
+                size = 7.dp
             )
         }
         FruitableCheckBox(
