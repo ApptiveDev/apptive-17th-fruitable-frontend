@@ -6,10 +6,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.fruitable.Fruitable.app.presentation.component.ProfileImage
+import com.fruitable.Fruitable.app.presentation.component.FruitableImage
 import com.fruitable.Fruitable.app.presentation.component.formatAmountOrMessage
 import com.fruitable.Fruitable.ui.theme.MainGray1
 import com.fruitable.Fruitable.ui.theme.TextStyles
@@ -27,7 +26,7 @@ fun SaleItem(
     Row(
         modifier = modifier.clickable(onClick = onClick)
     ){
-        ProfileImage(
+        FruitableImage(
             imageUrl = itemImageUrl,
             contentDescription = "sale_image",
             modifier = Modifier.size(96.dp),

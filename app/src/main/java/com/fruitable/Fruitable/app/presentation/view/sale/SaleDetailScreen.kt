@@ -4,21 +4,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.component.*
+import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.sale.SaleDetailViewModel
 import com.fruitable.Fruitable.ui.theme.MainGreen1
+import com.fruitable.Fruitable.ui.theme.MainGreen2
 import com.fruitable.Fruitable.ui.theme.TextStyles
 
 @Composable
@@ -95,7 +98,7 @@ fun DetailTop(
         modifier = Modifier.height(300.dp),
         contentAlignment = Alignment.TopEnd
     ){
-        ProfileImage(
+        FruitableImage(
             imageUrl = if (itemImageUrl.isEmpty()) "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg"
                 else itemImageUrl.first(),
             contentDescription = "sale_image",
@@ -114,16 +117,12 @@ fun DetailTop(
 fun DetailFarmProfile(
     nickName : String,
     phoneNum : String,
-    imageUrl : String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg",
 ){
     Column {
         Row (
             modifier = Modifier.padding(start = 20.dp,top = 18.dp , bottom=18.dp)
         ){
-            ProfileImage(
-                imageUrl = imageUrl,
-                modifier = Modifier.size(56.dp)
-            )
+            ResourceImage(boxModifier = Modifier.size(56.dp).clip(CircleShape).background(MainGreen2))
             Column(modifier = Modifier.padding(start = 9.dp,top=7.dp)) {
                 Text(
                     text = nickName,

@@ -1,6 +1,7 @@
 package com.fruitable.Fruitable.app.presentation.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,7 +27,6 @@ import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app._enums.HashTag
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
-import com.fruitable.Fruitable.app.presentation.component.ProfileImage
 import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.sale.SalesViewModel
@@ -64,9 +64,7 @@ fun SalesScreen(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
                     SalesContents(
-                        modifier = Modifier
-                            .padding(top = 33.dp)
-                            .fillMaxSize(),
+                        modifier = Modifier.padding(top = 33.dp).fillMaxSize(),
                         navController = navController,
                         viewModel = viewModel
                     )
@@ -82,26 +80,17 @@ fun SellerProfile(
     updateButton: () -> Unit = {},
     settingButton: () -> Unit = {},
     nickname: String = "홍길동",
-    imageUrl: String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg"
 ){
     Box(
-        modifier = modifier
-            .height(54.dp)
-            .fillMaxWidth(),
+        modifier = modifier.height(54.dp).fillMaxWidth(),
         contentAlignment = CenterStart
     ) {
         Row {
-            ProfileImage(
-                imageUrl = imageUrl,
-                contentDescription = "profile image",
-                modifier = Modifier.size(54.dp)
-            )
+            ResourceImage(boxModifier = Modifier.size(54.dp).clip(CircleShape).background(MainGreen2))
             Text(
                 text = nickname,
-                style = TextStyles.TextBasic2,
-                modifier = Modifier
-                    .padding(start = 10.dp)
-                    .align(CenterVertically),
+                style = TextStyles.TextBold2,
+                modifier = Modifier.padding(start = 10.dp).align(CenterVertically),
             )
         }
         Row(modifier = Modifier.align(BottomEnd)) {
@@ -138,9 +127,7 @@ fun IsFruitTab(){
         verticalAlignment = CenterVertically
     ){
         Column(
-           modifier = Modifier
-               .clickable { isFruitClick = true }
-               .weight(1f),
+           modifier = Modifier.clickable { isFruitClick = true }.weight(1f),
            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -149,17 +136,13 @@ fun IsFruitTab(){
                 color = if (isFruitClick) MainGreen1 else MainGray2,
             )
             Divider(
-                modifier = Modifier
-                    .padding(top = 14.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(top = 14.dp).fillMaxWidth(),
                 color = if (isFruitClick) MainGreen1 else MainGray4,
                 thickness = if (isFruitClick) 3.dp else 1.dp
             )
         }
         Column(
-            modifier = Modifier
-                .clickable { isFruitClick = false }
-                .weight(1f),
+            modifier = Modifier.clickable { isFruitClick = false }.weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -168,9 +151,7 @@ fun IsFruitTab(){
                 color = if (isFruitClick) MainGray2 else MainGreen1,
             )
             Divider(
-                modifier = Modifier
-                    .padding(top = 14.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(top = 14.dp).fillMaxWidth(),
                 color = if (isFruitClick) MainGray4 else MainGreen1,
                 thickness = if (isFruitClick) 1.dp else 3.dp,
             )

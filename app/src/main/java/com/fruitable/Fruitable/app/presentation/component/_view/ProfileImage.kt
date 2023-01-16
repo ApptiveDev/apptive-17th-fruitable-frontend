@@ -11,7 +11,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 @Composable
-fun ProfileImage(
+fun FruitableImage(
     imageUrl: String = "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg",
     contentDescription: String = "",
     modifier: Modifier = Modifier,

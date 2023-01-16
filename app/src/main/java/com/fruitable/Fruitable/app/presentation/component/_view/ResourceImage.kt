@@ -20,7 +20,7 @@ fun ResourceImage(
     modifier: Modifier = Modifier,
     contentAlignment: Alignment = Alignment.Center,
     isVisible: Boolean = true,
-    size: Dp = 30.dp
+    size: Dp = 35.dp
 ) {
     Box(
         modifier = boxModifier,
