@@ -17,15 +17,15 @@ import javax.inject.Inject
 @HiltViewModel
 class SaleDetailViewModel @Inject constructor(
     private val saleUseCase: SaleUseCase,
-    private val savedStateHandle: SavedStateHandle
+   // private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
     // 조회, 삭제
-    val saleId = savedStateHandle.get<Int>("saleId")!!
+  //  val saleId = savedStateHandle.get<Int>("saleId")!!
     private val _saleDetail = mutableStateOf(SaleDetailState())
     val saleDetail = _saleDetail
 
     init{
-        getSaleDetail(saleId)
+       // getSaleDetail(saleId)
     }
     private fun getSaleDetail(saleId: Int) {
         saleUseCase.getSale(saleId).onEach { result ->
