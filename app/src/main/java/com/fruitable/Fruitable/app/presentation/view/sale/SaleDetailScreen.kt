@@ -123,12 +123,13 @@ fun DetailTop(
             modifier = Modifier.fillMaxSize(),
             clip = RoundedCornerShape(0.dp)
         )
-        HashTagButton(
-            text = "D-$deadline",
-            style = TextStyles.TextSmall3,
+        Row(
             modifier = Modifier.padding(top = 20.dp, end = 20.dp),
-            isRipple = false,
-        )
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            ResourceImage(resId = R.drawable.delete, size = 22.dp)
+            ResourceImage(resId = R.drawable.update, size = 20.dp)
+        }
     }
 }
 @Composable
