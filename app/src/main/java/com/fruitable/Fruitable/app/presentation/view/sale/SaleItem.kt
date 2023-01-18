@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.fruitable.Fruitable.app.domain.utils.dateFormat
+import com.fruitable.Fruitable.app.domain.utils.sampleUrl
 import com.fruitable.Fruitable.app.presentation.component.FruitableImage
 import com.fruitable.Fruitable.app.presentation.component.formatAmountOrMessage
 import com.fruitable.Fruitable.ui.theme.MainGray1
@@ -18,7 +19,7 @@ import com.fruitable.Fruitable.ui.theme.TextStyles
 fun SaleItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-    itemImageUrl: String = "https://images-prod.healthline.com/hlcmsresource/images/AN_images/health-benefits-of-apples-1296x728-feature.jpg",
+    itemImageUrl: String = sampleUrl,
     title: String = "프레샤인 충주 GAP 인증\n당도선별 사과",
     nickname: String = "푸릇농장",
     deadline: String = "2020.01.23",

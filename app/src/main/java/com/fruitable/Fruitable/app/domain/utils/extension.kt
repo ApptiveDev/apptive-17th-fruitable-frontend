@@ -39,3 +39,5 @@ fun String.dateFormat(): Long {
     }.time.time
     return (endDate?.minus(today))?.div((24 * 60 * 60 * 1000)) ?: 0
 }
+
+const val sampleUrl = "https://images-prod.healthline.com/hlcmsresource/images/AN_images/health-benefits-of-apples-1296x728-feature.jpg"
