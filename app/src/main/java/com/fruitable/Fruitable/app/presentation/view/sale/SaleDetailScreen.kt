@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -25,6 +26,10 @@ import com.fruitable.Fruitable.app.presentation.viewmodel.sale.SaleDetailViewMod
 import com.fruitable.Fruitable.ui.theme.MainGreen1
 import com.fruitable.Fruitable.ui.theme.MainGreen2
 import com.fruitable.Fruitable.ui.theme.TextStyles
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.HorizontalPagerIndicator
+import com.google.accompanist.pager.rememberPagerState
 
 @Composable
 fun SaleDetailScreen(
@@ -110,19 +115,13 @@ fun DetailContent(
 
 @Composable
 fun DetailTop(
-    itemImageUrl: List<String> = (0 until 10).map { sampleUrl }
+    itemImageUrl: List<String> = (0 until 5).map { sampleUrl }
 ){
     Box(
         modifier = Modifier.height(300.dp).fillMaxWidth(),
         contentAlignment = Alignment.TopEnd
     ){
-        FruitableImage(
-            imageUrl = if (itemImageUrl.isEmpty()) sampleUrl
-                else itemImageUrl.first(),
-            contentDescription = "sale_image",
-            modifier = Modifier.fillMaxSize(),
-            clip = RoundedCornerShape(0.dp)
-        )
+        ImagePager(itemImageUrl)
         Row(
             modifier = Modifier.padding(top = 20.dp, end = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -132,6 +131,48 @@ fun DetailTop(
         }
     }
 }
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun ImagePager(items: List<String>) {
+    val pagerState = rememberPagerState()
+    Box {
+        HorizontalPager(count = items.size, state = pagerState) { index ->
+            FruitableImage(
+                modifier = Modifier.fillMaxWidth().height(300.dp),
+                imageUrl = items[index],
+                clip = RectangleShape
+            )
+        }
+        if (items.isEmpty()) {
+            FruitableImage(
+                modifier = Modifier.fillMaxWidth().height(300.dp),
+                imageUrl = sampleUrl,
+                clip = RectangleShape
+            )
+        }
+        if (items.size >= 2) {
+            HorizontalPagerIndicator(
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp),
+                pagerState = pagerState,
+                pageIndexMapping = {
+                    when (it) {
+                        0 -> 0
+                        items.size - 1 -> 2
+                        else -> 1
+                    }
+                },
+                pageCount = if (items.size < 3) items.size else 3,
+                spacing = 10.dp,
+                indicatorHeight = 8.dp,
+                indicatorWidth = 8.dp,
+                indicatorShape = CircleShape,
+                activeColor = Color.White,
+            )
+        }
+    }
+}
+
 @Composable
 fun DetailFarmProfile(
     nickName : String = "푸릇농장",

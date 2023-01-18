@@ -40,4 +40,4 @@ fun String.dateFormat(): Long {
     return (endDate?.minus(today))?.div((24 * 60 * 60 * 1000)) ?: 0
 }
 
-const val sampleUrl = "https://images-prod.healthline.com/hlcmsresource/images/AN_images/health-benefits-of-apples-1296x728-feature.jpg"
+const val sampleUrl = "https://media.istockphoto.com/id/1357365823/vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo.jpg?s=612x612&w=0&k=20&c=PM_optEhHBTZkuJQLlCjLz-v3zzxp-1mpNQZsdjrbns="
