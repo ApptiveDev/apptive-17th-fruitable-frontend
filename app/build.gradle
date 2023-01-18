@@ -112,4 +112,8 @@ dependencies {
 
     //permission
     implementation "com.google.accompanist:accompanist-permissions:0.25.0"
+
+    // Pager
+    implementation "com.google.accompanist:accompanist-pager:0.24.13-rc"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.24.13-rc"
 }
