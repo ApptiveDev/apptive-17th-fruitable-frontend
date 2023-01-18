@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.fruitable.Fruitable.app.domain.utils.dateFormat
 import com.fruitable.Fruitable.app.presentation.component.FruitableImage
 import com.fruitable.Fruitable.app.presentation.component.formatAmountOrMessage
 import com.fruitable.Fruitable.ui.theme.MainGray1
@@ -23,6 +24,7 @@ fun SaleItem(
     deadline: String = "2020.01.23",
     price: Int = 14500
 ){
+    val deadlineFormat = if (deadline.dateFormat() > 0) "${deadline.dateFormat()}일 전" else ""
     Row(
         modifier = modifier.clickable(onClick = onClick)
     ){
@@ -43,7 +45,7 @@ fun SaleItem(
                 maxLines = 2,
             )
             Text(
-                text = nickname + "ㆍ마감 " + deadline + "일 전",
+                text = nickname + "ㆍ마감 " + deadlineFormat,
                 style = TextStyles.TextSmall1,
                 color = MainGray1,
                 overflow = TextOverflow.Ellipsis,
