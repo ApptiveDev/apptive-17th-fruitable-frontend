@@ -279,7 +279,7 @@ fun HashTagField(
                     HashTagButton(
                         text = "# $hashTagText",
                         isCancellable = true,
-                        isRipple = false,
+                        enabled = false,
                         onCancelClick = { viewModel.onEvent(AddSaleEvent.RemoveHashTag(hashTagText)) }
                     )
                 }

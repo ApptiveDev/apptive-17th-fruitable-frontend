@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -37,7 +36,6 @@ import com.fruitable.Fruitable.app.presentation.view.user.AgreementPopUp
 import com.fruitable.Fruitable.app.presentation.viewmodel.user.SignUpViewModel
 import com.fruitable.Fruitable.ui.theme.MainGreen1
 import com.fruitable.Fruitable.ui.theme.MainGreen3
-import com.fruitable.Fruitable.ui.theme.MainGreen4
 import com.fruitable.Fruitable.ui.theme.TextStyles
 import kotlinx.coroutines.flow.collectLatest
 
@@ -54,7 +52,6 @@ fun SignUpScreen(
 
     val certification = viewModel.certification.value
     val focusRequester = remember { FocusRequester() }
-    val emailColor = if (certification%2 == 1) MainGreen1 else MainGreen4
     var isAgree by remember { mutableStateOf(false) }
     val isSignUpAble = viewModel.isSignUpAble() && isAgree
 
@@ -71,16 +68,12 @@ fun SignUpScreen(
     Scaffold(
         bottomBar = {
             Column(
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxWidth()
-                    .alpha(if (isSignUpAble) 1f else 0.7f)
+                modifier = Modifier.background(Color.White).fillMaxWidth()
             ) {
                 FruitableDivider()
                 FruitableButton(
                     text = "가입완료",
-                    color = MainGreen1,
-                    textColor = Color.White,
+                    enabled = isSignUpAble,
                     modifier = Modifier.padding(30.dp, 14.dp, 30.dp, 30.dp),
                     onClick = { viewModel.onEvent(SignUpEvent.SignUp) }
                 )
@@ -145,7 +138,7 @@ fun SignUpScreen(
             FruitableButton(
                 text = if (certification <= 1) "인증번호 발송"
                        else if (certification <= 3) "인증 확인" else "인증 완료",
-                color = emailColor,
+                enabled = certification%2 == 1,
                 textColor = Color.White,
                 onClick = { viewModel.onEvent(SignUpEvent.ChangeCertification(certification)) }
             )

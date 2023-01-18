@@ -1,6 +1,8 @@
 package com.fruitable.Fruitable.app.presentation.view
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -10,7 +12,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -18,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
+import com.fruitable.Fruitable.app.domain.utils.dateFormat
 import com.fruitable.Fruitable.app.domain.utils.sampleUrl
 import com.fruitable.Fruitable.app.presentation.component.*
 import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
@@ -38,18 +43,16 @@ fun SaleDetailScreen(
     viewModel: SaleDetailViewModel = hiltViewModel()
 ) {
     val saleDetail = viewModel.saleDetail.value.saleDetail
+    val isValid = true
     Scaffold(
         bottomBar = {
             Column(
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxWidth()
+                modifier = Modifier.background(Color.White).fillMaxWidth()
             ) {
                 FruitableDivider()
                 FruitableButton (
                     text = "주문하기",
-                    color = MainGreen1,
-                    textColor = Color.White,
+                    enabled = isValid,
                     modifier = Modifier.padding(30.dp, 14.dp, 30.dp, 30.dp),
                     onClick = { navController.navigate(Screen.SalesScreen.route) }
                 )
@@ -78,7 +81,7 @@ fun DetailHashTag(
         item {
             tags.forEach {
                 Row {
-                    HashTagButton(text = "# $it", isRipple = false,)
+                    HashTagButton(text = "# $it", enabled = false)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
             }
@@ -177,16 +180,18 @@ fun ImagePager(items: List<String>) {
 fun DetailFarmProfile(
     nickName : String = "푸릇농장",
     phoneNum : String = "051-456-5978",
+    deadLine : String = "2023.01.25"
 ){
-    Column {
-        Row (
-            modifier = Modifier.padding(start = 20.dp,top = 18.dp , bottom=18.dp)
-        ){
-            ResourceImage(boxModifier = Modifier
-                .size(56.dp)
-                .clip(CircleShape)
-                .background(MainGreen2))
-            Column(modifier = Modifier.padding(start = 9.dp,top=7.dp)) {
+    Box(
+        modifier = Modifier.padding(20.dp, 18.dp).fillMaxWidth()
+    ) {
+        Row {
+            ResourceImage(
+                boxModifier = Modifier.size(56.dp)
+                    .clip(CircleShape)
+                    .background(MainGreen2)
+            )
+            Column(modifier = Modifier.padding(start = 9.dp, top = 7.dp)) {
                 Text(
                     text = nickName,
                     style = TextStyles.TextBold2,
@@ -195,6 +200,18 @@ fun DetailFarmProfile(
                 Text(text = phoneNum, style = TextStyles.TextSmall2,)
             }
         }
-        FruitableDivider(modifier = Modifier.padding(28.dp,0.dp))
+        Box(
+            modifier = Modifier.clip(RoundedCornerShape(32.dp))
+                .border(BorderStroke(1.dp, MainGreen1), RoundedCornerShape(32.dp))
+                .padding(12.dp, 5.dp)
+                .align(TopEnd),
+            contentAlignment = Alignment.Center
+        ){
+            Text(
+                text = "D-${deadLine.dateFormat()}",
+                style = TextStyles.TextBasic2,
+            )
+        }
     }
+
 }

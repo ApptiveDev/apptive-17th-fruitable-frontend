@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -66,14 +67,12 @@ fun AgreementPopUp(
                 item {
                     FruitableButton(
                         text = "동의하기",
-                        color = MainGreen1,
-                        textColor = Color.White,
                         modifier = Modifier.padding(top = 50.dp),
                         onClick = {
                             onDismiss()
                             onAgree()
                         },
-                        cornerShape = 0.dp,
+                        shape = RectangleShape,
                     )
                 }
             }

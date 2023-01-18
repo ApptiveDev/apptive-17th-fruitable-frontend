@@ -22,12 +22,6 @@ fun Modifier.addFocusCleaner(focusManager: FocusManager, doOnClear: () -> Unit =
     }
 }
 
-class NoRippleInteractionSource : MutableInteractionSource {
-    override val interactions: Flow<Interaction> = emptyFlow()
-    override suspend fun emit(interaction: Interaction) {}
-    override fun tryEmit(interaction: Interaction) = true
-}
-
 fun String.dateFormat(): Long {
     val dateFormat = SimpleDateFormat("yyyy.MM.dd")
     val endDate = dateFormat.parse(this)?.time
