@@ -1,15 +1,16 @@
 package com.fruitable.Fruitable.app.presentation.viewmodel.sale
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fruitable.Fruitable.app.domain.use_case.SaleUseCase
+import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
 import com.fruitable.Fruitable.app.domain.utils.Resource
 import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.state.SaleDetailState
-import com.fruitable.Fruitable.app.presentation.state.SalesState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -17,15 +18,27 @@ import javax.inject.Inject
 @HiltViewModel
 class SaleDetailViewModel @Inject constructor(
     private val saleUseCase: SaleUseCase,
+    private val userUseCase: UserUseCase
    // private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    // 조회, 삭제
   //  val saleId = savedStateHandle.get<Int>("saleId")!!
     private val _saleDetail = mutableStateOf(SaleDetailState())
     val saleDetail = _saleDetail
 
+    private val _isModifiable = mutableStateOf(true)
+    val isModifiable = _isModifiable
+
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
     init{
        // getSaleDetail(saleId)
+        isModifiable()
+    }
+    private fun isModifiable() {
+      //  val userId = userUseCase.getCookie("id").toInt()
+      //  val saleUserId = saleDetail.value.saleDetail.userId.id
+        _isModifiable.value = true
     }
     private fun getSaleDetail(saleId: Int) {
         saleUseCase.getSale(saleId).onEach { result ->
@@ -39,10 +52,20 @@ class SaleDetailViewModel @Inject constructor(
     fun deleteSale(saleId: Int) {
         saleUseCase.deleteSale(saleId).onEach { result ->
             when (result){
-                is Resource.Success -> "$saleId 번째 게시글 삭제 성공".log()
-                is Resource.Error ->  "$saleId 번째 게시글 삭제 실패".log()
+                is Resource.Success -> {
+                    "$saleId 번째 게시글 삭제 성공".log()
+                    _eventFlow.emit(UiEvent.DeleteSuccess)
+                }
+                is Resource.Error -> {
+                    "$saleId 번째 게시글 삭제 실패".log()
+                    _eventFlow.emit(UiEvent.ErrorEvent("게시글을 삭제하는 중 오류가 발생했습니다."))
+                }
                 is Resource.Loading ->  "$saleId 번째 게시글 삭제 로딩중".log()
             }
         }.launchIn(viewModelScope)
+    }
+    sealed class UiEvent {
+        data class ErrorEvent(val message: String): UiEvent()
+        object DeleteSuccess: UiEvent()
     }
 }
