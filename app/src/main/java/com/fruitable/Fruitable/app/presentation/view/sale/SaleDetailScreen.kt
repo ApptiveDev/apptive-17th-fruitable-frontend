@@ -1,6 +1,9 @@
 package com.fruitable.Fruitable.app.presentation.view
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -8,21 +11,35 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.fruitable.Fruitable.R
+import com.fruitable.Fruitable.app.domain.utils.dateFormat
+import com.fruitable.Fruitable.app.domain.utils.sampleUrl
 import com.fruitable.Fruitable.app.presentation.component.*
+import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopUp
 import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.sale.SaleDetailViewModel
 import com.fruitable.Fruitable.ui.theme.MainGreen1
 import com.fruitable.Fruitable.ui.theme.MainGreen2
 import com.fruitable.Fruitable.ui.theme.TextStyles
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.HorizontalPagerIndicator
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SaleDetailScreen(
@@ -31,6 +48,24 @@ fun SaleDetailScreen(
     viewModel: SaleDetailViewModel = hiltViewModel()
 ) {
     val saleDetail = viewModel.saleDetail.value.saleDetail
+    val isModifiable = viewModel.isModifiable.value
+    val isClosed = false
+    val scaffoldState = rememberScaffoldState()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is SaleDetailViewModel.UiEvent.ErrorEvent -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message
+                    )
+                }
+                is SaleDetailViewModel.UiEvent.DeleteSuccess -> {
+                    navController.navigate(Screen.SalesScreen.route)
+                }
+            }
+        }
+    }
     Scaffold(
         bottomBar = {
             Column(
@@ -39,8 +74,7 @@ fun SaleDetailScreen(
                 FruitableDivider()
                 FruitableButton (
                     text = "주문하기",
-                    color = MainGreen1,
-                    textColor = Color.White,
+                    enabled = !isClosed,
                     modifier = Modifier.padding(30.dp, 14.dp, 30.dp, 30.dp),
                     onClick = { navController.navigate(Screen.SalesScreen.route) }
                 )
@@ -50,88 +84,186 @@ fun SaleDetailScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            item { DetailTop(deadline = saleDetail.endDate, itemImageUrl = saleDetail.fileURL) }
-            item { DetailFarmProfile(nickName = saleDetail.userId.name, phoneNum = saleDetail.contact) }
-            item {
-                Column(
-                    modifier = Modifier.padding(start = 22.dp, top = 22.dp, bottom = 5.dp).fillMaxWidth()
-                ){
-                    Text(
-                        text = formatAmountOrMessage(saleDetail.price.toString()) +"원",
-                        style = TextStyles.TextHeavyBold,
-                    )
-                    Text( text = saleDetail.title, style = TextStyles.TextBold3)
-                }
-            }
-            item {
-                Text (
-                    text = saleDetail.content,
-                    modifier = Modifier.padding(20.dp, 18.dp, 0.dp, 5.dp),
-                    style = TextStyles.TextSmall3
-                )
-            }
-            item {
-                LazyRow(
-                    modifier = Modifier.padding(start = 22.dp, top = 20.dp, bottom = 19.dp)
-                ) {
-                    item {
-                        saleDetail.tags.forEach {
-                            Row {
-                                HashTagButton(text = it, isRipple = false,)
-                                Spacer(modifier = Modifier.width(8.dp))
-                            }
-                        }
-                    }
-                }
-            }
+            item { DetailTop(
+                isModifiable = isModifiable,
+                isClosed = isClosed,
+                deleteSale = { viewModel.deleteSale(saleDetail.id) },
+                updateSale = { navController.navigate(Screen.AddSaleScreen.route) }
+                /*deadline = saleDetail.endDate,
+                itemImageUrl = saleDetail.fileURL*/
+            ) }
+            item { DetailFarmProfile(isClosed = isClosed/*nickName = saleDetail.userId.name, phoneNum = saleDetail.contact*/) }
+            item { DetailContent() }
+            item { DetailHashTag() }
             item { Spacer(modifier = Modifier.height(100.dp)) }
         }
     }
 }
 
 @Composable
-fun DetailTop(
-    deadline: String,
-    itemImageUrl: List<String>
-){
-    Box(
-        modifier = Modifier.height(300.dp),
-        contentAlignment = Alignment.TopEnd
+fun DetailHashTag(
+    tags: List<String> = listOf("푸릇 농장", "제주 감귤", "귤", "제주도", "세계제일")
+) {
+    LazyRow(
+        modifier = Modifier.padding(start = 22.dp, top = 20.dp, bottom = 19.dp)
+    ) {
+        item {
+            tags.forEach {
+                Row {
+                    HashTagButton(text = "# $it", enabled = false)
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DetailContent(
+    price: Int = 26900,
+    title: String = "귤탐 당도선별 하우스 감귤 로열과",
+    content: String = """ ❗️ 깨끗한 산지에서 재배한 감귤
+ ❗ 탱글탱글한 과육과 새콤달콤한 과즙
+ ❗ 비타민C, A 등을 함유한 과일
+ ❗ 디저트, 주스 등의 요리로 활용"""
+) {
+    Column(
+        modifier = Modifier
+            .padding(start = 22.dp, top = 22.dp, bottom = 5.dp)
+            .fillMaxWidth()
     ){
-        FruitableImage(
-            imageUrl = if (itemImageUrl.isEmpty()) "https://watermark.lovepik.com/photo/20211208/large/lovepik-the-image-of-a-farmer-doing-cheering-picture_501693759.jpg"
-                else itemImageUrl.first(),
-            contentDescription = "sale_image",
-            modifier = Modifier.fillMaxSize(),
-            clip = RoundedCornerShape(0.dp)
+        Text(
+            text = formatAmountOrMessage(price.toString()) +"원",
+            style = TextStyles.TextHeavyBold,
         )
-        HashTagButton(
-            text = "D-$deadline",
-            style = TextStyles.TextSmall3,
-            modifier = Modifier.padding(top = 20.dp, end = 20.dp),
-            isRipple = false,
+        Text( text = title, style = TextStyles.TextBold3)
+        Text (
+            text = content,
+            modifier = Modifier.padding(20.dp, 18.dp, 0.dp, 5.dp),
+            style = TextStyles.TextSmall3
         )
     }
 }
+
+@Composable
+fun DetailTop(
+    isModifiable: Boolean = true,
+    isClosed: Boolean = true,
+    deleteSale: () -> Unit = {},
+    updateSale: () -> Unit = {},
+    itemImageUrl: List<String> = (0 until 5).map { sampleUrl }
+){
+    var isDialogOpen by remember { mutableStateOf(false) }
+    FruitablePopUp(
+        text = "게시글을 삭제하시겠습니까?",
+        cancelText = "취소",
+        confirmText = "삭제하기",
+        cancel = { isDialogOpen = false },
+        confirm = deleteSale,
+        isOpen = isDialogOpen
+    )
+    Box(
+        modifier = Modifier.height(300.dp).fillMaxWidth(),
+        contentAlignment = TopEnd
+    ){
+        ImagePager(isClosed, itemImageUrl)
+        if (isModifiable) {
+            Row(
+                modifier = Modifier.padding(top = 20.dp, end = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                ResourceImage(resId = R.drawable.delete, size = 22.dp, modifier = Modifier.clickable{ isDialogOpen = true })
+                ResourceImage(resId = R.drawable.update, size = 20.dp, modifier = Modifier.clickable(onClick = updateSale))
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun ImagePager(
+    isClosed: Boolean = true,
+    items: List<String>
+) {
+    val pagerState = rememberPagerState()
+    Box {
+        HorizontalPager(count = items.size, state = pagerState) { index ->
+            FruitableImage(
+                modifier = Modifier.fillMaxSize(),
+                imageUrl = items[index],
+                clip = RectangleShape,
+                alpha = if (isClosed) 0.6f else 1f
+            )
+        }
+        if (items.isEmpty()) FruitableImage(modifier = Modifier.fillMaxSize(), imageUrl = sampleUrl, clip = RectangleShape) // exception case
+        if (isClosed) {
+            Text(
+                text = "마감",
+                style = TextStyles.TextBold6,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Center)
+            )
+        }
+        if (items.size >= 2) {
+            HorizontalPagerIndicator(
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp),
+                pagerState = pagerState,
+                pageIndexMapping = {
+                    when (it) {
+                        0 -> 0
+                        items.size - 1 -> 2
+                        else -> 1
+                    }
+                },
+                pageCount = if (items.size < 3) items.size else 3,
+                spacing = 10.dp,
+                indicatorHeight = 8.dp,
+                indicatorWidth = 8.dp,
+                indicatorShape = CircleShape,
+                activeColor = Color.White,
+            )
+        }
+    }
+}
+
 @Composable
 fun DetailFarmProfile(
-    nickName : String,
-    phoneNum : String,
+    isClosed : Boolean = true,
+    nickName : String = "푸릇농장",
+    phoneNum : String = "051-456-5978",
+    deadLine : String = "2023.01.25"
 ){
-    Column {
-        Row (
-            modifier = Modifier.padding(start = 20.dp,top = 18.dp , bottom=18.dp)
-        ){
+    Box(
+        modifier = Modifier.padding(20.dp, 18.dp).fillMaxWidth()
+    ) {
+        Row {
             ResourceImage(boxModifier = Modifier.size(56.dp).clip(CircleShape).background(MainGreen2))
-            Column(modifier = Modifier.padding(start = 9.dp,top=7.dp)) {
+            Column(
+                modifier = Modifier.padding(start = 9.dp, top = 7.dp)
+            ) {
                 Text(
                     text = nickName,
                     style = TextStyles.TextBold2,
                     modifier = Modifier.padding(end = 6.dp)
                 )
-                Text(text = phoneNum, style = TextStyles.TextSmall2,)
+                Text(text = phoneNum, style = TextStyles.TextSmall2)
             }
         }
-        FruitableDivider(modifier = Modifier.padding(28.dp,0.dp))
+        if (!isClosed) {
+            Box(
+                modifier = Modifier.clip(RoundedCornerShape(32.dp))
+                    .border(BorderStroke(1.dp, MainGreen1), RoundedCornerShape(32.dp))
+                    .padding(12.dp, 5.dp)
+                    .align(TopEnd),
+                contentAlignment = Center
+            ) {
+                Text(
+                    text = "D-${deadLine.dateFormat()}",
+                    style = TextStyles.TextBasic2,
+                )
+            }
+        }
     }
+
 }

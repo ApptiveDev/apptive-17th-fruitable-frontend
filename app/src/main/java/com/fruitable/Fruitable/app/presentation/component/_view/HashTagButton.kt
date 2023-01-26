@@ -1,7 +1,9 @@
 package com.fruitable.Fruitable.app.presentation.component
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,51 +16,41 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.fruitable.Fruitable.R
-import com.fruitable.Fruitable.app.domain.utils.NoRippleInteractionSource
 import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.ui.theme.*
 
 @Composable
 fun HashTagButton(
-    onClick: () -> Unit = {},
-    isSelected: Boolean = false,
     modifier: Modifier = Modifier,
-    text: String = "# 과일",
-    isRipple: Boolean = true,
-    style: TextStyle = TextStyles.TextSmall1,
-    isCancellable: Boolean = false,
-    onCancelClick: () -> Unit = {},
-    cornerRadius : Int = 20,
+    isSelected: Boolean = false,
     enabled : Boolean = true,
+    isCancellable: Boolean = false,
+    text: String = "# 과일",
+    onClick: () -> Unit = {},
+    onCancelClick: () -> Unit = {},
 ){
-    val buttonColor = if (isSelected) ButtonDefaults.buttonColors(
-                            backgroundColor = MainGreen1,
-                            contentColor = MainGreen1,
-                            disabledBackgroundColor = MainGray6,
-                            disabledContentColor = MainGray6,
-                        )
-                      else ButtonDefaults.buttonColors(MainGreen2)
+    val borderColor = if (isSelected) MainGreen1 else MainGreen3
     val textColor   = if (isSelected) White else MainGray2
-    var borderColor = if (isSelected) MainGreen1 else MainGreen3
-
-    if(!enabled) borderColor = MainGray6
+    val buttonColor = if (isSelected) MainGreen1 else MainGreen2
 
     Button(
         onClick = onClick,
         modifier = modifier
-            .clip(RoundedCornerShape(cornerRadius.dp))
+            .clip(RoundedCornerShape(20.dp))
             .border(BorderStroke(1.dp, borderColor), RoundedCornerShape(32.dp))
             .height(32.dp),
         contentPadding = if (isCancellable) PaddingValues(start = 9.dp, end = 12.dp)
                          else PaddingValues(horizontal = 15.dp),
-        colors = buttonColor,
-        interactionSource = if (isRipple) MutableInteractionSource()
-                            else NoRippleInteractionSource(),
         enabled = enabled,
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = buttonColor,
+            contentColor = buttonColor,
+            disabledBackgroundColor = buttonColor,
+            disabledContentColor = buttonColor
+        )
     ) {
         if (isCancellable) {
             ResourceImage(
@@ -76,7 +68,7 @@ fun HashTagButton(
         Text(
             text = text,
             color = textColor,
-            style = style,
+            style = TextStyles.TextSmall1,
             textAlign = TextAlign.Center,
             modifier = Modifier.align(CenterVertically)
         )

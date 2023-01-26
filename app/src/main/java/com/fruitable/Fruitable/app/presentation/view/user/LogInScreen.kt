@@ -1,7 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.view
 
 import android.content.Context
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
@@ -9,17 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.BottomCenter
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -35,9 +31,7 @@ import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.event.LogInEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.user.LogInViewModel
-import com.fruitable.Fruitable.ui.theme.MainGray6
-import com.fruitable.Fruitable.ui.theme.MainGreen1
-import com.fruitable.Fruitable.ui.theme.TextStyles
+import com.fruitable.Fruitable.ui.theme.*
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -73,9 +67,9 @@ fun LogInScreen(
         LoginField(viewModel = viewModel)
         FruitableButton(
             text = "로그인",
-            color = MainGreen1,
-            textColor = Color.White,
-            modifier = Modifier.padding(top = 32.dp).alpha(if (viewModel.isLoginAble()) 1f else 0.7f),
+            enabled = viewModel.isLoginAble(),
+            disableColor = MainGreen1_1,
+            modifier = Modifier.padding(top = 32.dp),
             onClick = { viewModel.onEvent(LogInEvent.SignIn) }
         )
         Text(
@@ -86,6 +80,8 @@ fun LogInScreen(
             textAlign = TextAlign.Right,
         )
         FruitableButton(
+            color = Color.White,
+            textColor = MainGreen1,
             onClick = {navController.navigate(Screen.SignUpScreen.route)},
             modifier = Modifier.padding(top = 42.dp)
         )

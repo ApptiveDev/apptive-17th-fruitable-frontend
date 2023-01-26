@@ -34,9 +34,6 @@ fun UserInfoUpdateScreen(
 
     val focusRequester = remember { FocusRequester() }
 
-    val nicknameColor = if (viewModel.isNicknameUpdatable()) MainGreen1 else MainGreen4
-    val passwordColor = if (viewModel.isPasswordUpdatable()) MainGreen1 else MainGreen4
-
     var nicknameDialogOpen by remember { mutableStateOf(false) }
     var passwordDialogOpen by remember { mutableStateOf(false) }
 
@@ -76,8 +73,7 @@ fun UserInfoUpdateScreen(
         )
         FruitableButton(
             text = "닉네임 수정",
-            color = nicknameColor,
-            textColor = Color.White,
+            enabled = viewModel.isNicknameUpdatable(),
             modifier = Modifier.padding(bottom = 28.dp),
             onClick = { viewModel.onEvent(UserInfoUpdateEvent.NicknameSave) }
         )
@@ -104,7 +100,7 @@ fun UserInfoUpdateScreen(
         )
         FruitableButton(
             text = "패스워드 수정",
-            color = passwordColor,
+            enabled = viewModel.isPasswordUpdatable(),
             textColor = Color.White,
             onClick = { viewModel.onEvent(UserInfoUpdateEvent.PasswordSave) }
         )

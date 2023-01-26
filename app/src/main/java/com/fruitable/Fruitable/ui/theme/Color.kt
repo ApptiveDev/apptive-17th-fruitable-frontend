@@ -4,6 +4,7 @@ import android.graphics.Color.rgb
 import androidx.compose.ui.graphics.Color
 
 val MainGreen1 = Color(0xFF1ABD3E)
+val MainGreen1_1 = Color(0xFF5FDa78)
 val MainGreen2 = Color(0xFFF2FAF5)
 val MainGreen3 = Color(0xFFD7DFDA)
 val MainGreen4 = Color(0xFFA8B0AB)

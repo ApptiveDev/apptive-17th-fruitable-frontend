@@ -26,6 +26,7 @@ import com.fruitable.Fruitable.app.presentation.event.LeaveAppEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.user.LeaveAppViewModel
 import com.fruitable.Fruitable.ui.theme.MainGreen1
+import com.fruitable.Fruitable.ui.theme.MainGreen1_1
 import com.fruitable.Fruitable.ui.theme.TextStyles
 import kotlinx.coroutines.flow.collectLatest
 
@@ -55,9 +56,7 @@ fun LeaveAppScreen(
         }
     }
     FruitablePopUp(
-        text  = """탈퇴 시 본인 계정의 모든 기록이
-            삭제되며 복구할 수 없습니다.
-            정말 탈퇴하시겠습니까?""".trimIndent(),
+        text  = "탈퇴 시 본인 계정의 모든 기록이 삭제되며 복구할 수 없습니다.\n정말 탈퇴하시겠습니까?",
         cancelText = "취소",
         confirmText = "탈퇴하기",
         cancel = { isDialogOpen = false},
@@ -67,16 +66,13 @@ fun LeaveAppScreen(
     Scaffold(
         bottomBar = {
             Column(
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxWidth()
-                    .alpha(if (isLeavable) 1f else 0.7f)
+                modifier = Modifier.background(Color.White).fillMaxWidth()
             ) {
                 FruitableDivider()
                 FruitableButton(
                     text = "탈퇴하기",
-                    color = MainGreen1,
-                    textColor = Color.White,
+                    enabled = isLeavable,
+                    disableColor = MainGreen1_1,
                     modifier = Modifier.padding(30.dp, 14.dp, 30.dp, 30.dp),
                     onClick = { if (isChecked) isDialogOpen = true }
                 )
