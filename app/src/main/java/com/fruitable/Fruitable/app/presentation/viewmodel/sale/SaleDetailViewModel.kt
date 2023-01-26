@@ -1,5 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.viewmodel.sale
 
+import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -48,6 +49,13 @@ class SaleDetailViewModel @Inject constructor(
                 is Resource.Loading -> _saleDetail.value = SaleDetailState(isLoading = true)
             }
         }.launchIn(viewModelScope)
+    }
+    fun getOrderStatus(
+        contact: String = saleDetail.value.saleDetail.contact
+    ): Int {
+        if (Patterns.PHONE.matcher(contact).matches()) return 0
+        if (Patterns.WEB_URL.matcher(contact).matches()) return 1
+        return 2
     }
     fun deleteSale(saleId: Int) {
         saleUseCase.deleteSale(saleId).onEach { result ->

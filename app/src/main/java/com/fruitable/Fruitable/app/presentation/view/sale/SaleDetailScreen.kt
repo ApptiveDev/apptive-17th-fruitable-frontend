@@ -1,5 +1,7 @@
 package com.fruitable.Fruitable.app.presentation.view
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,18 +22,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
-import com.fruitable.Fruitable.app.domain.utils.dateFormat
-import com.fruitable.Fruitable.app.domain.utils.sampleUrl
+import com.fruitable.Fruitable.app.domain.utils.*
 import com.fruitable.Fruitable.app.presentation.component.*
 import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopUp
 import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.sale.SaleDetailViewModel
+import com.fruitable.Fruitable.ui.theme.MainGray1
 import com.fruitable.Fruitable.ui.theme.MainGreen1
 import com.fruitable.Fruitable.ui.theme.MainGreen2
 import com.fruitable.Fruitable.ui.theme.TextStyles
@@ -48,9 +55,20 @@ fun SaleDetailScreen(
     viewModel: SaleDetailViewModel = hiltViewModel()
 ) {
     val saleDetail = viewModel.saleDetail.value.saleDetail
+    val orderStatus = 0 //viewModel.getOrderStatus()
     val isModifiable = viewModel.isModifiable.value
-    val isClosed = false
+    val isClosed = false //saleDetail.endDate.dateFormat() < 0L
+    var isDialogOpen by remember { mutableStateOf(false) }
+
     val scaffoldState = rememberScaffoldState()
+    val context = LocalContext.current
+    val clipboardManager = LocalClipboardManager.current
+
+    val intent: Intent = when (orderStatus) {
+        ORDER_PHONE ->  Intent(Intent.ACTION_DIAL, Uri.parse("tel" + saleDetail.contact))
+        ORDER_URL ->  Intent(Intent.ACTION_VIEW, Uri.parse(saleDetail.contact))
+        else -> Intent()
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -66,7 +84,23 @@ fun SaleDetailScreen(
             }
         }
     }
+    OrderPopDialog(
+        contact = saleDetail.contact,
+        text = when (orderStatus) {
+            ORDER_PHONE -> "전화 걸기 및 연락처 저장하기"
+            ORDER_URL -> "홈페이지 바로가기"
+            else -> ""
+        },
+        contactMethod = {
+            try { context.startActivity(intent) }
+            catch (e: Exception) { "연결 실패".log() }
+        },
+        cancelMethod = { isDialogOpen = false },
+        copyMethod = { clipboardManager.setText(AnnotatedString(saleDetail.contact))},
+        isOpen = isDialogOpen
+    )
     Scaffold(
+        scaffoldState = scaffoldState,
         bottomBar = {
             Column(
                 modifier = Modifier.background(Color.White).fillMaxWidth()
@@ -76,7 +110,7 @@ fun SaleDetailScreen(
                     text = "주문하기",
                     enabled = !isClosed,
                     modifier = Modifier.padding(30.dp, 14.dp, 30.dp, 30.dp),
-                    onClick = { navController.navigate(Screen.SalesScreen.route) }
+                    onClick = { if (!isClosed) isDialogOpen = true }
                 )
             }
         }
@@ -96,6 +130,61 @@ fun SaleDetailScreen(
             item { DetailContent() }
             item { DetailHashTag() }
             item { Spacer(modifier = Modifier.height(100.dp)) }
+        }
+    }
+}
+@Composable
+fun OrderPopDialog(
+    contact: String = "051-456-45978",
+    text: String = "",
+    contactMethod: () -> Unit = {},
+    cancelMethod: () -> Unit = {},
+    copyMethod: () -> Unit = {},
+    isOpen: Boolean = false
+){
+    val dialogModifier = Modifier.padding(15.dp)
+    if (isOpen) {
+        Dialog(
+            onDismissRequest = cancelMethod,
+            properties = DialogProperties()
+        ){
+            Column(
+                modifier = dialogModifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(Color.White)
+            ){
+                Text(
+                    text = contact,
+                    style = TextStyles.TextBold5,
+                    modifier = dialogModifier
+                )
+                if (text.isNotBlank()) {
+                    Text(
+                        text = text,
+                        style = TextStyles.TextBasic3,
+                        modifier = dialogModifier.clickable(onClick = contactMethod)
+                    )
+                    FruitableDivider()
+                }
+                Text(
+                    text = "클립보드에 복사하기",
+                    style = TextStyles.TextBasic3,
+                    modifier = dialogModifier.clickable(onClick = copyMethod)
+                )
+                FruitableDivider()
+                Spacer(modifier = Modifier.height(15.dp))
+                Text(
+                    text = "취소",
+                    style = TextStyles.TextBasic3,
+                    color = MainGray1,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp)
+                        .clickable(onClick = cancelMethod),
+                    textAlign = TextAlign.End
+                )
+            }
         }
     }
 }
