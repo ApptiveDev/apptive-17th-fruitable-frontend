@@ -5,11 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
+import com.fruitable.Fruitable.app.domain.utils.Resource
+import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.event.LogInEvent
 import com.fruitable.Fruitable.app.presentation.state.TextFieldBoxState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,9 +41,7 @@ class LogInViewModel @Inject constructor(
     fun onEvent(event : LogInEvent){
         when(event){
             is LogInEvent.EnteredEmail -> {
-                _email.value = email.value.copy(
-                    text = event.value
-                )
+                _email.value = email.value.copy(text = event.value)
             }
             is LogInEvent.ChangeEmailFocus -> {
                 _email.value = email.value.copy(
@@ -48,9 +50,7 @@ class LogInViewModel @Inject constructor(
                 )
             }
             is LogInEvent.EnteredPassword -> {
-                _password.value = password.value.copy(
-                    text = event.value
-                )
+                _password.value = password.value.copy(text = event.value)
             }
             is LogInEvent.ChangePasswordFocus -> {
                 _password.value = password.value.copy(
@@ -65,32 +65,27 @@ class LogInViewModel @Inject constructor(
                 )
                 if (email.value.text.isBlank()) errorMessage.value = "아이디를 입력해주세요."
                 else if (password.value.text.isBlank()) errorMessage.value = "비밀번호를 입력해주세요."
-                else viewModelScope.launch { _eventFlow.emit(LogInUiEvent.LogInSuccess) }
-                /*
-                userUseCase.invokeDouble(
-                    key = email.value.text,
-                    key2 = password.value.text
-                ).onEach {
-                    _eventFlow.emit(LogInUiEvent.LogInSuccess)
-                    when (it) {
-                        is Resource.Success -> {
-                            "데이터 여기 ${it.data}".log()
-                            _eventFlow.emit(LogInUiEvent.LogInSuccess)
+                else {
+                    userUseCase.invokeDouble(
+                        key = email.value.text,
+                        key2 = password.value.text
+                    ).onEach {
+                        when (it) {
+                            is Resource.Success -> _eventFlow.emit(LogInUiEvent.LogInSuccess)
+                            is Resource.Error -> {
+                                errorMessage.value = "일치하는 회원 정보가 없습니다. 다시 시도해주세요."
+                                _eventFlow.emit(LogInUiEvent.LogInError)
+                            }
+                            is Resource.Loading -> {}
                         }
-                        is Resource.Error -> {
-                            if (email.value.text.isBlank()) errorMessage.value = "아이디를 입력해주세요."
-                            else if (password.value.text.isBlank()) errorMessage.value = "비밀번호를 입력해주세요."
-                            else errorMessage.value = "일치하는 회원 정보가 없습니다. 다시 시도해주세요."
-                        }
-                        is Resource.Loading -> {} // nickname duplication loading
-                    }
-                }.launchIn(viewModelScope)*/
+                    }.launchIn(viewModelScope)
+                }
             }
         }
     }
 
     sealed class LogInUiEvent{
-        data class LogInError(val message : String) : LogInUiEvent()
+        object LogInError : LogInUiEvent()
         object LogInSuccess : LogInUiEvent()
     }
 }

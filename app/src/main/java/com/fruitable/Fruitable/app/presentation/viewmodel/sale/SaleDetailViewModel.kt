@@ -2,6 +2,7 @@ package com.fruitable.Fruitable.app.presentation.viewmodel.sale
 
 import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fruitable.Fruitable.app.domain.use_case.SaleUseCase
@@ -26,20 +27,17 @@ class SaleDetailViewModel @Inject constructor(
     private val _saleDetail = mutableStateOf(SaleDetailState())
     val saleDetail = _saleDetail
 
-    private val _isModifiable = mutableStateOf(true)
-    val isModifiable = _isModifiable
-
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    init{
-       // getSaleDetail(saleId)
-        isModifiable()
+    init {
+        getSaleDetail(saleId)
     }
-    private fun isModifiable() {
-      //  val userId = userUseCase.getCookie("id").toInt()
-      //  val saleUserId = saleDetail.value.saleDetail.userId.id
-        _isModifiable.value = true
+    fun isModifiable(): Boolean {
+        val userId = userUseCase.getCookie("id").toInt()
+        val saleUserId = saleDetail.value.saleDetail.userId.id
+        "유저 화깅ㄴ $userId $saleUserId".log()
+        return userId == saleUserId
     }
     private fun getSaleDetail(saleId: Int) {
         saleUseCase.getSale(saleId).onEach { result ->
