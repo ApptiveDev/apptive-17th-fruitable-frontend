@@ -24,6 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
+import com.fruitable.Fruitable.app.domain.utils.EMAIL_CERTIFICATION_INPUT
+import com.fruitable.Fruitable.app.domain.utils.EMAIL_INPUT_SUCCESS
+import com.fruitable.Fruitable.app.domain.utils.EMAIL_SEND_CERTIFICATION
+import com.fruitable.Fruitable.app.domain.utils.timerFormat
 import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
@@ -210,20 +214,15 @@ fun Agreement(): Boolean {
             isChecked = (utilCheck && infoCheck && ageCheck),
             onClick = {
                 if (utilCheck && infoCheck && ageCheck) {
-                    utilCheck = false
-                    infoCheck = false
-                    ageCheck =  false
+                    utilCheck = false; infoCheck = false; ageCheck =  false
                 } else {
-                    utilCheck = true
-                    infoCheck = true
-                    ageCheck =  true
+                    utilCheck = true; infoCheck = true; ageCheck =  true
                 }
             },
             text = "모두 동의합니다",
             style = TextStyles.TextBasic3
         )
         FruitableDivider(modifier = Modifier.padding(horizontal = 5.dp))
-
         Box(
             modifier = Modifier.fillMaxWidth().padding(end = 5.dp)
         ) {
@@ -264,6 +263,5 @@ fun Agreement(): Boolean {
             style = TextStyles.TextBasic2
         )
     }
-
     return  utilCheck && infoCheck && ageCheck
 }

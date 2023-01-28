@@ -7,10 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fruitable.Fruitable.app.data.network.dto.user.SignUpDTO
 import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
-import com.fruitable.Fruitable.app.domain.utils.Resource
+import com.fruitable.Fruitable.app.domain.utils.*
 import com.fruitable.Fruitable.app.presentation.event.SignUpEvent
 import com.fruitable.Fruitable.app.presentation.state.TextFieldBoxState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -62,16 +63,16 @@ class SignUpViewModel @Inject constructor(
     val password2 = _password2
     /**
      * [인증번호 state 단계]
-     *      0. 초기 단계 ("email")
-     *      1. 이메일 입력 ("email success") | example@naver.com 의 형식이 아닌 경우
-     *      2. 인증번호 발송, 재발송 ("send emailCode")
-     *      3. 인증번호 입력  ("certification success") | 숫자로만 구성된게 아닐 경우, 시간 초과
-     *      4. 완료 -> 수정 불가
+     *      0. EMAIL_INPUT 초기 단 ("email")
+     *      1. EMAIL_INPUT_SUCCESS 이메일 입력 ("email success") | example@naver.com 의 형식이 아닌 경우
+     *      2. EMAIL_SEND_CERTIFICATION 인증번호 발송, 재발송 ("send emailCode")
+     *      3. EMAIL_CERTIFICATION_INPUT 인증번호 입력  ("certification success") | 숫자로만 구성된게 아닐 경우, 시간 초과
+     *      4. EMAIL_CERTIFICATION_INPUT_SUCCESS -> 수정 불가
      */
-    val certification = mutableStateOf(0)
-    val nicknameValid = mutableStateOf(false)
-    val emailValid = mutableStateOf(false)
-    val emailCodeValid = mutableStateOf(false)
+    val certification = mutableStateOf(EMAIL_INPUT)
+    private val nicknameValid = mutableStateOf(false)
+    private val emailValid = mutableStateOf(false)
+    private val emailCodeValid = mutableStateOf(false)
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -105,7 +106,7 @@ class SignUpViewModel @Inject constructor(
                 && Pattern.matches("^[가-힣a-zA-Z\\d]*$" ,nickname.value.text)
                 && nickname.value.text.length in 2..8
     }
-    fun emailDuplication() {
+    private fun emailDuplication() {
         userUseCase.invokeSingle(
             key = email.value.text,
             type = "email"
@@ -117,16 +118,17 @@ class SignUpViewModel @Inject constructor(
                         error = "잘못된 형식의 이메일입니다. 다시 입력해주세요."
                     )
                     emailValid.value = true
-                    if (certification.value == 1) certification.value += 1
+                    if (certification.value == EMAIL_INPUT_SUCCESS)
+                        certification.value = EMAIL_SEND_CERTIFICATION
                 }
                 is Resource.Error -> {
                     _email.value = email.value.copy(
                         isError = true,
-                        error = if (!isEmailValid()) "잘못된 형식의 이메일입니다. 다시 입력해주세요."
-                            else "중복된 이메일입니다. 다시 입력해주세요."
+                        error = if (isEmailValid()) "중복된 이메일입니다. 다시 입력해주세요."
+                            else "잘못된 형식의 이메일입니다. 다시 입력해주세요."
                     )
                 }
-                is Resource.Loading -> {}
+                else -> {}
             }
         }.launchIn(viewModelScope)
     }
@@ -139,10 +141,10 @@ class SignUpViewModel @Inject constructor(
                 is Resource.Success -> {
                     _emailCode.value = emailCode.value.copy(isError = false)
                     emailCodeValid.value = true
-                    if (certification.value == 2) certification.value += 1
+                    if (certification.value == EMAIL_SEND_CERTIFICATION)
+                        certification.value = EMAIL_CERTIFICATION_INPUT
                 }
-                is Resource.Error -> {}
-                is Resource.Loading -> {}
+                else -> {}
             }
         }.launchIn(viewModelScope)
     }
@@ -183,14 +185,12 @@ class SignUpViewModel @Inject constructor(
                     isHintVisible = !event.focusState.isFocused &&
                             nickname.value.text.isBlank()
                 )
-                if (!event.focusState.isFocused && nickname.value.text.isNotBlank())
-                    nicknameDuplicated()
             }
             is SignUpEvent.EnteredEmail -> {
                 _email.value = email.value.copy(
                     text = event.value
                 )
-                certification.value = if (isEmailValid()) 1 else 0
+                certification.value = if (isEmailValid()) EMAIL_INPUT_SUCCESS else EMAIL_INPUT
             }
             is SignUpEvent.ChangeEmailFocus -> {
                 _email.value = email.value.copy(
@@ -199,11 +199,12 @@ class SignUpViewModel @Inject constructor(
                 )
             }
             is SignUpEvent.EnteredCertification -> {
+                if (event.value.isBlank()) emailDuplication()
                 _emailCode.value = emailCode.value.copy(
                     text = event.value,
                     isError = emailCodeValid.value
                 )
-                certification.value = if (emailCodeValid.value) 3 else 2
+                certification.value = if (emailCodeValid.value) EMAIL_CERTIFICATION_INPUT else EMAIL_SEND_CERTIFICATION
                 if (emailCode.value.text.length == 6) emailCodeCorrect()
                 else emailCodeValid.value = false
             }
@@ -231,15 +232,16 @@ class SignUpViewModel @Inject constructor(
                 )
             }
             is SignUpEvent.ChangeCertification -> {
-                if (event.value >= 2) {
+                if (event.value >= EMAIL_SEND_CERTIFICATION) {
                     if (emailCode.value.text.isNotBlank()) emailCodeCorrect()
                 }
                 else emailDuplication()
-                if (certification.value == 3) certification.value += 1
-                if (certification.value == 2) {
+                if (certification.value == EMAIL_CERTIFICATION_INPUT)
+                    certification.value = EMAIL_CERTIFICATION_INPUT_SUCCESS
+                if (certification.value == EMAIL_SEND_CERTIFICATION) {
                     _emailCode.value = emailCode.value.copy(
                         isError = true,
-                        error = "인증번호가 일치하지 않습니다. 다시 입력해주세요."
+                        error = "정확한 인증번호 6자리를 입력해주세요."
                     )
                 }
             }
