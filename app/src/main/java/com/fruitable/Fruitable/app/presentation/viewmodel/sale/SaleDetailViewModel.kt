@@ -19,10 +19,10 @@ import javax.inject.Inject
 @HiltViewModel
 class SaleDetailViewModel @Inject constructor(
     private val saleUseCase: SaleUseCase,
-    private val userUseCase: UserUseCase
-   // private val savedStateHandle: SavedStateHandle
+    private val userUseCase: UserUseCase,
+    private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
-  //  val saleId = savedStateHandle.get<Int>("saleId")!!
+    val saleId = savedStateHandle.get<Int>("saleId")!!
     private val _saleDetail = mutableStateOf(SaleDetailState())
     val saleDetail = _saleDetail
 

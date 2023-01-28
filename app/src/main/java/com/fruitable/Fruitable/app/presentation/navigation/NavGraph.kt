@@ -17,11 +17,11 @@ fun NavGraphBuilder.fruitableGraph(
     composable(route = Screen.SalesScreen.route) { SalesScreen(navController) }
     composable(route = Screen.AddSaleScreen.route) { AddSaleScreen(navController) }
     composable(
-        route = Screen.SaleDetailScreen.route,
-      //  arguments = listOf(navArgument("saleId") { type = NavType.IntType })
+        route = Screen.SaleDetailScreen.route + "/{saleId}",
+        arguments = listOf(navArgument("saleId") { type = NavType.IntType })
     ){ backStackEntry ->
-     //   val id = backStackEntry.arguments?.getInt("saleId") ?: 0
-        SaleDetailScreen(navController = navController, saleId = 1)
+        val id = backStackEntry.arguments?.getInt("saleId") ?: 0
+        SaleDetailScreen(navController = navController, saleId = id)
     }
     /**
      * user - 로그인, 회원가입, 회원정보 수정 Screen
