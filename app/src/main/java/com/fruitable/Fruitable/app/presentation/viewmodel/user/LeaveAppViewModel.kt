@@ -75,7 +75,7 @@ class LeaveAppViewModel @Inject constructor(
                             password2.value.text.isBlank()
                 )
             }
-            LeaveAppEvent.LeaveApp -> {
+            is LeaveAppEvent.LeaveApp -> {
                 _password.value = password.value.copy(
                     isError = !isPasswordValid(password.value.text)
                 )
