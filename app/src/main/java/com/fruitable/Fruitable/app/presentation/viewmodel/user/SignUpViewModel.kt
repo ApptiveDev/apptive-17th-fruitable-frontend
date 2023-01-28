@@ -165,6 +165,12 @@ class SignUpViewModel @Inject constructor(
         return isNicknameValid() && isPasswordValid && isEmailValid()
                 && nicknameValid.value && emailValid.value && emailCodeValid.value
     }
+    fun emailTimerTerminated() {
+        _emailCode.value = emailCode.value.copy(
+            error = "인증 기간이 만료되었습니다.",
+            isError = true
+        )
+    }
     fun onEvent(event: SignUpEvent){
         when (event) {
             is SignUpEvent.EnteredNickname -> {

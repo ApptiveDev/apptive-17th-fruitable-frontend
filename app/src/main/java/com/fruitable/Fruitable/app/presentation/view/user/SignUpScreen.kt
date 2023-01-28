@@ -37,6 +37,7 @@ import com.fruitable.Fruitable.app.presentation.viewmodel.user.SignUpViewModel
 import com.fruitable.Fruitable.ui.theme.MainGreen1
 import com.fruitable.Fruitable.ui.theme.MainGreen3
 import com.fruitable.Fruitable.ui.theme.TextStyles
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -49,13 +50,19 @@ fun SignUpScreen(
     val numberState = viewModel.emailCode.value
     val passwordState = viewModel.password.value
     val password2State = viewModel.password2.value
+    var timer by remember { mutableStateOf(3000*60L) }
 
     val certification = viewModel.certification.value
     val focusRequester = remember { FocusRequester() }
     var isAgree by remember { mutableStateOf(false) }
     val isSignUpAble = viewModel.isSignUpAble() && isAgree
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(key1 = timer) {
+        while (timer > 0) {
+            delay(1000L)
+            timer -= 1000L
+        }
+        if (timer == 0L) viewModel.emailTimerTerminated()
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 SignUpViewModel.UiEvent.SignUpSuccess -> {
@@ -99,19 +106,30 @@ fun SignUpScreen(
                 enabled = certification != 4,
                 onFocusChange = { viewModel.onEvent(SignUpEvent.ChangeEmailFocus(it)) },
             )
-            if (certification in 2..3) {
+            if (certification in EMAIL_SEND_CERTIFICATION..EMAIL_CERTIFICATION_INPUT) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     verticalAlignment = CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    TextFieldBox(
-                        state = numberState,
-                        isSpaced = false,
-                        modifier = Modifier.focusRequester(focusRequester).weight(1f),
-                        onValueChange = { viewModel.onEvent(SignUpEvent.EnteredCertification(it)) },
-                        enabled = (certification < 3)
-                    )
+                    Box(modifier = Modifier.weight(1f)) {
+                        TextFieldBox(
+                            state = numberState,
+                            isSpaced = false,
+                            modifier = Modifier.focusRequester(focusRequester),
+                            onValueChange = { viewModel.onEvent(SignUpEvent.EnteredCertification(it)) },
+                            enabled = (certification < EMAIL_CERTIFICATION_INPUT),
+                            endPadding = 60.dp
+                        )
+                        Text(
+                            text = if (certification == EMAIL_CERTIFICATION_INPUT) ""
+                                else if (timer == 0L) "인증만료" else timer.timerFormat(),
+                            color = Color.Red,
+                            style = TextStyles.TextSmall1,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.align(CenterEnd).padding(horizontal = 16.dp)
+                        )
+                    }
                     Text (
                         text = "인증번호 재발송",
                         style = TextStyles.TextBasic1,
@@ -121,14 +139,14 @@ fun SignUpScreen(
                             .border(1.dp, MainGreen1, RoundedCornerShape(10.dp))
                             .padding(16.dp, 12.dp)
                             .clickable {
-                                viewModel.emailDuplication()
+                                timer = 3000*60L
                                 viewModel.onEvent(SignUpEvent.EnteredCertification(""))
                             }
                     )
                 }
                 if (numberState.isError)
                     Text(
-                        text = "정확한 인증번호 6자리를 입력해주세요.",
+                        text = numberState.error,
                         style = TextStyles.TextBasic1,
                         color = Color.Red,
                         modifier = Modifier.padding(top = 10.dp).align(Start)
@@ -136,11 +154,15 @@ fun SignUpScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
             FruitableButton(
-                text = if (certification <= 1) "인증번호 발송"
-                       else if (certification <= 3) "인증 확인" else "인증 완료",
-                enabled = certification%2 == 1,
+                text = if (certification <= EMAIL_INPUT_SUCCESS ) "인증번호 발송"
+                       else if (certification <= EMAIL_CERTIFICATION_INPUT) "인증 확인" else "인증 완료",
+                enabled = certification%2 == 1 && timer >= 0,
                 textColor = Color.White,
-                onClick = { viewModel.onEvent(SignUpEvent.ChangeCertification(certification)) }
+                onClick = {
+                    if (certification == EMAIL_INPUT_SUCCESS) timer = 3000*60L
+                    viewModel.onEvent(SignUpEvent.ChangeCertification(certification))
+                    if (timer == 0L) viewModel.emailTimerTerminated()
+                }
             )
             Spacer(modifier = Modifier.height(28.dp))
             TextFieldBox(

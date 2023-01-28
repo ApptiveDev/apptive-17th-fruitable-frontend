@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.fruitable.Fruitable.app.presentation.state.TextFieldBoxState
 import com.fruitable.Fruitable.ui.theme.*
@@ -36,6 +37,7 @@ fun TextFieldBox(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     onFocusChange: (FocusState) -> Unit = {},
+    endPadding: Dp = 16.dp
 ){
     val keyboardController = LocalSoftwareKeyboardController.current
     val borderColor = if (state.isError) Red else MainGreen3
@@ -65,7 +67,7 @@ fun TextFieldBox(
                 visualTransformation = visualTransformation,
                 enabled = enabled,
                 modifier = Modifier
-                    .padding(start = 16.dp)
+                    .padding(start = 16.dp, end = endPadding)
                     .fillMaxWidth()
                     .align(Alignment.Center)
                     .onFocusChanged { onFocusChange(it) }
