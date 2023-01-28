@@ -321,7 +321,7 @@ fun DetailFarmProfile(
     isClosed : Boolean = true,
     nickName : String = "푸릇농장",
     phoneNum : String = "051-456-5978",
-    deadLine : String = "2023.01.25"
+    deadLine : String? = "2023.01.25"
 ){
     Box(
         modifier = Modifier.padding(20.dp, 18.dp).fillMaxWidth()
@@ -339,7 +339,7 @@ fun DetailFarmProfile(
                 Text(text = phoneNum, style = TextStyles.TextSmall2)
             }
         }
-        if (!isClosed) {
+        if (!isClosed && !deadLine.isNullOrBlank()) {
             Box(
                 modifier = Modifier.clip(RoundedCornerShape(32.dp))
                     .border(BorderStroke(1.dp, MainGreen1), RoundedCornerShape(32.dp))

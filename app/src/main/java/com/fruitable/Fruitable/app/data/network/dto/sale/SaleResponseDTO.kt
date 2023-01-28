@@ -10,7 +10,7 @@ data class SaleResponseDTO(
     val title: String = "",
     val content: String = "",
     val price: Int = 0,
-    val endDate: String = "",
+    val endDate: String? = "",
     val tags: List<String> = emptyList(),
     val filePath: List<String> = emptyList(),
     val fileURL: List<String> = emptyList()
