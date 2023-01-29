@@ -89,9 +89,9 @@ class AddSaleViewModel @Inject constructor(
                                 text = saleInfo?.content ?: "내용 없음",
                                 isHintVisible = false
                             )
-                            saleInfo?.fileURL?.forEach{
-                                _saleImage.add(Uri.parse(it))
-                            }
+//                            saleInfo?.fileURL?.forEach{
+//                                _saleImage.add(Uri.parse(it))
+//                            }
                             _saleHashTag.value = saleHashTag.value.copy(
                                 textList = saleInfo?.tags ?: emptyList(),
                             )
@@ -257,10 +257,6 @@ class AddSaleViewModel @Inject constructor(
                     }
                 }
                 else{
-                    _saleImage.forEach{
-                        "경로 경로 ${it.path} scheme ${it.scheme} file ${it.encodedPath}".log()
-                        it.toString().log()
-                    }
                     saleUseCase.updateSale(
                         saleId = currentSaleId ?: 0,
                         saleRequestDTO = SaleRequestDTO(
@@ -279,7 +275,7 @@ class AddSaleViewModel @Inject constructor(
                             endDate = saleDeadLine.value.text,
                             tags = saleHashTag.value.textList
                         ),
-                        files = emptyList() //_saleImage.map { Paths.get(it.path).toFile() }// _saleImage.map { Paths.get(it.toString()).toFile() }
+                        files = _saleImage.map { toFile(context, it) }//_saleImage.map { Paths.get(it.path).toFile() }// _saleImage.map { Paths.get(it.toString()).toFile() }
                     ).onEach {
                         when (it) {
                             is Resource.Success -> {

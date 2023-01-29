@@ -36,7 +36,6 @@ class SaleDetailViewModel @Inject constructor(
     fun isModifiable(): Boolean {
         val userId = userUseCase.getCookie("id").toInt()
         val saleUserId = saleDetail.value.saleDetail.userId.id
-        "유저 화깅ㄴ $userId $saleUserId".log()
         return userId == saleUserId
     }
     private fun getSaleDetail(saleId: Int) {
