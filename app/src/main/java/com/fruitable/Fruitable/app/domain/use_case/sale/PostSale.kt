@@ -3,7 +3,6 @@ package com.fruitable.Fruitable.app.domain.use_case.sale
 import com.fruitable.Fruitable.app.data.network.dto.sale.SaleRequestDTO
 import com.fruitable.Fruitable.app.domain.repository.SaleRepository
 import com.fruitable.Fruitable.app.domain.utils.Resource
-import com.fruitable.Fruitable.app.domain.utils.log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -20,7 +19,7 @@ class PostSale @Inject constructor(
             val r = repository.postSale(saleRequestDTO, files)
             when(r.code()) {
                 201 -> emit(Resource.Success(r.body()!!))
-                else -> r.errorBody().toString().log()
+                else -> emit(Resource.Error("게시글 업로드 실패"))
             }
         } catch (e: HttpException) {
             emit(Resource.Error("[ERROR/POST_SALE] HTTP Exception occurred"))

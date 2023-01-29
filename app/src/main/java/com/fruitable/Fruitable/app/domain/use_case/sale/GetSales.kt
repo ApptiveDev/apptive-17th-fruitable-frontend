@@ -19,7 +19,7 @@ class GetSales @Inject constructor(
             val r = repository.getSales()
             when(r.code()) {
                 200 -> emit(Resource.Success(r.body()!!))
-                else -> r.errorBody().toString().log()
+                else -> emit(Resource.Error("전체 게시글 조회 실패"))
             }
         } catch (e: HttpException) {
             emit(Resource.Error("[ERROR/GET_SALES] HTTP Exception occurred"))
