@@ -24,10 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
-import com.fruitable.Fruitable.app.domain.utils.EMAIL_CERTIFICATION_INPUT
-import com.fruitable.Fruitable.app.domain.utils.EMAIL_INPUT_SUCCESS
-import com.fruitable.Fruitable.app.domain.utils.EMAIL_SEND_CERTIFICATION
-import com.fruitable.Fruitable.app.domain.utils.timerFormat
+import com.fruitable.Fruitable.app.domain.utils.*
 import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
@@ -66,7 +63,9 @@ fun SignUpScreen(
             delay(1000L)
             timer -= 1000L
         }
-        if (timer == 0L) viewModel.emailTimerTerminated()
+        if (timer == 0L) viewModel.emailTimerTerminated(false)
+    }
+    LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 SignUpViewModel.UiEvent.SignUpSuccess -> {

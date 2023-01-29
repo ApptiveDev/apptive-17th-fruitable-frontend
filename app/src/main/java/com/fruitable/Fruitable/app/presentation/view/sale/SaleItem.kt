@@ -22,10 +22,10 @@ fun SaleItem(
     itemImageUrl: String = sampleUrl,
     title: String = "프레샤인 충주 GAP 인증\n당도선별 사과",
     nickname: String = "푸릇농장",
-    deadline: String = "2020.01.23",
+    deadline: String? = "2020.01.23",
     price: Int = 14500
 ){
-    val deadlineFormat = if (deadline.dateFormat() > 0) "${deadline.dateFormat()}일 전" else ""
+    val deadlineFormat = if (deadline.dateFormat() > 0) "${deadline.dateFormat()}일 전" else if (deadline.isNullOrBlank()) "없음" else "완료"
     Row(
         modifier = modifier.clickable(onClick = onClick)
     ){

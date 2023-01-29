@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fruitable.Fruitable.app.data.network.dto.sale.SaleRequestDTO
@@ -16,6 +17,7 @@ import com.fruitable.Fruitable.app.domain.utils.Resource
 import com.fruitable.Fruitable.app.domain.utils.UriUtil.toFile
 import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.event.AddSaleEvent
+import com.fruitable.Fruitable.app.presentation.state.SaleDetailState
 import com.fruitable.Fruitable.app.presentation.state.SaleTextFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -31,6 +33,7 @@ import javax.inject.Inject
 class AddSaleViewModel @Inject constructor(
     private val saleUseCase: SaleUseCase,
     private val userUseCase: UserUseCase,
+    private val savedStateHandle: SavedStateHandle,
     @ApplicationContext val context: Context
 ) : ViewModel(){
     private val saleCategory = mutableStateOf("")
@@ -60,7 +63,52 @@ class AddSaleViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
-
+    private var currentSaleId: Int? = -1
+    init {
+        savedStateHandle.get<Int>("saleId")?.let{ saleId ->
+            if (saleId != -1) {
+                currentSaleId = saleId
+                saleUseCase.getSale(saleId).onEach { result ->
+                    when (result){
+                        is Resource.Success -> {
+                            val saleInfo = result.data
+                            saleCategory.value = if (saleInfo?.vege == 0) "과일" else "채소"
+                            _saleTitle.value = saleTitle.value.copy(
+                                text = saleInfo?.title ?: "제목 없음",
+                                isHintVisible = false
+                            )
+                            _salePrice.value = salePrice.value.copy(
+                                text = saleInfo?.price.toString(),
+                                isHintVisible = false
+                            )
+                            _saleContact.value = saleContact.value.copy(
+                                text = saleInfo?.contact ?: "연락처 없음",
+                                isHintVisible = false
+                            )
+                            _saleContent.value = saleContent.value.copy(
+                                text = saleInfo?.content ?: "내용 없음",
+                                isHintVisible = false
+                            )
+//                            saleInfo?.fileURL?.forEach{
+//                                _saleImage.add(Uri.parse(it))
+//                            }
+                            _saleHashTag.value = saleHashTag.value.copy(
+                                textList = saleInfo?.tags ?: emptyList(),
+                            )
+                            _saleDeadLine.value = saleDeadLine.value.copy(
+                                text = saleInfo?.endDate ?: "",
+                                isHintVisible = false
+                            )
+                        }
+                        else -> {}
+                    }
+                }.launchIn(viewModelScope)
+            }
+        }
+    }
+    fun isUpdate(): Boolean {
+        return currentSaleId != -1
+    }
     fun isSavable(): Boolean {
         val exceptionCollection = exceptionMap()
         return exceptionCollection.all { it.value }
@@ -196,6 +244,46 @@ class AddSaleViewModel @Inject constructor(
                             }
                             is Resource.Error ->  "게시글 작성 실패".log()
                             is Resource.Loading -> "게시글 작성 로딩중".log()
+                        }
+                    }.launchIn(viewModelScope)
+                }
+            }
+            is AddSaleEvent.UpdateSale -> {
+                if (!isSavable()){
+                    exceptionMap().filter{!it.value}.firstNotNullOf { (key, value) ->
+                        viewModelScope.launch {
+                            _eventFlow.emit(UiEvent.ShowSnackbar(key))
+                        }
+                    }
+                }
+                else{
+                    saleUseCase.updateSale(
+                        saleId = currentSaleId ?: 0,
+                        saleRequestDTO = SaleRequestDTO(
+                            userId = UserDTO(
+                                id = getCookie("id").toInt(),
+                                email = getCookie("email"),
+                                pwd = getCookie("pwd"),
+                                name = getCookie("name"),
+                                role = getCookie("role")
+                            ),
+                            contact = saleContact.value.text,
+                            vege = if (saleCategory.value == "과일") 0 else 1,
+                            title = saleTitle.value.text,
+                            content = saleContent.value.text,
+                            price = salePrice.value.text.toInt(),
+                            endDate = saleDeadLine.value.text,
+                            tags = saleHashTag.value.textList
+                        ),
+                        files = _saleImage.map { toFile(context, it) }//_saleImage.map { Paths.get(it.path).toFile() }// _saleImage.map { Paths.get(it.toString()).toFile() }
+                    ).onEach {
+                        when (it) {
+                            is Resource.Success -> {
+                                "게시글 수정 성공".log()
+                                _eventFlow.emit(UiEvent.SaveInformation)
+                            }
+                            is Resource.Error ->  "게시글 수정 실패".log()
+                            is Resource.Loading -> "게시글 수정 로딩중".log()
                         }
                     }.launchIn(viewModelScope)
                 }

@@ -194,7 +194,7 @@ fun SalesContents(
         Column(
             verticalArrangement = Arrangement.spacedBy(17.dp),
             modifier = Modifier.padding(23.dp, 37.dp, 37.dp, 21.dp)
-        ) {/*
+        ) {
             viewModel.sales.value.salesDTO.forEach {
                 SaleItem(
                     itemImageUrl = it.fileURL[0],
@@ -204,10 +204,6 @@ fun SalesContents(
                     deadline = it.endDate,
                     onClick = { navController.navigate("${Screen.SaleDetailScreen.route}/${it.id}") }
                 )
-                FruitableDivider()
-            }*/
-            for (i in 1..10) {
-                SaleItem(onClick = { navController.navigate(Screen.SaleDetailScreen.route) })
                 FruitableDivider()
             }
         }

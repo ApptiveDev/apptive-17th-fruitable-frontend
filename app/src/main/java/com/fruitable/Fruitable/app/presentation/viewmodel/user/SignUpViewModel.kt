@@ -1,8 +1,7 @@
 package com.fruitable.Fruitable.app.presentation.viewmodel.user
 
 import android.util.Patterns
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fruitable.Fruitable.app.data.network.dto.user.SignUpDTO
@@ -42,7 +41,7 @@ class SignUpViewModel @Inject constructor(
     )
     val email: State<TextFieldBoxState> = _email
 
-    private val _emailCode = mutableStateOf(TextFieldBoxState())
+    private val _emailCode = mutableStateOf(TextFieldBoxState(error = "정확한 인증번호 6자리를 입력해주세요."))
     val emailCode: State<TextFieldBoxState> = _emailCode
 
     private val _password = mutableStateOf(
@@ -73,31 +72,27 @@ class SignUpViewModel @Inject constructor(
     private val nicknameValid = mutableStateOf(false)
     private val emailValid = mutableStateOf(false)
     private val emailCodeValid = mutableStateOf(false)
-
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     private fun nicknameDuplicated() {
+        if (!isNicknameValid()) {
+            _nickname.value = nickname.value.copy(isError = true)
+            return
+        }
         userUseCase.invokeSingle(
             key = nickname.value.text,
             type = "nickname"
         ).onEach {
             when (it) {
-                is Resource.Success -> {
-                    _nickname.value = nickname.value.copy(
-                        isError = !isNicknameValid(),
-                        error = "적절하지 않은 닉네임입니다. 다시 입력해주세요."
-                    )
-                    nicknameValid.value = true
-                }
+                is Resource.Success -> nicknameValid.value = true
                 is Resource.Error -> {
                     _nickname.value = nickname.value.copy(
                         isError = true,
-                        error = if (isNicknameValid()) "중복된 닉네임입니다. 다시 입력해주세요."
-                            else "적절하지 않은 닉네임입니다. 다시 입력해주세요."
+                        error = "중복된 닉네임입니다. 다시 입력해주세요."
                     )
                 }
-                is Resource.Loading -> {} // nickname duplication loading
+                is Resource.Loading -> {}
             }
         }.launchIn(viewModelScope)
     }
@@ -107,16 +102,17 @@ class SignUpViewModel @Inject constructor(
                 && nickname.value.text.length in 2..8
     }
     private fun emailDuplication() {
+        if (!isEmailValid()) {
+            _email.value = email.value.copy(isError = true)
+            return
+        }
         userUseCase.invokeSingle(
             key = email.value.text,
             type = "email"
         ).onEach {
             when (it) {
                 is Resource.Success -> {
-                    _email.value = email.value.copy(
-                        isError = !isEmailValid(),
-                        error = "잘못된 형식의 이메일입니다. 다시 입력해주세요."
-                    )
+                    _email.value = email.value.copy(isError = false)
                     emailValid.value = true
                     if (certification.value == EMAIL_INPUT_SUCCESS)
                         certification.value = EMAIL_SEND_CERTIFICATION
@@ -124,8 +120,7 @@ class SignUpViewModel @Inject constructor(
                 is Resource.Error -> {
                     _email.value = email.value.copy(
                         isError = true,
-                        error = if (isEmailValid()) "중복된 이메일입니다. 다시 입력해주세요."
-                            else "잘못된 형식의 이메일입니다. 다시 입력해주세요."
+                        error = "중복된 이메일입니다. 다시 입력해주세요."
                     )
                 }
                 else -> {}
@@ -142,11 +137,15 @@ class SignUpViewModel @Inject constructor(
                     _emailCode.value = emailCode.value.copy(isError = false)
                     emailCodeValid.value = true
                     if (certification.value == EMAIL_SEND_CERTIFICATION)
-                        certification.value = EMAIL_CERTIFICATION_INPUT
+                        certification.value = EMAIL_CERTIFICATION_INPUT_SUCCESS
                 }
                 else -> {}
             }
         }.launchIn(viewModelScope)
+        emailCode.value.text = ""
+    }
+    fun isEmailCodeValid(): Boolean {
+        return emailCode.value.text.length == 6
     }
     private fun isEmailValid(): Boolean {
         return email.value.text.isNotBlank()
@@ -167,10 +166,10 @@ class SignUpViewModel @Inject constructor(
         return isNicknameValid() && isPasswordValid && isEmailValid()
                 && nicknameValid.value && emailValid.value && emailCodeValid.value
     }
-    fun emailTimerTerminated() {
+    fun emailTimerTerminated(isErrorVisible: Boolean = true) {
         _emailCode.value = emailCode.value.copy(
             error = "인증 기간이 만료되었습니다.",
-            isError = true
+            isError = isErrorVisible
         )
     }
     fun onEvent(event: SignUpEvent){
@@ -205,8 +204,6 @@ class SignUpViewModel @Inject constructor(
                     isError = emailCodeValid.value
                 )
                 certification.value = if (emailCodeValid.value) EMAIL_CERTIFICATION_INPUT else EMAIL_SEND_CERTIFICATION
-                if (emailCode.value.text.length == 6) emailCodeCorrect()
-                else emailCodeValid.value = false
             }
 
             is SignUpEvent.EnteredPassword -> {
@@ -239,10 +236,7 @@ class SignUpViewModel @Inject constructor(
                 if (certification.value == EMAIL_CERTIFICATION_INPUT)
                     certification.value = EMAIL_CERTIFICATION_INPUT_SUCCESS
                 if (certification.value == EMAIL_SEND_CERTIFICATION) {
-                    _emailCode.value = emailCode.value.copy(
-                        isError = true,
-                        error = "정확한 인증번호 6자리를 입력해주세요."
-                    )
+                    _emailCode.value = emailCode.value.copy(isError = true)
                 }
             }
             is SignUpEvent.SignUp -> {
@@ -252,6 +246,9 @@ class SignUpViewModel @Inject constructor(
                 )
                 _email.value = email.value.copy(
                     isError = !isEmailValid()
+                )
+                _emailCode.value = emailCode.value.copy(
+                    isError = !emailCodeValid.value
                 )
                 _password.value = password.value.copy(
                     isError = !isPasswordValid(password.value.text)

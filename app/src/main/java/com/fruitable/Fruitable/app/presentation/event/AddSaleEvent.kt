@@ -24,4 +24,5 @@ sealed class AddSaleEvent{
     data class EnterDeadLine(val value: String): AddSaleEvent()
     object ChangeDeadLine: AddSaleEvent()
     object SaveSale: AddSaleEvent()
+    object UpdateSale : AddSaleEvent()
 }

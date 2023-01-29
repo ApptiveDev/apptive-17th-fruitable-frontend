@@ -23,16 +23,22 @@ fun Modifier.addFocusCleaner(focusManager: FocusManager, doOnClear: () -> Unit =
     }
 }
 
-fun String.dateFormat(): Long {
-    val dateFormat = SimpleDateFormat("yyyy.MM.dd")
-    val endDate = dateFormat.parse(this)?.time
-    val today = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }.time.time
-    return (endDate?.minus(today))?.div((24 * 60 * 60 * 1000)) ?: 0
+fun String?.dateFormat(): Long {
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+    try {
+        val endDate = this?.let { dateFormat.parse(it)?.time }
+        val today = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time.time
+        return (endDate?.minus(today))?.div((24 * 60 * 60 * 1000)) ?: 0
+    } catch (e: Exception) {
+        "Date exception".log()
+        e.printStackTrace()
+        return -10L
+    }
 }
 
 fun Long.timerFormat(): String {

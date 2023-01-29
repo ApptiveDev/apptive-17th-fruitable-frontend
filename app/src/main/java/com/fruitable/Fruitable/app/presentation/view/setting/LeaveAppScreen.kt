@@ -74,7 +74,10 @@ fun LeaveAppScreen(
                     enabled = isLeavable,
                     disableColor = MainGreen1_1,
                     modifier = Modifier.padding(30.dp, 14.dp, 30.dp, 30.dp),
-                    onClick = { if (isChecked) isDialogOpen = true }
+                    onClick = {
+                        viewModel.passwordErrorCheck()
+                        if (isChecked && isLeavable) isDialogOpen = true
+                    }
                 )
             }
         }

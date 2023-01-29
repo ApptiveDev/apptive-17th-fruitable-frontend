@@ -51,13 +51,11 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun SaleDetailScreen(
     navController: NavController,
-    saleId : Int = 1,
     viewModel: SaleDetailViewModel = hiltViewModel()
 ) {
     val saleDetail = viewModel.saleDetail.value.saleDetail
-    val orderStatus = 0 //viewModel.getOrderStatus()
-    val isModifiable = viewModel.isModifiable.value
-    val isClosed = false //saleDetail.endDate.dateFormat() < 0L
+    val orderStatus = viewModel.getOrderStatus()
+    val isClosed = saleDetail.endDate.dateFormat() < 0L
     var isDialogOpen by remember { mutableStateOf(false) }
 
     val scaffoldState = rememberScaffoldState()
@@ -65,7 +63,7 @@ fun SaleDetailScreen(
     val clipboardManager = LocalClipboardManager.current
 
     val intent: Intent = when (orderStatus) {
-        ORDER_PHONE ->  Intent(Intent.ACTION_DIAL, Uri.parse("tel" + saleDetail.contact))
+        ORDER_PHONE ->  Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + saleDetail.contact))
         ORDER_URL ->  Intent(Intent.ACTION_VIEW, Uri.parse(saleDetail.contact))
         else -> Intent()
     }
@@ -119,16 +117,25 @@ fun SaleDetailScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             item { DetailTop(
-                isModifiable = isModifiable,
+                isModifiable = viewModel.isModifiable(),
                 isClosed = isClosed,
                 deleteSale = { viewModel.deleteSale(saleDetail.id) },
-                updateSale = { navController.navigate(Screen.AddSaleScreen.route) }
-                /*deadline = saleDetail.endDate,
-                itemImageUrl = saleDetail.fileURL*/
+                updateSale = { navController.navigate("${Screen.AddSaleScreen.route}?saleId=${saleDetail.id}") },
+                itemImageUrl = saleDetail.fileURL
             ) }
-            item { DetailFarmProfile(isClosed = isClosed/*nickName = saleDetail.userId.name, phoneNum = saleDetail.contact*/) }
-            item { DetailContent() }
-            item { DetailHashTag() }
+            item { DetailFarmProfile(
+                isClosed = isClosed,
+                nickName = saleDetail.userId.name,
+                phoneNum = saleDetail.contact,
+                deadLine = saleDetail.endDate
+            ) }
+            item { FruitableDivider(padding = PaddingValues(horizontal = 28.dp)) }
+            item { DetailContent(
+                price = saleDetail.price,
+                title = saleDetail.title,
+                content = saleDetail.content
+            ) }
+            item { DetailHashTag(tags = saleDetail.tags) }
             item { Spacer(modifier = Modifier.height(100.dp)) }
         }
     }
@@ -228,7 +235,7 @@ fun DetailContent(
         Text( text = title, style = TextStyles.TextBold3)
         Text (
             text = content,
-            modifier = Modifier.padding(20.dp, 18.dp, 0.dp, 5.dp),
+            modifier = Modifier.padding(top = 18.dp, bottom = 5.dp),
             style = TextStyles.TextSmall3
         )
     }
@@ -321,7 +328,7 @@ fun DetailFarmProfile(
     isClosed : Boolean = true,
     nickName : String = "푸릇농장",
     phoneNum : String = "051-456-5978",
-    deadLine : String = "2023.01.25"
+    deadLine : String? = "2023.01.25"
 ){
     Box(
         modifier = Modifier.padding(20.dp, 18.dp).fillMaxWidth()
@@ -339,7 +346,7 @@ fun DetailFarmProfile(
                 Text(text = phoneNum, style = TextStyles.TextSmall2)
             }
         }
-        if (!isClosed) {
+        if (!isClosed && !deadLine.isNullOrBlank()) {
             Box(
                 modifier = Modifier.clip(RoundedCornerShape(32.dp))
                     .border(BorderStroke(1.dp, MainGreen1), RoundedCornerShape(32.dp))
