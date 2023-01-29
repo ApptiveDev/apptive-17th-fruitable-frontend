@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fruitable.Fruitable.app.data.network.dto.sale.SaleRequestDTO
@@ -16,6 +17,7 @@ import com.fruitable.Fruitable.app.domain.utils.Resource
 import com.fruitable.Fruitable.app.domain.utils.UriUtil.toFile
 import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.event.AddSaleEvent
+import com.fruitable.Fruitable.app.presentation.state.SaleDetailState
 import com.fruitable.Fruitable.app.presentation.state.SaleTextFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -31,6 +33,7 @@ import javax.inject.Inject
 class AddSaleViewModel @Inject constructor(
     private val saleUseCase: SaleUseCase,
     private val userUseCase: UserUseCase,
+    private val savedStateHandle: SavedStateHandle,
     @ApplicationContext val context: Context
 ) : ViewModel(){
     private val saleCategory = mutableStateOf("")
@@ -60,6 +63,25 @@ class AddSaleViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+    private var currentSaleId: Int? = null
+    init {
+        savedStateHandle.get<Int>("saleId")?.let{ saleId ->
+            if (saleId != -1) {
+                currentSaleId = saleId
+                saleUseCase.getSale(saleId).onEach { result ->
+                    when (result){
+                        is Resource.Success -> {
+                            _saleTitle.value = saleTitle.value.copy(
+                                text = result.data?.title ?: "제목",
+                                isHintVisible = false
+                            )
+                        }
+                        else -> {}
+                    }
+                }.launchIn(viewModelScope)
+            }
+        }
+    }
 
     fun isSavable(): Boolean {
         val exceptionCollection = exceptionMap()

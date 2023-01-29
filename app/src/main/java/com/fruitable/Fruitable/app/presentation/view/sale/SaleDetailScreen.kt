@@ -51,7 +51,6 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun SaleDetailScreen(
     navController: NavController,
-    saleId : Int = 1,
     viewModel: SaleDetailViewModel = hiltViewModel()
 ) {
     val saleDetail = viewModel.saleDetail.value.saleDetail
@@ -121,7 +120,7 @@ fun SaleDetailScreen(
                 isModifiable = viewModel.isModifiable(),
                 isClosed = isClosed,
                 deleteSale = { viewModel.deleteSale(saleDetail.id) },
-                updateSale = { navController.navigate(Screen.AddSaleScreen.route) },
+                updateSale = { navController.navigate("${Screen.AddSaleScreen.route}?saleId=${saleDetail.id}") },
                 itemImageUrl = saleDetail.fileURL
             ) }
             item { DetailFarmProfile(
