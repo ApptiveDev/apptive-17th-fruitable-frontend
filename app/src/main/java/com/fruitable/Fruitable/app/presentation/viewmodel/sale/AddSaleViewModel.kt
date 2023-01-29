@@ -132,7 +132,7 @@ class AddSaleViewModel @Inject constructor(
     fun onEvent(event: AddSaleEvent){
         when(event){
             is AddSaleEvent.EnteredCategory -> {
-                saleCategory.value = event.value
+                saleCategory.value = if(event.value) "과일" else "채소"
             }
             is AddSaleEvent.EnteredTitle -> {
                 _saleTitle.value = saleTitle.value.copy(text = event.value)

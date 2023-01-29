@@ -119,11 +119,7 @@ fun AddSaleScreen(
                     .addFocusCleaner(focusManager),
                 contentPadding = PaddingValues(30.dp, 0.dp)
             ) {
-                item {
-                    val isFruit = CategoryChoice()
-                    val isFruitValue = if (isFruit) "과일" else "채소"
-                    viewModel.onEvent(AddSaleEvent.EnteredCategory(isFruitValue))
-                }
+                item { CategoryChoice(viewModel = viewModel) }
                 item {
                     FruitableTextField(
                         modifier = Modifier.focusRequester(focusRequester),
@@ -380,7 +376,8 @@ fun Title(
 
 @Composable
 fun CategoryChoice(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: AddSaleViewModel
 ): Boolean {
     val isFruitClick = remember{ mutableStateOf(true) }
     val color = if (isFruitClick.value) White else MainGreen1
@@ -398,7 +395,7 @@ fun CategoryChoice(
     ){
         Box(
             modifier = Modifier
-                .clickable { isFruitClick.value = true }
+                .clickable { isFruitClick.value = true; viewModel.onEvent(AddSaleEvent.EnteredCategory(true))}
                 .weight(1f)
                 .fillMaxHeight()
                 .background(notColor, RoundedCornerShape(10.dp, 0.dp, 0.dp, 10.dp)),
@@ -413,7 +410,7 @@ fun CategoryChoice(
         }
         Box(
             modifier = Modifier
-                .clickable { isFruitClick.value = false }
+                .clickable { isFruitClick.value = false; viewModel.onEvent(AddSaleEvent.EnteredCategory(false)) }
                 .weight(1f)
                 .fillMaxHeight()
                 .background(color, RoundedCornerShape(0.dp, 10.dp, 10.dp, 0.dp)),
