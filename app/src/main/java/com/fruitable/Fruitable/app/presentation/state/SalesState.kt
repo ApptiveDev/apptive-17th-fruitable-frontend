@@ -4,6 +4,6 @@ import com.fruitable.Fruitable.app.data.network.dto.sale.SaleResponseDTO
 
 data class SalesState(
     val isLoading: Boolean = false,
-    val salesDTO: List<SaleResponseDTO> = emptyList(),
+    var salesDTO: List<SaleResponseDTO> = emptyList(),
     val error: String = ""
 )

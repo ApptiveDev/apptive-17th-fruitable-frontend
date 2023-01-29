@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.compose.ui.focus.FocusState
 
 sealed class AddSaleEvent{
-    data class EnteredCategory(val value: String): AddSaleEvent()
+    data class EnteredCategory(val value: Boolean): AddSaleEvent()
     data class EnteredTitle(val value: String): AddSaleEvent()
     data class ChangeTitleFocus(val focusState: FocusState): AddSaleEvent()
 

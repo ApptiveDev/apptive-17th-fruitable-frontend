@@ -1,7 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.R
-import com.fruitable.Fruitable.app._enums.HashTag
+import com.fruitable.Fruitable.app.data.network.dto.sale.SaleResponseDTO
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
@@ -37,6 +36,7 @@ fun SalesScreen(
     navController: NavController,
     viewModel: SalesViewModel = hiltViewModel()
 ){
+    var isFruitCheck by remember { mutableStateOf(true)  }
     Scaffold(
         floatingActionButton = {
             Button(
@@ -60,13 +60,14 @@ fun SalesScreen(
                 updateButton = { navController.navigate(Screen.UserInfoUpdateScreen.route) },
                 settingButton = { navController.navigate(Screen.SettingScreen.route) }
             )
-            IsFruitTab()
+            isFruitCheck = IsFruitTab()
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
                     SalesContents(
                         modifier = Modifier.padding(top = 33.dp).fillMaxSize(),
                         navController = navController,
-                        viewModel = viewModel
+                        isFruitCheck = isFruitCheck,
+                        salesDTO = viewModel.sales.value.salesDTO
                     )
                 }
             }
@@ -119,7 +120,7 @@ fun SellerProfile(
     }
 }
 @Composable
-fun IsFruitTab(){
+fun IsFruitTab(): Boolean {
     var isFruitClick by remember { mutableStateOf(true) }
 
     Row(
@@ -157,14 +158,16 @@ fun IsFruitTab(){
             )
         }
     }
+    return isFruitClick
 }
 @Composable
 fun SalesContents(
     navController: NavController,
-    viewModel: SalesViewModel,
+    isFruitCheck: Boolean = true,
+    salesDTO: List<SaleResponseDTO> = emptyList(),
     modifier: Modifier = Modifier
 ){
-    var selectedItem by remember { mutableStateOf("all") }
+    var selectedItem by remember { mutableStateOf("") }
     Column(modifier = modifier){
         Text(
             text = "인기 해시태그",
@@ -176,17 +179,32 @@ fun SalesContents(
             contentPadding = PaddingValues(start = 21.dp, top = 13.dp),
         ) {
             item {
-                HashTag::class.sealedSubclasses.mapNotNull { it.objectInstance }.forEach {
-                    Row {
-                        HashTagButton(
-                            text = it.name,
-                            isSelected = selectedItem == it.tag,
-                            modifier = Modifier.selectable(
-                                    selected = selectedItem == it.tag,
-                                    onClick = { selectedItem = it.tag }),
-                            onClick = { selectedItem = it.tag }
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
+                Row {
+                    HashTagButton(
+                        text = "# 전체",
+                        isSelected = selectedItem == "",
+                        modifier = Modifier.selectable(
+                            selected = selectedItem == "",
+                            onClick = { selectedItem = "" }),
+                        onClick = { selectedItem = ""}
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+            }
+            item {
+                salesDTO.forEach {
+                    it.tags.forEach {
+                         Row {
+                            HashTagButton(
+                                text = "# $it",
+                                isSelected = selectedItem == it,
+                                modifier = Modifier.selectable(
+                                    selected = selectedItem == it,
+                                    onClick = { selectedItem = it }),
+                                onClick = { selectedItem = it }
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
                     }
                 }
             }
@@ -195,7 +213,8 @@ fun SalesContents(
             verticalArrangement = Arrangement.spacedBy(17.dp),
             modifier = Modifier.padding(23.dp, 37.dp, 37.dp, 21.dp)
         ) {
-            viewModel.sales.value.salesDTO.forEach {
+            salesDTO.filter { it.vege == (if(isFruitCheck) 0 else 1)
+                    && (it.tags.contains(selectedItem) || selectedItem == "") } .forEach {
                 SaleItem(
                     itemImageUrl = it.fileURL[0],
                     title = it.title,
