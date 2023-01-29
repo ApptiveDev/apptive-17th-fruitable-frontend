@@ -50,9 +50,7 @@ fun LogInScreen(
                     Token.edit().putString("token", "token is here").apply()
                     navController.navigate(Screen.SalesScreen.route){ popUpTo(0) }
                 }
-                is LogInViewModel.LogInUiEvent.LogInError -> {
-                    "login error ${event.message}".log()
-                }
+                is LogInViewModel.LogInUiEvent.LogInError -> {}
             }
         }
     }

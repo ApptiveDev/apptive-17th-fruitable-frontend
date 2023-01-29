@@ -50,6 +50,15 @@ class LeaveAppViewModel @Inject constructor(
         val passwordList = listOf(password.value.text, password2.value.text)
         return passwordList.all{ isPasswordValid(it) } && passwordList[0] == passwordList[1]
     }
+    fun passwordErrorCheck() {
+        _password.value = password.value.copy(
+            isError = !isPasswordValid(password.value.text)
+        )
+        _password2.value = password2.value.copy(
+            isError = !isPasswordValid(password2.value.text)
+                    || password.value.text != password2.value.text
+        )
+    }
 
     fun onEvent(event: LeaveAppEvent){
         when (event) {
@@ -76,17 +85,8 @@ class LeaveAppViewModel @Inject constructor(
                 )
             }
             is LeaveAppEvent.LeaveApp -> {
-                _password.value = password.value.copy(
-                    isError = !isPasswordValid(password.value.text)
-                )
-                _password2.value = password2.value.copy(
-                    isError = !isPasswordValid(password2.value.text)
-                            || password.value.text != password2.value.text
-                )
+                passwordErrorCheck()
                 if (isLeavable()) {
-                    viewModelScope.launch {
-                        _eventFlow.emit(UiEvent.LeaveApp)
-                    }
                     userUseCase.invoke(
                         userDTO = PasswordDTO(
                             pwd = password.value.text,
