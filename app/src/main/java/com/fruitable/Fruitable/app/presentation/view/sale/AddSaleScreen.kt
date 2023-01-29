@@ -79,6 +79,7 @@ fun AddSaleScreen(
     val focusManager = LocalFocusManager.current
 
     val isSavable = viewModel.isSavable()
+    val isUpdate = viewModel.isUpdate()
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -101,7 +102,11 @@ fun AddSaleScreen(
             Title(
                 modifier = Modifier.padding(top = 48.dp, bottom = 14.dp),
                 isSavable = isSavable,
-                onClick = { viewModel.onEvent(AddSaleEvent.SaveSale) }
+                isUpdate = isUpdate,
+                onClick = {
+                    if (isUpdate) viewModel.onEvent(AddSaleEvent.UpdateSale)
+                    else viewModel.onEvent(AddSaleEvent.SaveSale)
+                }
             )
             FruitableDivider(
                 padding = if (isSavable) PaddingValues(horizontal = 30.dp) else PaddingValues(0.dp),
@@ -349,6 +354,7 @@ fun ImagePreviewItem(
 fun Title(
     modifier: Modifier = Modifier,
     isSavable: Boolean = false,
+    isUpdate: Boolean = false,
     onClick: () -> Unit = {}
 ){
     Box(
@@ -360,7 +366,7 @@ fun Title(
             modifier = Modifier.align(Center)
         )
         Text(
-            text = "등록",
+            text = if (isUpdate) "수정" else "등록",
             color = if (isSavable) MainGreen1 else MainGray4,
             style = TextStyles.TextBold2,
             fontWeight = if (isSavable) FontWeight.Bold else FontWeight.Medium,

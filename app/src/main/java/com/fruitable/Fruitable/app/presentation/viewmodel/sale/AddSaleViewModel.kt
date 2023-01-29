@@ -63,7 +63,7 @@ class AddSaleViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
-    private var currentSaleId: Int? = null
+    private var currentSaleId: Int? = -1
     init {
         savedStateHandle.get<Int>("saleId")?.let{ saleId ->
             if (saleId != -1) {
@@ -71,8 +71,32 @@ class AddSaleViewModel @Inject constructor(
                 saleUseCase.getSale(saleId).onEach { result ->
                     when (result){
                         is Resource.Success -> {
+                            val saleInfo = result.data
+                            saleCategory.value = if (saleInfo?.vege == 0) "과일" else "채소"
                             _saleTitle.value = saleTitle.value.copy(
-                                text = result.data?.title ?: "제목",
+                                text = saleInfo?.title ?: "제목 없음",
+                                isHintVisible = false
+                            )
+                            _salePrice.value = salePrice.value.copy(
+                                text = saleInfo?.price.toString(),
+                                isHintVisible = false
+                            )
+                            _saleContact.value = saleContact.value.copy(
+                                text = saleInfo?.contact ?: "연락처 없음",
+                                isHintVisible = false
+                            )
+                            _saleContent.value = saleContent.value.copy(
+                                text = saleInfo?.content ?: "내용 없음",
+                                isHintVisible = false
+                            )
+                            saleInfo?.fileURL?.forEach{
+                                _saleImage.add(Uri.parse(it))
+                            }
+                            _saleHashTag.value = saleHashTag.value.copy(
+                                textList = saleInfo?.tags ?: emptyList(),
+                            )
+                            _saleDeadLine.value = saleDeadLine.value.copy(
+                                text = saleInfo?.endDate ?: "",
                                 isHintVisible = false
                             )
                         }
@@ -82,7 +106,9 @@ class AddSaleViewModel @Inject constructor(
             }
         }
     }
-
+    fun isUpdate(): Boolean {
+        return currentSaleId != -1
+    }
     fun isSavable(): Boolean {
         val exceptionCollection = exceptionMap()
         return exceptionCollection.all { it.value }
@@ -218,6 +244,50 @@ class AddSaleViewModel @Inject constructor(
                             }
                             is Resource.Error ->  "게시글 작성 실패".log()
                             is Resource.Loading -> "게시글 작성 로딩중".log()
+                        }
+                    }.launchIn(viewModelScope)
+                }
+            }
+            is AddSaleEvent.UpdateSale -> {
+                if (!isSavable()){
+                    exceptionMap().filter{!it.value}.firstNotNullOf { (key, value) ->
+                        viewModelScope.launch {
+                            _eventFlow.emit(UiEvent.ShowSnackbar(key))
+                        }
+                    }
+                }
+                else{
+                    _saleImage.forEach{
+                        "경로 경로 ${it.path} scheme ${it.scheme} file ${it.encodedPath}".log()
+                        it.toString().log()
+                    }
+                    saleUseCase.updateSale(
+                        saleId = currentSaleId ?: 0,
+                        saleRequestDTO = SaleRequestDTO(
+                            userId = UserDTO(
+                                id = getCookie("id").toInt(),
+                                email = getCookie("email"),
+                                pwd = getCookie("pwd"),
+                                name = getCookie("name"),
+                                role = getCookie("role")
+                            ),
+                            contact = saleContact.value.text,
+                            vege = if (saleCategory.value == "과일") 0 else 1,
+                            title = saleTitle.value.text,
+                            content = saleContent.value.text,
+                            price = salePrice.value.text.toInt(),
+                            endDate = saleDeadLine.value.text,
+                            tags = saleHashTag.value.textList
+                        ),
+                        files = emptyList() //_saleImage.map { Paths.get(it.path).toFile() }// _saleImage.map { Paths.get(it.toString()).toFile() }
+                    ).onEach {
+                        when (it) {
+                            is Resource.Success -> {
+                                "게시글 수정 성공".log()
+                                _eventFlow.emit(UiEvent.SaveInformation)
+                            }
+                            is Resource.Error ->  "게시글 수정 실패".log()
+                            is Resource.Loading -> "게시글 수정 로딩중".log()
                         }
                     }.launchIn(viewModelScope)
                 }

@@ -21,10 +21,11 @@ interface SalesApi {
     suspend fun getSales(): Response<List<SaleResponseDTO>>
     @GET("/posts/{postId}")
     suspend fun getSale(@Path("postId") saleId: Int): Response<SaleResponseDTO>
+    @Multipart
     @PUT("/posts/{postId}")
     suspend fun updateSale(
         @Path("postId") saleId: Int,
-        @Part("request") request: RequestBody,
+        @Part("requestDto") request: RequestBody,
         @Part images: List<MultipartBody.Part?>,
     ): Response<String>
     @DELETE("/posts/{postId}")
