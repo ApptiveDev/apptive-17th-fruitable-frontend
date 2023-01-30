@@ -13,6 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
+import com.fruitable.Fruitable.app.presentation.component._view.DialogBoxLoading
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTitle
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTwoColumn
@@ -28,7 +29,7 @@ fun AccountScreen(
 ){
     var isDialogOpen by remember { mutableStateOf(false) }
     AgreementPopUp(isOpen = isDialogOpen, category = true, onDismiss = {isDialogOpen = !isDialogOpen})
-
+    if (viewModel.isLoading.value) DialogBoxLoading()
     Column {
         SettingTitle("계정 정보")
         Column(

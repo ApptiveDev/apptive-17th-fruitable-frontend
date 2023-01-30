@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
+import com.fruitable.Fruitable.app.presentation.component._view.DialogBoxLoading
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTitle
 import com.fruitable.Fruitable.app.presentation.viewmodel.user.UserViewModel
 import com.fruitable.Fruitable.ui.theme.TextStyles
@@ -17,6 +18,7 @@ fun EmailScreen(
     navController: NavController,
     viewModel: UserViewModel = hiltViewModel()
 ){
+    if (viewModel.isLoading.value) DialogBoxLoading()
     Column {
         SettingTitle("계정 정보")
         Column(

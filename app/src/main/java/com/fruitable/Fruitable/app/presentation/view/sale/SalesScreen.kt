@@ -26,10 +26,13 @@ import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app.data.network.dto.sale.SaleResponseDTO
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
+import com.fruitable.Fruitable.app.presentation.component._view.DialogBoxLoading
 import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
+import com.fruitable.Fruitable.app.presentation.viewmodel.sale.SaleDetailViewModel
 import com.fruitable.Fruitable.app.presentation.viewmodel.sale.SalesViewModel
 import com.fruitable.Fruitable.ui.theme.*
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SalesScreen(
@@ -37,7 +40,16 @@ fun SalesScreen(
     viewModel: SalesViewModel = hiltViewModel()
 ){
     var isFruitCheck by remember { mutableStateOf(true)  }
+    val scaffoldState = rememberScaffoldState()
+    LaunchedEffect(key1 = true) {
+        if (viewModel.sales.value.error.isNotBlank())
+            scaffoldState.snackbarHostState.showSnackbar(
+                message = "🌱 ${viewModel.sales.value.error}"
+            )
+    }
+    if (viewModel.sales.value.isLoading) DialogBoxLoading()
     Scaffold(
+        scaffoldState = scaffoldState,
         floatingActionButton = {
             Button(
                 onClick = {navController.navigate(Screen.AddSaleScreen.route)},

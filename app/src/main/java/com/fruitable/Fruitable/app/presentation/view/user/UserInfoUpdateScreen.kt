@@ -16,6 +16,7 @@ import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
 import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopUp
 import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
+import com.fruitable.Fruitable.app.presentation.component._view.DialogBoxLoading
 import com.fruitable.Fruitable.app.presentation.event.UserInfoUpdateEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.user.UserInfoUpdateViewModel
@@ -54,6 +55,7 @@ fun UserInfoUpdateScreen(
             }
         }
     }
+    if (viewModel.isLoading.value) DialogBoxLoading()
     Scaffold(
         scaffoldState = scaffoldState
     ) {

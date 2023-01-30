@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -21,6 +22,7 @@ import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
 import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopUp
 import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
+import com.fruitable.Fruitable.app.presentation.component._view.DialogBoxLoading
 import com.fruitable.Fruitable.app.presentation.component._view.FruitableCheckBox
 import com.fruitable.Fruitable.app.presentation.event.LeaveAppEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
@@ -44,6 +46,7 @@ fun LeaveAppScreen(
 
     val isLeavable = viewModel.isLeavable() && isChecked
     val Token = LocalContext.current.getSharedPreferences("token", Context.MODE_PRIVATE)
+    val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -70,6 +73,7 @@ fun LeaveAppScreen(
         isOpen = isDialogOpen
     )
     Scaffold(
+        scaffoldState = scaffoldState,
         bottomBar = {
             Column(
                 modifier = Modifier.background(Color.White).fillMaxWidth()

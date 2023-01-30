@@ -35,6 +35,7 @@ import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app.domain.utils.*
 import com.fruitable.Fruitable.app.presentation.component.*
 import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopUp
+import com.fruitable.Fruitable.app.presentation.component._view.DialogBoxLoading
 import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.sale.SaleDetailViewModel
@@ -104,6 +105,7 @@ fun SaleDetailScreen(
         },
         isOpen = isDialogOpen
     )
+    if (viewModel.isLoading.value || viewModel.saleDetail.value.isLoading) DialogBoxLoading()
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {

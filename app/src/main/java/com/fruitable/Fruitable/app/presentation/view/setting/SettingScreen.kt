@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopUp
+import com.fruitable.Fruitable.app.presentation.component._view.DialogBoxLoading
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTitle
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTwoColumn
@@ -26,6 +27,7 @@ fun SettingScreen(
     navController: NavController,
     viewModel : UserViewModel = hiltViewModel()
 ){
+    if (viewModel.isLoading.value) DialogBoxLoading()
     Column {
         UserSetting(
             onClick = { navController.navigate(Screen.AccountScreen.route) },
