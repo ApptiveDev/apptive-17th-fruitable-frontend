@@ -22,7 +22,6 @@ class SalesViewModel @Inject constructor(
 
     private val _name = mutableStateOf("")
     val name = _name
-
     init {
         getSales()
         getUserName()
@@ -33,8 +32,8 @@ class SalesViewModel @Inject constructor(
     fun getSales() {
         saleUseCase.getSales().onEach { result ->
             when (result){
-                is Resource.Success -> _sales.value = result.data?.let { SalesState(salesDTO = it) }!!
-                is Resource.Error -> _sales.value = SalesState(error = result.message ?: "전체 게시글 조회에 실패했습니다.")
+                is Resource.Success -> _sales.value = result.data?.let { SalesState(isLoading = false, salesDTO = it) }!!
+                is Resource.Error -> _sales.value = SalesState(isLoading = false, error = "전체 게시글 조회에 실패했습니다.")
                 is Resource.Loading -> _sales.value = SalesState(isLoading = true)
             }
         }.launchIn(viewModelScope)

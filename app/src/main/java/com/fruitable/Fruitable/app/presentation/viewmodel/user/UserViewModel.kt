@@ -1,5 +1,6 @@
 package com.fruitable.Fruitable.app.presentation.viewmodel.user
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
@@ -14,13 +15,13 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     val userUseCase: UserUseCase
 ): ViewModel() {
-
+    val isLoading = mutableStateOf(false)
     fun logOut() {
         userUseCase.invokeNone("logOut").onEach {
             when (it) {
-                is Resource.Success -> "로그아웃 성공".log()
-                is Resource.Error -> "로그아웃 실패".log()
-                is Resource.Loading -> "로그아웃 로딩중".log()
+                is Resource.Success -> isLoading.value = false
+                is Resource.Error -> isLoading.value = false
+                is Resource.Loading -> isLoading.value = true
             }
         }.launchIn(viewModelScope)
     }

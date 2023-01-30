@@ -7,8 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fruitable.Fruitable.app.domain.use_case.SaleUseCase
 import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
+import com.fruitable.Fruitable.app.domain.utils.ORDER_PHONE
+import com.fruitable.Fruitable.app.domain.utils.ORDER_URL
 import com.fruitable.Fruitable.app.domain.utils.Resource
-import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.state.SaleDetailState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,7 +30,7 @@ class SaleDetailViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
-
+    val isLoading = mutableStateOf(false)
     init {
         getSaleDetail(saleId)
     }
@@ -41,8 +42,8 @@ class SaleDetailViewModel @Inject constructor(
     private fun getSaleDetail(saleId: Int) {
         saleUseCase.getSale(saleId).onEach { result ->
             when (result){
-                is Resource.Success -> _saleDetail.value = result.data?.let { SaleDetailState(saleDetail = it) }!!
-                is Resource.Error -> _saleDetail.value = SaleDetailState(error = result.message ?: "전체 게시글 조회에 실패했습니다.")
+                is Resource.Success -> _saleDetail.value = result.data?.let { SaleDetailState(saleDetail = it, isLoading = false) }!!
+                is Resource.Error -> _saleDetail.value = SaleDetailState(isLoading = false, error = result.message ?: "전체 게시글 조회에 실패했습니다.")
                 is Resource.Loading -> _saleDetail.value = SaleDetailState(isLoading = true)
             }
         }.launchIn(viewModelScope)
@@ -50,22 +51,22 @@ class SaleDetailViewModel @Inject constructor(
     fun getOrderStatus(
         contact: String = saleDetail.value.saleDetail.contact
     ): Int {
-        if (Patterns.PHONE.matcher(contact).matches()) return 0
-        if (Patterns.WEB_URL.matcher(contact).matches()) return 1
+        if (Patterns.PHONE.matcher(contact).matches()) return ORDER_PHONE
+        if (Patterns.WEB_URL.matcher(contact).matches()) return ORDER_URL
         return 2
     }
     fun deleteSale(saleId: Int) {
         saleUseCase.deleteSale(saleId).onEach { result ->
             when (result){
                 is Resource.Success -> {
-                    "$saleId 번째 게시글 삭제 성공".log()
+                    isLoading.value = false
                     _eventFlow.emit(UiEvent.DeleteSuccess)
                 }
                 is Resource.Error -> {
-                    "$saleId 번째 게시글 삭제 실패".log()
+                    isLoading.value = false
                     _eventFlow.emit(UiEvent.ErrorEvent("게시글을 삭제하는 중 오류가 발생했습니다."))
                 }
-                is Resource.Loading ->  "$saleId 번째 게시글 삭제 로딩중".log()
+                is Resource.Loading -> isLoading.value = true
             }
         }.launchIn(viewModelScope)
     }
