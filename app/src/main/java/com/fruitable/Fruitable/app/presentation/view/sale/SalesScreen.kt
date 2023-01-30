@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,6 +31,9 @@ import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.viewmodel.sale.SalesViewModel
 import com.fruitable.Fruitable.ui.theme.*
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun SalesScreen(
@@ -37,7 +41,18 @@ fun SalesScreen(
     viewModel: SalesViewModel = hiltViewModel()
 ){
     var isFruitCheck by remember { mutableStateOf(true)  }
+    val scaffoldState = rememberScaffoldState()
+    val isRefresh by viewModel.isRefresh.collectAsState()
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isRefresh)
+
+    LaunchedEffect(key1 = isRefresh) {
+        if (viewModel.sales.value.error.isNotBlank())
+            scaffoldState.snackbarHostState.showSnackbar(
+                message = "🌱 ${viewModel.sales.value.error}"
+            )
+    }
     Scaffold(
+        scaffoldState = scaffoldState,
         floatingActionButton = {
             Button(
                 onClick = {navController.navigate(Screen.AddSaleScreen.route)},
@@ -61,14 +76,27 @@ fun SalesScreen(
                 settingButton = { navController.navigate(Screen.SettingScreen.route) }
             )
             isFruitCheck = IsFruitTab()
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                item {
-                    SalesContents(
-                        modifier = Modifier.padding(top = 33.dp).fillMaxSize(),
-                        navController = navController,
-                        isFruitCheck = isFruitCheck,
-                        salesDTO = viewModel.sales.value.salesDTO
+            SwipeRefresh(
+                state = swipeRefreshState,
+                onRefresh = { viewModel.refreshGetSales() },
+                indicator = { state, refreshTrigger ->
+                    SwipeRefreshIndicator(
+                        state = state,
+                        refreshTriggerDistance = refreshTrigger,
+                        backgroundColor = Color.White,
+                        contentColor = MainGreen1
                     )
+                }
+            ) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    item {
+                        SalesContents(
+                            modifier = Modifier.padding(top = 33.dp).fillMaxSize(),
+                            navController = navController,
+                            isFruitCheck = isFruitCheck,
+                            salesDTO = viewModel.sales.value.salesDTO
+                        )
+                    }
                 }
             }
         }
@@ -214,7 +242,7 @@ fun SalesContents(
             modifier = Modifier.padding(23.dp, 37.dp, 37.dp, 21.dp)
         ) {
             salesDTO.filter { it.vege == (if(isFruitCheck) 0 else 1)
-                    && (it.tags.contains(selectedItem) || selectedItem == "") } .forEach {
+                    && (it.tags.contains(selectedItem) || selectedItem == "") }.asReversed().forEach {
                 SaleItem(
                     itemImageUrl = it.fileURL[0],
                     title = it.title,

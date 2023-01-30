@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -29,6 +30,7 @@ import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTitle
 import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
+import com.fruitable.Fruitable.app.presentation.component._view.DialogBoxLoading
 import com.fruitable.Fruitable.app.presentation.component._view.FruitableCheckBox
 import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.event.SignUpEvent
@@ -57,6 +59,7 @@ fun SignUpScreen(
     val focusRequester = remember { FocusRequester() }
     var isAgree by remember { mutableStateOf(false) }
     val isSignUpAble = viewModel.isSignUpAble() && isAgree
+    val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = timer) {
         while (timer > 0) {
@@ -68,17 +71,25 @@ fun SignUpScreen(
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                SignUpViewModel.UiEvent.SignUpSuccess -> {
+                is SignUpViewModel.UiEvent.SignUpSuccess -> {
                     if(isAgree) navController.navigate(Screen.LogInScreen.route)
                 }
-                SignUpViewModel.UiEvent.SignUPError -> {}
+                is SignUpViewModel.UiEvent.SignUpError -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = "🌱 ${event.message}"
+                    )
+                }
             }
         }
     }
+    if (viewModel.isLoading.value) DialogBoxLoading()
     Scaffold(
+        scaffoldState = scaffoldState,
         bottomBar = {
             Column(
-                modifier = Modifier.background(Color.White).fillMaxWidth()
+                modifier = Modifier
+                    .background(Color.White)
+                    .fillMaxWidth()
             ) {
                 FruitableDivider()
                 FruitableButton(
@@ -159,7 +170,7 @@ fun SignUpScreen(
             FruitableButton(
                 text = if (certification <= EMAIL_INPUT_SUCCESS ) "인증번호 발송"
                        else if (certification <= EMAIL_CERTIFICATION_INPUT) "인증 확인" else "인증 완료",
-                enabled = certification%2 == 1 && timer >= 0,
+                enabled = (certification%2 == 1 && timer >= 0) || (numberState.text.length == 6),
                 textColor = Color.White,
                 onClick = {
                     if (certification == EMAIL_INPUT_SUCCESS) timer = 3000*60L

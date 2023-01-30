@@ -55,6 +55,7 @@ import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTextField
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
 import com.fruitable.Fruitable.app.presentation.component.NumberFormatting
+import com.fruitable.Fruitable.app.presentation.component._view.DialogBoxLoading
 import com.fruitable.Fruitable.app.presentation.component._view.FruitableCheckBox
 import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.event.AddSaleEvent
@@ -86,7 +87,7 @@ fun AddSaleScreen(
             when (event) {
                 is AddSaleViewModel.UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
-                        message = event.message
+                        message = "🌱 ${event.message}"
                     )
                 }
                 is AddSaleViewModel.UiEvent.SaveInformation -> {
@@ -95,6 +96,7 @@ fun AddSaleScreen(
             }
         }
     }
+    if (viewModel.isLoading.value) DialogBoxLoading()
     Scaffold(
         scaffoldState = scaffoldState
     ) {

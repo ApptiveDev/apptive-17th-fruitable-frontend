@@ -2,7 +2,6 @@ package com.fruitable.Fruitable.app.domain.use_case.sale
 
 import com.fruitable.Fruitable.app.domain.repository.SaleRepository
 import com.fruitable.Fruitable.app.domain.utils.Resource
-import com.fruitable.Fruitable.app.domain.utils.log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -18,7 +17,7 @@ class DeleteSale @Inject constructor(
             val r = repository.deleteSale(saleId)
             when(r.code()) {
                 200 -> emit(Resource.Success(r.body()!!))
-                else -> r.errorBody().toString().log()
+                else -> emit(Resource.Error("게시글 삭제 실패"))
             }
         } catch (e: HttpException) {
             emit(Resource.Error("[ERROR/GET_SALE] HTTP Exception occurred"))

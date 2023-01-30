@@ -42,6 +42,7 @@ class LeaveAppViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+    val isLoading = mutableStateOf(false)
 
     private fun isPasswordValid(value: String): Boolean {
         return value.isNotBlank() && Pattern.matches("^[a-zA-Z0-9]*$", value) && value.length >= 8
@@ -96,11 +97,15 @@ class LeaveAppViewModel @Inject constructor(
                     ).onEach {
                         when (it) {
                             is Resource.Success -> {
-                                "회원탈퇴 성공".log()
+                                isLoading.value = false
                                 _eventFlow.emit(UiEvent.LeaveApp)
                             }
-                            is Resource.Error -> "회원탈퇴 실패".log()
-                            is Resource.Loading -> "회원탈퇴 로딩중".log()
+                            is Resource.Error -> {
+                                isLoading.value = false
+                                _password.value = password.value.copy(isError = true)
+                                _eventFlow.emit(UiEvent.LeaveAppError("회원탈퇴에 실패하였습니다."))
+                            }
+                            is Resource.Loading -> isLoading.value = true
                         }
                     }.launchIn(viewModelScope)
 
@@ -111,6 +116,7 @@ class LeaveAppViewModel @Inject constructor(
 
     sealed class UiEvent {
         object LeaveApp: UiEvent()
+        data class LeaveAppError(val message: String): UiEvent()
     }
 
 

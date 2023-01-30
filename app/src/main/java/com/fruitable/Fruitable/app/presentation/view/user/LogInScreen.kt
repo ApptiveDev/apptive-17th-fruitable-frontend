@@ -3,7 +3,9 @@ package com.fruitable.Fruitable.app.presentation.view
 import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -27,6 +29,7 @@ import com.fruitable.Fruitable.app.domain.utils.addFocusCleaner
 import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.component.FruitableButton
 import com.fruitable.Fruitable.app.presentation.component._feature.TextFieldBox
+import com.fruitable.Fruitable.app.presentation.component._view.DialogBoxLoading
 import com.fruitable.Fruitable.app.presentation.component._view.ResourceImage
 import com.fruitable.Fruitable.app.presentation.event.LogInEvent
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
@@ -42,7 +45,6 @@ fun LogInScreen(
     val context = LocalContext.current
     val Token = context.getSharedPreferences("token", Context.MODE_PRIVATE)
     val focusManager = LocalFocusManager.current
-
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest { event->
             when(event){
@@ -50,11 +52,10 @@ fun LogInScreen(
                     Token.edit().putString("token", "token is here").apply()
                     navController.navigate(Screen.SalesScreen.route){ popUpTo(0) }
                 }
-                is LogInViewModel.LogInUiEvent.LogInError -> {}
             }
         }
     }
-
+    if (viewModel.isLoading.value) DialogBoxLoading()
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -52,6 +52,7 @@ class UserInfoUpdateViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+    val isLoading = mutableStateOf(false)
 
     fun isNicknameUpdatable(): Boolean{
         return nickname.value.text.isNotBlank()
@@ -69,9 +70,7 @@ class UserInfoUpdateViewModel @Inject constructor(
     fun onEvent(event: UserInfoUpdateEvent){
         when (event) {
             is UserInfoUpdateEvent.EnteredNickname -> {
-                _nickname.value = nickname.value.copy(
-                    text = event.value
-                )
+                _nickname.value = nickname.value.copy(text = event.value)
             }
             is UserInfoUpdateEvent.ChangeNicknameFocus -> {
                 _nickname.value = nickname.value.copy(
@@ -80,9 +79,7 @@ class UserInfoUpdateViewModel @Inject constructor(
                 )
             }
             is UserInfoUpdateEvent.EnteredPassword -> {
-                _password.value = password.value.copy(
-                    text = event.value
-                )
+                _password.value = password.value.copy(text = event.value)
             }
             is UserInfoUpdateEvent.ChangePasswordFocus -> {
                 _password.value = password.value.copy(
@@ -91,9 +88,7 @@ class UserInfoUpdateViewModel @Inject constructor(
                 )
             }
             is UserInfoUpdateEvent.EnteredNewPassword -> {
-                _newPassword.value = newPassword.value.copy(
-                    text = event.value
-                )
+                _newPassword.value = newPassword.value.copy(text = event.value)
             }
             is UserInfoUpdateEvent.ChangeNewPasswordFocus -> {
                 _newPassword.value = newPassword.value.copy(
@@ -102,9 +97,7 @@ class UserInfoUpdateViewModel @Inject constructor(
                 )
             }
             is UserInfoUpdateEvent.EnteredNewPassword2 -> {
-                _newPassword2.value = newPassword2.value.copy(
-                    text = event.value
-                )
+                _newPassword2.value = newPassword2.value.copy(text = event.value)
             }
             is UserInfoUpdateEvent.ChangeNewPasswordFocus2 -> {
                 _newPassword2.value = newPassword2.value.copy(
@@ -113,17 +106,22 @@ class UserInfoUpdateViewModel @Inject constructor(
                 )
             }
             UserInfoUpdateEvent.NicknameSave -> {
-                _nickname.value = nickname.value.copy(
-                    isError = !isNicknameUpdatable()
-                )
+                _nickname.value = nickname.value.copy(isError = !isNicknameUpdatable())
                 if (isNicknameUpdatable()) {
                     userUseCase.invoke(
                         userDTO = NicknameDTO(newName = nickname.value.text),
                         type = "updateName"
                     ).onEach {
                         when (it) {
-                            is Resource.Success -> _eventFlow.emit(UiEvent.SaveUserNickname)
-                            else -> _eventFlow.emit(UiEvent.UpdateError("닉네임 업데이트 실패"))
+                            is Resource.Success -> {
+                                isLoading.value = false
+                                _eventFlow.emit(UiEvent.SaveUserNickname)
+                            }
+                            is Resource.Error -> {
+                                isLoading.value = false
+                                _eventFlow.emit(UiEvent.UpdateError("닉네임 업데이트를 실패했습니다."))
+                            }
+                            is Resource.Loading -> isLoading.value = true
                         }
                     }.launchIn(viewModelScope)
                 }
@@ -149,8 +147,15 @@ class UserInfoUpdateViewModel @Inject constructor(
                         type = "updatePassword"
                     ).onEach {
                         when (it) {
-                            is Resource.Success -> _eventFlow.emit(UiEvent.SaveUserPassword)
-                            else -> _eventFlow.emit(UiEvent.UpdateError("패스워드 업데이트 실패"))
+                            is Resource.Success ->{
+                                isLoading.value = false
+                                _eventFlow.emit(UiEvent.SaveUserPassword)
+                            }
+                            is Resource.Error -> {
+                                isLoading.value = false
+                                _eventFlow.emit(UiEvent.UpdateError("패스워드 업데이트 실패"))
+                            }
+                            is Resource.Loading -> isLoading.value = true
                         }
                     }.launchIn(viewModelScope)
                 }

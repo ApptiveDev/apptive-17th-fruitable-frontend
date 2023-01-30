@@ -35,6 +35,7 @@ class LogInViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<LogInUiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+    val isLoading = mutableStateOf(false)
     fun isLoginAble(): Boolean {
         return email.value.text.isNotBlank() && password.value.text.isNotBlank()
     }
@@ -71,12 +72,16 @@ class LogInViewModel @Inject constructor(
                         key2 = password.value.text
                     ).onEach {
                         when (it) {
-                            is Resource.Success -> _eventFlow.emit(LogInUiEvent.LogInSuccess)
-                            is Resource.Error -> {
-                                errorMessage.value = "일치하는 회원 정보가 없습니다. 다시 시도해주세요."
-                                _eventFlow.emit(LogInUiEvent.LogInError)
+                            is Resource.Success -> {
+                                isLoading.value = false
+                                _eventFlow.emit(LogInUiEvent.LogInSuccess)
                             }
-                            is Resource.Loading -> {}
+                            is Resource.Error -> {
+                                isLoading.value = false
+                                errorMessage.value = if (it.message == "서버 연결에 실패하였습니다.") it.message
+                                    else "일치하는 회원 정보가 없습니다. 다시 시도해주세요."
+                            }
+                            is Resource.Loading -> isLoading.value = true
                         }
                     }.launchIn(viewModelScope)
                 }
@@ -85,7 +90,6 @@ class LogInViewModel @Inject constructor(
     }
 
     sealed class LogInUiEvent{
-        object LogInError : LogInUiEvent()
         object LogInSuccess : LogInUiEvent()
     }
 }

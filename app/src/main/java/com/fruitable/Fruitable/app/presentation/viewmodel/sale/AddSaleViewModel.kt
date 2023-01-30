@@ -15,9 +15,7 @@ import com.fruitable.Fruitable.app.domain.use_case.SaleUseCase
 import com.fruitable.Fruitable.app.domain.use_case.UserUseCase
 import com.fruitable.Fruitable.app.domain.utils.Resource
 import com.fruitable.Fruitable.app.domain.utils.UriUtil.toFile
-import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.event.AddSaleEvent
-import com.fruitable.Fruitable.app.presentation.state.SaleDetailState
 import com.fruitable.Fruitable.app.presentation.state.SaleTextFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -63,6 +61,8 @@ class AddSaleViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    val isLoading = mutableStateOf(false)
     private var currentSaleId: Int? = -1
     init {
         savedStateHandle.get<Int>("saleId")?.let{ saleId ->
@@ -71,6 +71,7 @@ class AddSaleViewModel @Inject constructor(
                 saleUseCase.getSale(saleId).onEach { result ->
                     when (result){
                         is Resource.Success -> {
+                            isLoading.value = false
                             val saleInfo = result.data
                             saleCategory.value = if (saleInfo?.vege == 0) "과일" else "채소"
                             _saleTitle.value = saleTitle.value.copy(
@@ -100,7 +101,11 @@ class AddSaleViewModel @Inject constructor(
                                 isHintVisible = false
                             )
                         }
-                        else -> {}
+                        is Resource.Loading -> isLoading.value = true
+                        is Resource.Error -> {
+                            isLoading.value = false
+                            _eventFlow.emit(UiEvent.ShowSnackbar("해당 게시글 조회를 실패하였습니다.\n다시 시도해주세요."))
+                        }
                     }
                 }.launchIn(viewModelScope)
             }
@@ -239,11 +244,14 @@ class AddSaleViewModel @Inject constructor(
                     ).onEach {
                         when (it) {
                             is Resource.Success -> {
-                                "게시글 작성 성공".log()
+                                isLoading.value = false
                                 _eventFlow.emit(UiEvent.SaveInformation)
                             }
-                            is Resource.Error ->  "게시글 작성 실패".log()
-                            is Resource.Loading -> "게시글 작성 로딩중".log()
+                            is Resource.Error -> {
+                                isLoading.value = false
+                                _eventFlow.emit(UiEvent.ShowSnackbar("게시글 업로드에 실패하였습니다.\n다시 시도해주세요."))
+                            }
+                            is Resource.Loading -> isLoading.value = true
                         }
                     }.launchIn(viewModelScope)
                 }
@@ -279,11 +287,14 @@ class AddSaleViewModel @Inject constructor(
                     ).onEach {
                         when (it) {
                             is Resource.Success -> {
-                                "게시글 수정 성공".log()
+                                isLoading.value = false
                                 _eventFlow.emit(UiEvent.SaveInformation)
                             }
-                            is Resource.Error ->  "게시글 수정 실패".log()
-                            is Resource.Loading -> "게시글 수정 로딩중".log()
+                            is Resource.Error ->  {
+                                isLoading.value = false
+                                _eventFlow.emit(UiEvent.ShowSnackbar("게시글 업데이트에 실패하였습니다.\n다시 시도해주세요."))
+                            }
+                            is Resource.Loading -> isLoading.value = true
                         }
                     }.launchIn(viewModelScope)
                 }

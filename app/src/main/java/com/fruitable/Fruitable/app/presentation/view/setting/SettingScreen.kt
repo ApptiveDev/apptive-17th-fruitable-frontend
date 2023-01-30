@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component._feature.FruitablePopUp
+import com.fruitable.Fruitable.app.presentation.component._view.DialogBoxLoading
 import com.fruitable.Fruitable.app.presentation.navigation.Screen
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTitle
 import com.fruitable.Fruitable.app.presentation.view.setting._component.SettingTwoColumn
@@ -26,6 +27,7 @@ fun SettingScreen(
     navController: NavController,
     viewModel : UserViewModel = hiltViewModel()
 ){
+    if (viewModel.isLoading.value) DialogBoxLoading()
     Column {
         UserSetting(
             onClick = { navController.navigate(Screen.AccountScreen.route) },
@@ -36,7 +38,7 @@ fun SettingScreen(
             onNotice = { navController.navigate(Screen.NoticeScreen.route) },
             onLogOut = {  navController.navigate(Screen.LogInScreen.route){ popUpTo(0) } },
             onLeaveApp = { navController.navigate(Screen.LeaveAppScreen.route) },
-            viewModel = viewModel
+            logOut = { viewModel.logOut() }
         )
     }
 }
@@ -71,7 +73,7 @@ fun ExtraSetting(
     onNotice: () -> Unit = {},
     onLogOut: () -> Unit = {},
     onLeaveApp: () -> Unit = {},
-    viewModel: UserViewModel
+    logOut: () -> Unit = {}
 ){
     var logOutConfirmDialog by remember { mutableStateOf(false) }
     var logOutDialog by remember { mutableStateOf(false) }
@@ -84,7 +86,7 @@ fun ExtraSetting(
         confirmText = "로그아웃",
         cancel = { logOutConfirmDialog = false},
         confirm = {
-            viewModel.logOut()
+            logOut()
             Token.edit().putString("token", "").apply()
             logOutDialog = true
         },
