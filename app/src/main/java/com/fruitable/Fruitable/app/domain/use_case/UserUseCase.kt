@@ -42,22 +42,38 @@ class UserUseCase @Inject constructor(
         userDTO: BaseClass,
         type: String
     ) : Flow<Resource<String>> = flow {
-        emit(useCaseInvocation(repository.userMethod(userDTO, type)))
+        try {
+            emit(useCaseInvocation(repository.userMethod(userDTO, type)))
+        }  catch (e: Exception) {
+            emit(Resource.Error("서버 연결에 실패하였습니다."))
+        }
     }
     fun invokeNone(type: String): Flow<Resource<String>> = flow {
-        emit(useCaseInvocation(repository.userMethodNone(type)))
+        try {
+            emit(useCaseInvocation(repository.userMethodNone(type)))
+        } catch (e: Exception) {
+            emit(Resource.Error("서버 연결에 실패하였습니다."))
+        }
     }
     fun invokeSingle(
         key: String,
         type: String
     ) : Flow<Resource<String>> = flow {
-        emit(useCaseInvocation(repository.userMethodSingle(key, type)))
+        try {
+            emit(useCaseInvocation(repository.userMethodSingle(key, type)))
+        }  catch (e: Exception) {
+            emit(Resource.Error("서버 연결에 실패하였습니다."))
+        }
     }
     fun invokeDouble(
         key: String,
         key2: String
     ) : Flow<Resource<String>> = flow {
-        emit(useCaseInvocation(repository.userMethodDouble(key, key2)))
+        try {
+            emit(useCaseInvocation(repository.userMethodDouble(key, key2)))
+        } catch (e: Exception) {
+            emit(Resource.Error("서버 연결에 실패하였습니다."))
+        }
     }
     fun getCookie(key: String): String {
         return repository.getCooke(key)
