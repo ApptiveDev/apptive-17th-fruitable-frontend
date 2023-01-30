@@ -48,6 +48,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun SaleDetailScreen(
@@ -56,12 +57,13 @@ fun SaleDetailScreen(
 ) {
     val saleDetail = viewModel.saleDetail.value.saleDetail
     val orderStatus = viewModel.getOrderStatus()
-    val isClosed = saleDetail.endDate.dateFormat() < 0L
+    val isClosed = saleDetail.endDate.dateFormat() <= 0L && !saleDetail.endDate.isNullOrBlank()
     var isDialogOpen by remember { mutableStateOf(false) }
 
     val scaffoldState = rememberScaffoldState()
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
+    val coroutine = rememberCoroutineScope()
 
     val intent: Intent = when (orderStatus) {
         ORDER_PHONE ->  Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + saleDetail.contact))
@@ -171,7 +173,7 @@ fun OrderPopDialog(
                     .background(Color.White)
             ){
                 Text(
-                    text = contact,
+                    text = contact.ifBlank { "연락처 없음" },
                     style = TextStyles.TextBold5,
                     modifier = dialogModifier
                 )
@@ -241,7 +243,7 @@ fun DetailContent(
             text = formatAmountOrMessage(price.toString()) +"원",
             style = TextStyles.TextHeavyBold,
         )
-        Text( text = title, style = TextStyles.TextBold3)
+        Text( text = title.ifBlank { "제목 없음" }, style = TextStyles.TextBold3)
         Text (
             text = content,
             modifier = Modifier.padding(top = 18.dp, bottom = 5.dp),
@@ -277,8 +279,8 @@ fun DetailTop(
                 modifier = Modifier.padding(top = 20.dp, end = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                ResourceImage(resId = R.drawable.delete, size = 22.dp, modifier = Modifier.clickable{ isDialogOpen = true })
-                ResourceImage(resId = R.drawable.update, size = 20.dp, modifier = Modifier.clickable(onClick = updateSale))
+                ResourceImage(resId = R.drawable.delete, size = 22.dp, boxModifier = Modifier.clickable{ isDialogOpen = true })
+                ResourceImage(resId = R.drawable.update, size = 20.dp, boxModifier = Modifier.clickable(onClick = updateSale))
             }
         }
     }
@@ -348,11 +350,11 @@ fun DetailFarmProfile(
                 modifier = Modifier.padding(start = 9.dp, top = 7.dp)
             ) {
                 Text(
-                    text = nickName,
+                    text = nickName.ifBlank { "알 수 없는 사용자" },
                     style = TextStyles.TextBold2,
                     modifier = Modifier.padding(end = 6.dp)
                 )
-                Text(text = phoneNum, style = TextStyles.TextSmall2)
+                Text(text = phoneNum.ifBlank { "연락처 없음" }, style = TextStyles.TextSmall2)
             }
         }
         if (!isClosed && !deadLine.isNullOrBlank()) {

@@ -38,7 +38,7 @@ fun SettingScreen(
             onNotice = { navController.navigate(Screen.NoticeScreen.route) },
             onLogOut = {  navController.navigate(Screen.LogInScreen.route){ popUpTo(0) } },
             onLeaveApp = { navController.navigate(Screen.LeaveAppScreen.route) },
-            viewModel = viewModel
+            logOut = { viewModel.logOut() }
         )
     }
 }
@@ -73,7 +73,7 @@ fun ExtraSetting(
     onNotice: () -> Unit = {},
     onLogOut: () -> Unit = {},
     onLeaveApp: () -> Unit = {},
-    viewModel: UserViewModel
+    logOut: () -> Unit = {}
 ){
     var logOutConfirmDialog by remember { mutableStateOf(false) }
     var logOutDialog by remember { mutableStateOf(false) }
@@ -86,7 +86,7 @@ fun ExtraSetting(
         confirmText = "로그아웃",
         cancel = { logOutConfirmDialog = false},
         confirm = {
-            viewModel.logOut()
+            logOut()
             Token.edit().putString("token", "").apply()
             logOutDialog = true
         },
