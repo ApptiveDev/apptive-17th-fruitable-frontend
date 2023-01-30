@@ -52,9 +52,15 @@ fun LeaveAppScreen(
                     Token.edit().putString("token", "").apply()
                     navController.navigate(Screen.LogInScreen.route){ popUpTo(0) }
                 }
+                is LeaveAppViewModel.UiEvent.LeaveAppError -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = "🌱 ${event.message}"
+                    )
+                }
             }
         }
     }
+    if (viewModel.isLoading.value) DialogBoxLoading()
     FruitablePopUp(
         text  = "탈퇴 시 본인 계정의 모든 기록이 삭제되며 복구할 수 없습니다.\n정말 탈퇴하시겠습니까?",
         cancelText = "취소",

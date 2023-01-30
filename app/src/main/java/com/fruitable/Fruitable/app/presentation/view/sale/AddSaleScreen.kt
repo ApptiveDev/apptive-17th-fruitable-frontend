@@ -86,7 +86,7 @@ fun AddSaleScreen(
             when (event) {
                 is AddSaleViewModel.UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
-                        message = event.message
+                        message = "🌱 ${event.message}"
                     )
                 }
                 is AddSaleViewModel.UiEvent.SaveInformation -> {

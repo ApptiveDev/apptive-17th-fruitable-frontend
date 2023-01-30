@@ -48,7 +48,7 @@ fun UserInfoUpdateScreen(
                 }
                 is UserInfoUpdateViewModel.UiEvent.UpdateError -> {
                     scaffoldState.snackbarHostState.showSnackbar(
-                        message = event.message
+                        message = "🌱 ${event.message}"
                     )
                 }
             }

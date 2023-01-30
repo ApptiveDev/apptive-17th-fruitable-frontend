@@ -71,10 +71,11 @@ fun SignUpScreen(
                 SignUpViewModel.UiEvent.SignUpSuccess -> {
                     if(isAgree) navController.navigate(Screen.LogInScreen.route)
                 }
-                SignUpViewModel.UiEvent.SignUPError -> {}
-            }
-        }
-    }
+                is SignUpViewModel.UiEvent.SignUpError -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = "🌱 ${event.message}"
+                    )
+                }
     Scaffold(
         bottomBar = {
             Column(

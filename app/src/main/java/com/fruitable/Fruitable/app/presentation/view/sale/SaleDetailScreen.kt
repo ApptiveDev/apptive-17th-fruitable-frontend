@@ -73,7 +73,7 @@ fun SaleDetailScreen(
             when (event) {
                 is SaleDetailViewModel.UiEvent.ErrorEvent -> {
                     scaffoldState.snackbarHostState.showSnackbar(
-                        message = event.message
+                        message = "🌱 ${event.message}"
                     )
                 }
                 is SaleDetailViewModel.UiEvent.DeleteSuccess -> {
@@ -94,7 +94,14 @@ fun SaleDetailScreen(
             catch (e: Exception) { "연결 실패".log() }
         },
         cancelMethod = { isDialogOpen = false },
-        copyMethod = { clipboardManager.setText(AnnotatedString(saleDetail.contact))},
+        copyMethod = {
+            clipboardManager.setText(AnnotatedString(saleDetail.contact))
+            coroutine.launch {
+                scaffoldState.snackbarHostState.showSnackbar(
+                    "🌱 클립보드 복사 성공"
+                )
+            }
+        },
         isOpen = isDialogOpen
     )
     Scaffold(
