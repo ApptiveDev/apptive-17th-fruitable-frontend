@@ -252,7 +252,7 @@ class SignUpViewModel @Inject constructor(
                     isError = !isPasswordValid(password2.value.text)
                             || password.value.text != password2.value.text
                 )
-                if (isSignUpAble()) {
+                if (isSignUpAble() && event.isAgree) {
                     userUseCase.invoke(
                         userDTO = SignUpDTO(
                             email = email.value.text,

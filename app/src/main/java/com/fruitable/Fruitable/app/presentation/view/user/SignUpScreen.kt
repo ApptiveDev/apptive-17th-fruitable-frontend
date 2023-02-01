@@ -72,7 +72,7 @@ fun SignUpScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is SignUpViewModel.UiEvent.SignUpSuccess -> {
-                    if(isAgree) navController.navigate(Screen.LogInScreen.route)
+                    navController.navigate(Screen.LogInScreen.route)
                 }
                 is SignUpViewModel.UiEvent.SignUpError -> {
                     scaffoldState.snackbarHostState.showSnackbar(
@@ -96,7 +96,7 @@ fun SignUpScreen(
                     text = "가입완료",
                     enabled = isSignUpAble,
                     modifier = Modifier.padding(30.dp, 14.dp, 30.dp, 30.dp),
-                    onClick = { viewModel.onEvent(SignUpEvent.SignUp) }
+                    onClick = { viewModel.onEvent(SignUpEvent.SignUp(isAgree)) }
                 )
             }
         }

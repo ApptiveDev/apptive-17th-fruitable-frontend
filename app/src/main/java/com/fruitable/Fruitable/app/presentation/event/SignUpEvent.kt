@@ -14,5 +14,5 @@ sealed class SignUpEvent {
     data class EnteredPassword2(val value: String): SignUpEvent()
     data class ChangePassword2Focus(val focusState: FocusState): SignUpEvent()
 
-    object SignUp : SignUpEvent()
+    data class SignUp(val isAgree: Boolean) : SignUpEvent()
 }
