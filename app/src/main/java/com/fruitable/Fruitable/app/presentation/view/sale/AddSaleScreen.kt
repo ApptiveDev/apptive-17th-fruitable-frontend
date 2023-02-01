@@ -134,7 +134,7 @@ fun AddSaleScreen(
                     FruitableTextField(
                         modifier = Modifier.focusRequester(focusRequester),
                         state = priceState,
-                        onValueChange = { if (it.length < 10) viewModel.onEvent(AddSaleEvent.EnteredPrice(it.toInt())) },
+                        onValueChange = { if (it.length < 10) viewModel.onEvent(AddSaleEvent.EnteredPrice(it)) },
                         onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangePriceFocus(it)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         visualTransformation = NumberFormatting(),

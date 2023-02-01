@@ -8,7 +8,7 @@ sealed class AddSaleEvent{
     data class EnteredTitle(val value: String): AddSaleEvent()
     data class ChangeTitleFocus(val focusState: FocusState): AddSaleEvent()
 
-    data class EnteredPrice(val value: Int): AddSaleEvent()
+    data class EnteredPrice(val value: String): AddSaleEvent()
     data class ChangePriceFocus(val focusState: FocusState): AddSaleEvent()
 
     data class EnteredContact(val value: String): AddSaleEvent()

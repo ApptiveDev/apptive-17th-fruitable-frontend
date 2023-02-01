@@ -149,7 +149,7 @@ class AddSaleViewModel @Inject constructor(
                 )
             }
             is AddSaleEvent.EnteredPrice -> {
-                _salePrice.value = salePrice.value.copy(text = event.value.toString())
+                _salePrice.value = salePrice.value.copy(text = event.value)
             }
             is AddSaleEvent.ChangePriceFocus -> {
                 _salePrice.value = salePrice.value.copy(
