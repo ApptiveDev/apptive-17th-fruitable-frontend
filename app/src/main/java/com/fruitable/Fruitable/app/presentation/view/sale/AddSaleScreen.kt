@@ -51,6 +51,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app.domain.utils.addFocusCleaner
+import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTextField
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
@@ -298,7 +299,7 @@ fun PhotoPicker(
     val saleImage = viewModel.saleImage
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { viewModel.onEvent(AddSaleEvent.EnteredImage(it)) }
+    ) { it?.let { viewModel.onEvent(AddSaleEvent.EnteredImage(it)) }}
 
     LazyRow(
         modifier = Modifier
@@ -310,7 +311,7 @@ fun PhotoPicker(
     ){
         item {
             PhotoImage(
-               onClick = { if(saleImage.size < 5) galleryLauncher.launch("image/") },
+               onClick = { if(saleImage.size < 5) galleryLauncher.launch("image/*") },
                size =  saleImage.size
             )
         }
