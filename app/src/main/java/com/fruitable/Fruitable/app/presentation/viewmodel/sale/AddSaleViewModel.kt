@@ -98,7 +98,8 @@ class AddSaleViewModel @Inject constructor(
                             )
                             _saleDeadLine.value = saleDeadLine.value.copy(
                                 text = saleInfo?.endDate ?: "",
-                                isHintVisible = false
+                                isHintVisible = false,
+                                isChecked = !saleInfo?.endDate.isNullOrBlank()
                             )
                         }
                         is Resource.Loading -> isLoading.value = true

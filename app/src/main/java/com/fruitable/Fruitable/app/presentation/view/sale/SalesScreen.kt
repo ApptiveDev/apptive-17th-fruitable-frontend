@@ -220,19 +220,19 @@ fun SalesContents(
                 }
             }
             item {
-                salesDTO.forEach {
-                    it.tags.forEach {
-                         Row {
-                            HashTagButton(
-                                text = "# $it",
-                                isSelected = selectedItem == it,
-                                modifier = Modifier.selectable(
-                                    selected = selectedItem == it,
-                                    onClick = { selectedItem = it }),
-                                onClick = { selectedItem = it }
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                        }
+                val tags = mutableListOf<String>()
+                salesDTO.forEach { it.tags.forEach { tags.add(it) }}
+                tags.distinct().asReversed().forEach {
+                     Row {
+                        HashTagButton(
+                            text = "# $it",
+                            isSelected = selectedItem == it,
+                            modifier = Modifier.selectable(
+                                selected = selectedItem == it,
+                                onClick = { selectedItem = it }),
+                            onClick = { selectedItem = it }
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
                     }
                 }
             }
