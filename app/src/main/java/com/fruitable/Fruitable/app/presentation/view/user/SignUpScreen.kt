@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
@@ -66,7 +67,7 @@ fun SignUpScreen(
             delay(1000L)
             timer -= 1000L
         }
-        if (timer == 0L) viewModel.emailTimerTerminated(false)
+        viewModel.emailTimerTerminated(timer != 0L)
     }
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -175,7 +176,7 @@ fun SignUpScreen(
                 onClick = {
                     if (certification == EMAIL_INPUT_SUCCESS) timer = 3000*60L
                     viewModel.onEvent(SignUpEvent.ChangeCertification(certification))
-                    if (timer == 0L) viewModel.emailTimerTerminated()
+                    viewModel.emailTimerTerminated(timer == 0L)
                 }
             )
             Spacer(modifier = Modifier.height(28.dp))
@@ -262,7 +263,7 @@ fun Agreement(): Boolean {
             ResourceImage(
                 resId = R.drawable.arrow,
                 boxModifier = Modifier.align(CenterEnd).clickable{ isInfoOpen = !isInfoOpen},
-                size = 7.dp
+                size = 14.dp
             )
         }
         FruitableCheckBox(
