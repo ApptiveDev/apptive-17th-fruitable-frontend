@@ -34,7 +34,7 @@ class AddSaleViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     @ApplicationContext val context: Context
 ) : ViewModel(){
-    private val saleCategory = mutableStateOf("")
+    val saleCategory = mutableStateOf("")
 
     private val _saleTitle = mutableStateOf(SaleTextFieldState(hint = "제목"))
     val saleTitle: State<SaleTextFieldState> = _saleTitle
@@ -109,6 +109,7 @@ class AddSaleViewModel @Inject constructor(
                     }
                 }.launchIn(viewModelScope)
             }
+            else saleCategory.value = "과일"
         }
     }
     fun isUpdate(): Boolean {

@@ -311,7 +311,7 @@ fun PhotoPicker(
     ){
         item {
             PhotoImage(
-               onClick = { if(saleImage.size < 5) galleryLauncher.launch("image/*") },
+               onClick = { if(saleImage.size < 2) galleryLauncher.launch("image/*") },
                size =  saleImage.size
             )
         }
@@ -382,7 +382,7 @@ fun CategoryChoice(
     modifier: Modifier = Modifier,
     viewModel: AddSaleViewModel
 ): Boolean {
-    val isFruitClick = remember{ mutableStateOf(true) }
+    val isFruitClick = mutableStateOf(viewModel.saleCategory.value == "과일")
     val color = if (isFruitClick.value) White else MainGreen1
     val notColor = if (isFruitClick.value) MainGreen1 else White
     Row(
@@ -452,7 +452,7 @@ fun PhotoImage(
                 style = TextStyles.TextSmall2
             )
             Text(
-                text = "/5",
+                text = "/2",
                 color = MainGray6,
                 style = TextStyles.TextSmall2
             )
