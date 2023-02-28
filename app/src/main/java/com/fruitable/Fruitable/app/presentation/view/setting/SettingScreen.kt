@@ -110,7 +110,7 @@ fun ExtraSetting(
             modifier = Modifier.fillMaxWidth().clickable(onClick = onNotice)
         )
         SettingTwoColumn(text = "언어 설정", value = "한국어")
-        SettingTwoColumn(text = "버전 정보", value = "1.0.0")
+        SettingTwoColumn(text = "버전 정보", value = "1.1.0")
         Text(
             text = "로그아웃",
             style = TextStyles.TextBasic3,
