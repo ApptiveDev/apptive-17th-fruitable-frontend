@@ -38,6 +38,9 @@ class SalesViewModel @Inject constructor(
     private fun getUserName() {
         _name.value = userUseCase.getCookie("name")
     }
+    fun isSeller(): Boolean {
+        return userUseCase.getCookie("role") == "Seller"
+    }
     private fun getSales() {
         saleUseCase.getSales().onEach { result ->
             when (result){

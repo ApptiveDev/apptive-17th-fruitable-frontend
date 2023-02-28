@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -61,6 +62,7 @@ fun SignUpScreen(
     var isAgree by remember { mutableStateOf(false) }
     val isSignUpAble = viewModel.isSignUpAble() && isAgree
     val scaffoldState = rememberScaffoldState()
+    val focusManger = LocalFocusManager.current
 
     LaunchedEffect(key1 = timer) {
         while (timer > 0) {
@@ -177,6 +179,7 @@ fun SignUpScreen(
                     if (certification == EMAIL_INPUT_SUCCESS) timer = 3000*60L
                     viewModel.onEvent(SignUpEvent.ChangeCertification(certification))
                     viewModel.emailTimerTerminated(timer == 0L)
+                    focusManger.clearFocus()
                 }
             )
             Spacer(modifier = Modifier.height(28.dp))
