@@ -149,6 +149,7 @@ class SignUpViewModel @Inject constructor(
                 is Resource.Loading -> isLoading.value = true
                 is Resource.Error -> {
                     isLoading.value = false
+                    _emailCode.value = emailCode.value.copy(isError = true)
                     emailCodeValid.value = false
                 }
             }
@@ -173,10 +174,10 @@ class SignUpViewModel @Inject constructor(
                 && isPasswordValid(password2.value.text) && isPasswordCorrect()
         return isNicknameValid() && isPasswordValid && isEmailValid() && emailCodeValid.value
     }
-    fun emailTimerTerminated(isErrorVisible: Boolean = true) {
+    fun emailTimerTerminated(isTimeEnd: Boolean = true) {
         _emailCode.value = emailCode.value.copy(
-            error = "인증 기간이 만료되었습니다.",
-            isError = isErrorVisible
+            error = if (isTimeEnd) "인증 기간이 만료되었습니다." else "정확한 인증번호 6자리를 입력해주세요.",
+            isError = isTimeEnd
         )
     }
     fun onEvent(event: SignUpEvent){
@@ -252,7 +253,7 @@ class SignUpViewModel @Inject constructor(
                     isError = !isPasswordValid(password2.value.text)
                             || password.value.text != password2.value.text
                 )
-                if (isSignUpAble()) {
+                if (isSignUpAble() && event.isAgree) {
                     userUseCase.invoke(
                         userDTO = SignUpDTO(
                             email = email.value.text,

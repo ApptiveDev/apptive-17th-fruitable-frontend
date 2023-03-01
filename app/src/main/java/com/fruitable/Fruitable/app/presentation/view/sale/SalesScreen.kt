@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.Center
@@ -40,10 +41,11 @@ fun SalesScreen(
     navController: NavController,
     viewModel: SalesViewModel = hiltViewModel()
 ){
-    var isFruitCheck by remember { mutableStateOf(true)  }
+    var isFruitCheck by rememberSaveable { mutableStateOf(true)  }
     val scaffoldState = rememberScaffoldState()
     val isRefresh by viewModel.isRefresh.collectAsState()
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isRefresh)
+    val isSeller = viewModel.isSeller()
 
     LaunchedEffect(key1 = isRefresh) {
         if (viewModel.sales.value.error.isNotBlank())
@@ -54,17 +56,19 @@ fun SalesScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
-            Button(
-                onClick = {navController.navigate(Screen.AddSaleScreen.route)},
-                modifier = Modifier
-                    .padding(9.dp)
-                    .size(56.dp)
-                    .shadow(5.dp, shape = CircleShape)
-                    .clip(CircleShape),
-                colors = ButtonDefaults.buttonColors(MainGreen1),
-                contentPadding = PaddingValues(0.dp)
-            ){
-                ResourceImage(resId = R.drawable.plusbtn, size = 24.dp)
+            if (isSeller) {
+                Button(
+                    onClick = { navController.navigate(Screen.AddSaleScreen.route) },
+                    modifier = Modifier
+                        .padding(9.dp)
+                        .size(56.dp)
+                        .shadow(5.dp, shape = CircleShape)
+                        .clip(CircleShape),
+                    colors = ButtonDefaults.buttonColors(MainGreen1),
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    ResourceImage(resId = R.drawable.plusbtn, size = 24.dp)
+                }
             }
         }
     ) {
@@ -149,7 +153,7 @@ fun SellerProfile(
 }
 @Composable
 fun IsFruitTab(): Boolean {
-    var isFruitClick by remember { mutableStateOf(true) }
+    var isFruitClick by rememberSaveable { mutableStateOf(true) }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -195,7 +199,8 @@ fun SalesContents(
     salesDTO: List<SaleResponseDTO> = emptyList(),
     modifier: Modifier = Modifier
 ){
-    var selectedItem by remember { mutableStateOf("") }
+    var selectedItem by rememberSaveable { mutableStateOf("") }
+    LaunchedEffect(key1 = isFruitCheck) { selectedItem = "" }
     Column(modifier = modifier){
         Text(
             text = "인기 해시태그",
@@ -220,19 +225,19 @@ fun SalesContents(
                 }
             }
             item {
-                salesDTO.forEach {
-                    it.tags.forEach {
-                         Row {
-                            HashTagButton(
-                                text = "# $it",
-                                isSelected = selectedItem == it,
-                                modifier = Modifier.selectable(
-                                    selected = selectedItem == it,
-                                    onClick = { selectedItem = it }),
-                                onClick = { selectedItem = it }
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                        }
+                val tags = mutableListOf<String>()
+                salesDTO.filter{ it.vege == (if(isFruitCheck) 0 else 1) }.forEach { it.tags.forEach { tags.add(it) }}
+                tags.distinct().asReversed().forEach {
+                     Row {
+                        HashTagButton(
+                            text = "# $it",
+                            isSelected = selectedItem == it,
+                            modifier = Modifier.selectable(
+                                selected = selectedItem == it,
+                                onClick = { selectedItem = it }),
+                            onClick = { selectedItem = it }
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
                     }
                 }
             }

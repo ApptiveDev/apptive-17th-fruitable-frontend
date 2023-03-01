@@ -38,6 +38,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -51,6 +52,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.fruitable.Fruitable.R
 import com.fruitable.Fruitable.app.domain.utils.addFocusCleaner
+import com.fruitable.Fruitable.app.domain.utils.log
 import com.fruitable.Fruitable.app.presentation.component.FruitableDivider
 import com.fruitable.Fruitable.app.presentation.component.FruitableTextField
 import com.fruitable.Fruitable.app.presentation.component.HashTagButton
@@ -74,7 +76,7 @@ fun AddSaleScreen(
     val priceState = viewModel.salePrice.value
     val contactState = viewModel.saleContact.value
     val contentState = viewModel.saleContent.value
-
+    val deadlineState = viewModel.saleDeadLine.value
     val scaffoldState = rememberScaffoldState()
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -134,7 +136,7 @@ fun AddSaleScreen(
                     FruitableTextField(
                         modifier = Modifier.focusRequester(focusRequester),
                         state = priceState,
-                        onValueChange = { if (it.length < 10) viewModel.onEvent(AddSaleEvent.EnteredPrice(it.toInt())) },
+                        onValueChange = { if (it.length < 10) viewModel.onEvent(AddSaleEvent.EnteredPrice(it)) },
                         onFocusChange = { viewModel.onEvent(AddSaleEvent.ChangePriceFocus(it)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         visualTransformation = NumberFormatting(),
@@ -156,7 +158,7 @@ fun AddSaleScreen(
                     }
                 }
                 item { HashTagField(focusRequester = focusRequester) }
-                item { DeadLineField() }
+                item { DeadLineField(deadlineState.text, deadlineState.hint, deadlineState.isChecked) }
                 item {
                     FruitableTextField(
                         modifier = Modifier.focusRequester(focusRequester),
@@ -167,7 +169,7 @@ fun AddSaleScreen(
                         singleLine = false
                     )
                 }
-                item { Spacer(modifier = Modifier.height(100.dp)) }
+                item { Spacer(modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp)) }
             }
         }
     }
@@ -175,25 +177,25 @@ fun AddSaleScreen(
 
 @Composable
 fun DeadLineField(
+    deadlineText: String = "",
+    deadlineHint: String = "",
+    isChecked: Boolean = false,
     viewModel: AddSaleViewModel = hiltViewModel()
 ) {
-    val deadLine = viewModel.saleDeadLine.value
 
     val mCalendar = Calendar.getInstance()
     val mYear = mCalendar.get(Calendar.YEAR)
     val mMonth = mCalendar.get(Calendar.MONTH)
     val mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
-
     val mContext = LocalContext.current
     val mDatePickerDialog = DatePickerDialog(
         mContext,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            val month = if (mMonth < 9) "0${mMonth+1}" else mMonth
+            val month = if (mMonth < 9) "0${mMonth+1}" else mMonth+1
             val day = if (mDayOfMonth < 10) "0$mDayOfMonth" else mDayOfMonth
             viewModel.onEvent(AddSaleEvent.EnterDeadLine("$mYear-${month}-$day"))
         }, mYear, mMonth, mDay
     )
-    val isChecked = deadLine.isChecked
 
     Column {
         FruitableDivider()
@@ -222,8 +224,7 @@ fun DeadLineField(
                 .clickable { if (isChecked) mDatePickerDialog.show() },
         ){
             Text(
-                text = if (isChecked) deadLine.text
-                       else deadLine.hint,
+                text = if (isChecked) deadlineText else deadlineHint,
                 style = TextStyles.TextSmall3,
                 color = if (isChecked) MainGray2 else MainGray4,
                 modifier = Modifier
@@ -298,7 +299,7 @@ fun PhotoPicker(
     val saleImage = viewModel.saleImage
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { viewModel.onEvent(AddSaleEvent.EnteredImage(it)) }
+    ) { it?.let { viewModel.onEvent(AddSaleEvent.EnteredImage(it)) }}
 
     LazyRow(
         modifier = Modifier
@@ -310,7 +311,7 @@ fun PhotoPicker(
     ){
         item {
             PhotoImage(
-               onClick = { if(saleImage.size < 5) galleryLauncher.launch("image/") },
+               onClick = { if(saleImage.size < 2) galleryLauncher.launch("image/*") },
                size =  saleImage.size
             )
         }
@@ -381,7 +382,7 @@ fun CategoryChoice(
     modifier: Modifier = Modifier,
     viewModel: AddSaleViewModel
 ): Boolean {
-    val isFruitClick = remember{ mutableStateOf(true) }
+    val isFruitClick = mutableStateOf(viewModel.saleCategory.value == "과일")
     val color = if (isFruitClick.value) White else MainGreen1
     val notColor = if (isFruitClick.value) MainGreen1 else White
     Row(
@@ -451,7 +452,7 @@ fun PhotoImage(
                 style = TextStyles.TextSmall2
             )
             Text(
-                text = "/5",
+                text = "/2",
                 color = MainGray6,
                 style = TextStyles.TextSmall2
             )

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -60,19 +62,20 @@ fun SignUpScreen(
     var isAgree by remember { mutableStateOf(false) }
     val isSignUpAble = viewModel.isSignUpAble() && isAgree
     val scaffoldState = rememberScaffoldState()
+    val focusManger = LocalFocusManager.current
 
     LaunchedEffect(key1 = timer) {
         while (timer > 0) {
             delay(1000L)
             timer -= 1000L
         }
-        if (timer == 0L) viewModel.emailTimerTerminated(false)
+        viewModel.emailTimerTerminated(timer != 0L)
     }
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is SignUpViewModel.UiEvent.SignUpSuccess -> {
-                    if(isAgree) navController.navigate(Screen.LogInScreen.route)
+                    navController.navigate(Screen.LogInScreen.route)
                 }
                 is SignUpViewModel.UiEvent.SignUpError -> {
                     scaffoldState.snackbarHostState.showSnackbar(
@@ -96,7 +99,7 @@ fun SignUpScreen(
                     text = "가입완료",
                     enabled = isSignUpAble,
                     modifier = Modifier.padding(30.dp, 14.dp, 30.dp, 30.dp),
-                    onClick = { viewModel.onEvent(SignUpEvent.SignUp) }
+                    onClick = { viewModel.onEvent(SignUpEvent.SignUp(isAgree)) }
                 )
             }
         }
@@ -175,7 +178,8 @@ fun SignUpScreen(
                 onClick = {
                     if (certification == EMAIL_INPUT_SUCCESS) timer = 3000*60L
                     viewModel.onEvent(SignUpEvent.ChangeCertification(certification))
-                    if (timer == 0L) viewModel.emailTimerTerminated()
+                    viewModel.emailTimerTerminated(timer == 0L)
+                    focusManger.clearFocus()
                 }
             )
             Spacer(modifier = Modifier.height(28.dp))
@@ -262,7 +266,7 @@ fun Agreement(): Boolean {
             ResourceImage(
                 resId = R.drawable.arrow,
                 boxModifier = Modifier.align(CenterEnd).clickable{ isInfoOpen = !isInfoOpen},
-                size = 7.dp
+                size = 14.dp
             )
         }
         FruitableCheckBox(

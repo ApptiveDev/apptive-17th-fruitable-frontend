@@ -21,7 +21,7 @@ class NumberFormatting : VisualTransformation {
                         offset <= 3 -> offset
                         offset <= 6 -> offset + 1
                         offset <= 9 -> offset + 2
-                        else -> 11
+                        else -> offset + 3
                     }
                 }
                 return offset

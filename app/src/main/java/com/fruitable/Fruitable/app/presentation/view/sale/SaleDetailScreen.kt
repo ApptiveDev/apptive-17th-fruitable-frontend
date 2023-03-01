@@ -236,7 +236,7 @@ fun DetailContent(
 ) {
     Column(
         modifier = Modifier
-            .padding(start = 22.dp, top = 22.dp, bottom = 5.dp)
+            .padding(start = 22.dp, top = 22.dp, bottom = 5.dp, end = 30.dp)
             .fillMaxWidth()
     ){
         Text(

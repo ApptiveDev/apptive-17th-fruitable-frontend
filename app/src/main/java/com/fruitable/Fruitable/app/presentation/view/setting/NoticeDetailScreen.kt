@@ -1,9 +1,7 @@
 package com.fruitable.Fruitable.app.presentation.view.setting
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,18 +20,21 @@ fun NoticeDetailScreen(
 ) {
     Column{
         SettingTitle("공지사항")
-        Column(
-            modifier = Modifier.padding(30.dp, 30.dp, 25.dp ,0.dp)
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(30.dp, 30.dp, 25.dp ,25.dp)
         ) {
-            Text(text = notices[id][0], style = TextStyles.TextBold6)
-            Spacer(modifier = Modifier.height(14.dp))
-            Text(
-                text = notices[id][1],
-                style = TextStyles.TextBasic2,
-                color = MainGray8
-            )
-            FruitableDivider(Modifier.padding(vertical = 30.dp))
-            Text(text = notices[id][2], style = TextStyles.TextSmall3)
+            item { Text(text = notices[id][0], style = TextStyles.TextBold6) }
+            item { Spacer(modifier = Modifier.height(14.dp)) }
+            item {
+                Text(
+                    text = notices[id][1],
+                    style = TextStyles.TextBasic2,
+                    color = MainGray8
+                )
+            }
+            item{ FruitableDivider(Modifier.padding(vertical = 30.dp)) }
+            item{ Text(text = notices[id][2], style = TextStyles.TextSmall3) }
         }
     }
 }
