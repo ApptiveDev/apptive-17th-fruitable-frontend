@@ -13,7 +13,7 @@ android {
         applicationId "com.fruitable.Fruitable"
         minSdk 23
         targetSdk 32
-        versionCode 1
+        versionCode 3
         versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
